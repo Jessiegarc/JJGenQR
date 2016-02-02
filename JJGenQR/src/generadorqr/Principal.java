@@ -1580,10 +1580,11 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskAcercadeLayout.createSequentialGroup()
                 .addComponent(lblCerrarSesion4)
                 .addGap(39, 39, 39)
-                .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(losQr)
-                    .addComponent(losQr3)
-                    .addComponent(losQr2))
+                .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(losQr3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(losQr)
+                        .addComponent(losQr2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblAcercaDe, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1833,7 +1834,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_lblCerrarSesion3MouseClicked
 
     private void lblCerrarSesion4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCerrarSesion4MouseClicked
-            cerrarSesion();
+        cerrarSesion();
     }//GEN-LAST:event_lblCerrarSesion4MouseClicked
 
     /**
