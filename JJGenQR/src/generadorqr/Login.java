@@ -51,7 +51,7 @@ int cont=0;
         }
         else{
             try{
-            String SQL ="SELECT * FROM USUARIOS WHERE CEDULAUSUARIO Like '%" + txtUsuario.getText().toString().trim() + "%' AND CONTRASENAUSUARIO Like '%" + txtPassword.getText().toString().trim() + "%'";                 
+            String SQL ="SELECT * FROM USUARIOS WHERE CEDULAUSUARIO = '" + txtUsuario.getText() + "' AND CONTRASENAUSUARIO = '" + String.valueOf(txtPassword.getPassword()) + "'";                 
             String rolU,nombreU;
             sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQL);

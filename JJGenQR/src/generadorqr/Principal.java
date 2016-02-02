@@ -36,6 +36,10 @@ public class Principal extends javax.swing.JFrame {
         lblNuevo.setVisible(false);
         lblUsuarioyRol.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRol1.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
+        lblUsuarioyRol2.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
+        lblUsuarioyRol3.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
+        lblUsuarioyRol4.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
+
         String Ruta=getClass().getResource("/images/Mas.png").getPath();
         Mostrar_Visualizador(btnNuevoUsuario, Ruta);
         String Ruta1=getClass().getResource("/images/actualizar.png").getPath();
@@ -48,6 +52,7 @@ public class Principal extends javax.swing.JFrame {
         rbtnActivo.setEnabled(false);
         rbtnInactivo.setEnabled(false);
         jcbBuscarPor.setVisible(false);
+        LlenarTablaUsuarios();
     }
     
     
@@ -454,7 +459,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel45 = new javax.swing.JLabel();
         jLabel46 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
         tabMenu.setBackground(new java.awt.Color(0, 0, 0));
         tabMenu.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
