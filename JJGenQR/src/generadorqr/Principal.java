@@ -1786,10 +1786,12 @@ public class Principal extends javax.swing.JFrame {
             is.setIdUsuario(id);
             is.setRol(rol);
             is.setEstado(estado);
+            jtUsuarios.setFocusable(false);
+            jtUsuarios.clearSelection();
             if(!(internalNuevoUsuario instanceof jifrNuevoUsuario)){
-            internalNuevoUsuario =new jifrNuevoUsuario();
-        }  centrarVentanaInternaNuevoUsuario(internalNuevoUsuario);
-
+                internalNuevoUsuario =new jifrNuevoUsuario();
+            }
+            centrarVentanaInternaNuevoUsuario(internalNuevoUsuario);
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a modificar");
     }//GEN-LAST:event_btnActualizarMouseClicked
 

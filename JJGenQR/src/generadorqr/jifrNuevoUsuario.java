@@ -68,7 +68,7 @@ Validate val=new Validate();
                     if(rs.getBoolean("ESTADOUSUARIO") == true) jcbEstadoUsuario.setSelectedItem("Activo");
                     else jcbEstadoUsuario.setSelectedItem("Inactivo");
                     rs.close();
-                } else Limpiar();
+                }
             }
             catch(Exception e){
 
@@ -520,6 +520,7 @@ Validate val=new Validate();
 
     private void btnGuardarNuevoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarNuevoUsuarioActionPerformed
         Guardar();
+        Limpiar();
     }//GEN-LAST:event_btnGuardarNuevoUsuarioActionPerformed
 
     private void jcbTipodeUsuarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbTipodeUsuarioItemStateChanged
