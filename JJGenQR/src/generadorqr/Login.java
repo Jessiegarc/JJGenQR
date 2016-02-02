@@ -62,7 +62,7 @@ int cont=0;
             nombreU=rs.getString("NOMBRESUSUARIO");
             us.setParametroU(nombreU);
             us.setParametroR(rolU);
- // ENviar parametros
+            // ENviar parametros
             //UsuarioIngresado us=new UsuarioIngresado(rs.getString("CEDULAUSUARIO"),rs.getString("CONTRASENAUSUARIO") );
             rs.close();
             JOptionPane.showMessageDialog(null, "Bienvenid@ " +nombreU+" al Generador de QR y tu rol es de " + rolU);
@@ -114,21 +114,21 @@ int cont=0;
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(447, 447, 447)
+                .addGap(540, 540, 540)
                 .addComponent(jlJJ2016)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(32, Short.MAX_VALUE)
+                .addContainerGap(31, Short.MAX_VALUE)
                 .addComponent(jlJJ2016)
-                .addGap(22, 22, 22))
+                .addGap(23, 23, 23))
         );
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel3.setBackground(new java.awt.Color(155, 80, 80));
+        jPanel3.setBackground(new java.awt.Color(27, 18, 49));
 
         jPanel4.setBackground(new java.awt.Color(155, 80, 80));
         jPanel4.setMinimumSize(new java.awt.Dimension(400, 100));
@@ -141,10 +141,11 @@ int cont=0;
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 177, Short.MAX_VALUE)
         );
 
         jlMuseo.setFont(new java.awt.Font("Wide Latin", 0, 24)); // NOI18N
+        jlMuseo.setForeground(new java.awt.Color(255, 255, 255));
         jlMuseo.setText("Museo  \"ISIDRO AYORA\"");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -154,17 +155,17 @@ int cont=0;
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(436, 436, 436)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(73, 73, 73)
+                .addGap(33, 33, 33)
                 .addComponent(jlMuseo)
-                .addContainerGap(437, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 48, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jlMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39))
+                .addGap(38, 38, 38))
         );
 
         jlImgLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/museo2.jpg"))); // NOI18N
@@ -362,7 +363,7 @@ int cont=0;
     private javax.swing.JLabel jlMuseo;
     private javax.swing.JLabel jlUsuarios;
     private javax.swing.JLabel lblUserValidacion;
-    private javax.swing.JPasswordField txtPassword;
-    private javax.swing.JTextField txtUsuario;
+    public static javax.swing.JPasswordField txtPassword;
+    public static javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }
