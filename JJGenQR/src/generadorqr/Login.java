@@ -308,7 +308,7 @@ int cont=0;
             }
             catch(Exception e){
             }
-        }
+        } else lblUserValidacion.setText("CI");
     }//GEN-LAST:event_txtUsuarioKeyReleased
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
