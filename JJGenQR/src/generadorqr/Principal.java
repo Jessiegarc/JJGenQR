@@ -39,7 +39,6 @@ public class Principal extends javax.swing.JFrame {
         lblUsuarioyRol2.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRol3.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRol4.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
-
         String Ruta=getClass().getResource("/images/Mas.png").getPath();
         Mostrar_Visualizador(btnNuevoUsuario, Ruta);
         String Ruta1=getClass().getResource("/images/actualizar.png").getPath();
@@ -55,39 +54,35 @@ public class Principal extends javax.swing.JFrame {
         LlenarTablaUsuarios();
     }
     
-    
-    
-     void LlenarTablaUsuarios(){
+    void LlenarTablaUsuarios(){
         try{
-        //Muestra los usuarios existentes en la base de datos
-        String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
-        //String SQL ="SELECT * FROM ingresos where CodigoParaiso Like '%"+txtBuscar.getText().toString().trim()+"%'AND ORDER BY Movimiento,Id,Fecha ASC"; 
-        String SQLTU ="SELECT * FROM usuarios ORDER BY IDUSUARIO ASC"; 
-        model = new DefaultTableModel(null, titulos);
-        sent = con.createStatement();
-        ResultSet rs = sent.executeQuery(SQLTU);
-        String[]fila=new String[7];
-        while(rs.next()){
-            fila[0] = rs.getString("IDUSUARIO");
-            fila[1] = rs.getString("TIPOUSUARIO");
-            fila[2] = rs.getString("NOMBRESUSUARIO");
-            fila[3] = rs.getString("APELLIDOSUSUARIO");
-            fila[4] = rs.getString("CEDULAUSUARIO");
-            fila[5] = rs.getString("CORREOUSUARIO");
-            fila[6] = rs.getString("ESTADOUSUARIO");
-            model.addRow(fila);
-        }
-        rs.close();
-        jtUsuarios.setModel(model);
+            //Muestra los usuarios existentes en la base de datos
+            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            //String SQL ="SELECT * FROM ingresos where CodigoParaiso Like '%"+txtBuscar.getText().toString().trim()+"%'AND ORDER BY Movimiento,Id,Fecha ASC"; 
+            String SQLTU ="SELECT * FROM usuarios ORDER BY IDUSUARIO ASC"; 
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTU);
+            String[]fila=new String[7];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CEDULAUSUARIO");
+                fila[5] = rs.getString("CORREOUSUARIO");
+                fila[6] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            rs.close();
+            //jtUsuarios.removeAll();
+            jtUsuarios.setModel(model);
+            //model.fireTableDataChanged();
         }catch(Exception e){
-
         }
     }
     
-     
-     
     void Eliminar(){
-        JOptionPane.showMessageDialog(null, "El registro sera eliminado");
         int fila = jtUsuarios.getSelectedRow();
         try {
             String SQL = "DELETE FROM usuarios WHERE IdUSUARIO=" + jtUsuarios.getValueAt(fila, 0);
@@ -102,208 +97,195 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error: Debe seleccionar un usuario");
         }
     }
-        
     
     void BuscarPorNombreUsuario (){
-        
         try{
-         String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
-         
-    //Consulta para la fecha de inicio a fecha de final
-    String SQL = "SELECT *FROM usuarios WHERE NOMBRESUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
 
-    model= new DefaultTableModel(null, titulos);
-    sent = con.createStatement();
-    ResultSet rs = sent.executeQuery(SQL);
-    String[]fila=new String[7];
-   while(rs.next()){
-        fila[0] = rs.getString("IDUSUARIO");
-        fila[1] = rs.getString("TIPOUSUARIO");
-        fila[2] = rs.getString("NOMBRESUSUARIO");
-        fila[3] = rs.getString("APELLIDOSUSUARIO");
-        fila[4] = rs.getString("CEDULAUSUARIO");
-        fila[5] = rs.getString("CORREOUSUARIO");
-        fila[6] = rs.getString("ESTADOUSUARIO");
-        model.addRow(fila);
-   }
-    jtUsuarios.setModel(model);
-    }catch(Exception e){
-        JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
-    }
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM usuarios WHERE NOMBRESUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[7];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CEDULAUSUARIO");
+                fila[5] = rs.getString("CORREOUSUARIO");
+                fila[6] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
     }
     
     void BuscarPorApellidoUsuario (){
-        
         try{
-         String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
-         
-    //Consulta para la fecha de inicio a fecha de final
-    String SQL = "SELECT *FROM usuarios WHERE APELLIDOSUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
-
-    model= new DefaultTableModel(null, titulos);
-    sent = con.createStatement();
-    ResultSet rs = sent.executeQuery(SQL);
-    String[]fila=new String[7];
-   while(rs.next()){
-        fila[0] = rs.getString("IDUSUARIO");
-        fila[1] = rs.getString("TIPOUSUARIO");
-        fila[2] = rs.getString("NOMBRESUSUARIO");
-        fila[3] = rs.getString("APELLIDOSUSUARIO");
-        fila[4] = rs.getString("CEDULAUSUARIO");
-        fila[5] = rs.getString("CORREOUSUARIO");
-        fila[6] = rs.getString("ESTADOUSUARIO");
-        model.addRow(fila);
-   }
-    jtUsuarios.setModel(model);
-    }catch(Exception e){
-        JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
-    }
+            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM usuarios WHERE APELLIDOSUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[7];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CEDULAUSUARIO");
+                fila[5] = rs.getString("CORREOUSUARIO");
+                fila[6] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
     }
     
     void BuscarPorTipoUsuario (){
-        
         try{
-         String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
-         
-    //Consulta para la fecha de inicio a fecha de final
-    String SQL = "SELECT *FROM usuarios WHERE TIPOUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
-
-    model= new DefaultTableModel(null, titulos);
-    sent = con.createStatement();
-    ResultSet rs = sent.executeQuery(SQL);
-    String[]fila=new String[7];
-   while(rs.next()){
-        fila[0] = rs.getString("IDUSUARIO");
-        fila[1] = rs.getString("TIPOUSUARIO");
-        fila[2] = rs.getString("NOMBRESUSUARIO");
-        fila[3] = rs.getString("APELLIDOSUSUARIO");
-        fila[4] = rs.getString("CEDULAUSUARIO");
-        fila[5] = rs.getString("CORREOUSUARIO");
-        fila[6] = rs.getString("ESTADOUSUARIO");
-        model.addRow(fila);
-   }
-    jtUsuarios.setModel(model);
-    }catch(Exception e){
-        JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
-    }
+            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM usuarios WHERE TIPOUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[7];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CEDULAUSUARIO");
+                fila[5] = rs.getString("CORREOUSUARIO");
+                fila[6] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
     }
     
     void BuscarPorCedula (){
         this.txtBuscarPor.setEnabled(true);
         try{
-         String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
-         
-    //Consulta para la fecha de inicio a fecha de final
-    String SQL = "SELECT *FROM usuarios WHERE CEDULAUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
-
-    model= new DefaultTableModel(null, titulos);
-    sent = con.createStatement();
-    ResultSet rs = sent.executeQuery(SQL);
-    String[]fila=new String[7];
-   while(rs.next()){
-        fila[0] = rs.getString("IDUSUARIO");
-        fila[1] = rs.getString("TIPOUSUARIO");
-        fila[2] = rs.getString("NOMBRESUSUARIO");
-        fila[3] = rs.getString("APELLIDOSUSUARIO");
-        fila[4] = rs.getString("CEDULAUSUARIO");
-        fila[5] = rs.getString("CORREOUSUARIO");
-        fila[6] = rs.getString("ESTADOUSUARIO");
-        model.addRow(fila);
-        
-   }
-    jtUsuarios.setModel(model);
-    }catch(Exception e){
-        JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
-    }
+            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM usuarios WHERE CEDULAUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[7];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CEDULAUSUARIO");
+                fila[5] = rs.getString("CORREOUSUARIO");
+                fila[6] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
     }
     
     void BuscarPorEstadoUsuario (){
         try{
-        String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
-        String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 1 ORDER BY NOMBRESUSUARIO ASC";
-        model= new DefaultTableModel(null, titulos);
-        sent = con.createStatement();
-        ResultSet rs = sent.executeQuery(SQL);
-        String[]fila=new String[7];
-       while(rs.next()){
-        fila[0] = rs.getString("IDUSUARIO");
-        fila[1] = rs.getString("TIPOUSUARIO");
-        fila[2] = rs.getString("NOMBRESUSUARIO");
-        fila[3] = rs.getString("APELLIDOSUSUARIO");
-        fila[4] = rs.getString("CEDULAUSUARIO");
-        fila[5] = rs.getString("CORREOUSUARIO");
-        fila[6] = rs.getString("ESTADOUSUARIO");
-        model.addRow(fila);
-   }
-    jtUsuarios.setModel(model);
-    }catch(Exception e){
-        JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
-    }
+            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 1 ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[7];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CEDULAUSUARIO");
+                fila[5] = rs.getString("CORREOUSUARIO");
+                fila[6] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+        jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
     }
     
     
     void BuscarPorEstadoUsuarioInactivo (){
         try{
-        String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
-        String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 0 ORDER BY NOMBRESUSUARIO ASC";
-        model= new DefaultTableModel(null, titulos);
-        sent = con.createStatement();
-        ResultSet rs = sent.executeQuery(SQL);
-        String[]fila=new String[7];
-       while(rs.next()){
-        fila[0] = rs.getString("IDUSUARIO");
-        fila[1] = rs.getString("TIPOUSUARIO");
-        fila[2] = rs.getString("NOMBRESUSUARIO");
-        fila[3] = rs.getString("APELLIDOSUSUARIO");
-        fila[4] = rs.getString("CEDULAUSUARIO");
-        fila[5] = rs.getString("CORREOUSUARIO");
-        fila[6] = rs.getString("ESTADOUSUARIO");
-        model.addRow(fila);
-   }
-    jtUsuarios.setModel(model);
-    }catch(Exception e){
-        JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 0 ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[7];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CEDULAUSUARIO");
+                fila[5] = rs.getString("CORREOUSUARIO");
+                fila[6] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+        jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
     }
-    }
-            
     
-     
     public void centrarVentanaInterna ( jifrTerminosyCondiciones internalFrame){
-       int x=(jdeskPrincipal.getWidth()/2)-internalFrame.getWidth()/2; 
-       int y=(jdeskPrincipal.getHeight()/2)-internalFrame.getHeight()/2;
-       if(internalFrame.isShowing()){
-           internalFrame.setLocation(x, y);
-       }else{
-           jdeskPrincipal.add(internalFrame);
-           internalFrame.setLocation(x, y);
-           internalFrame.show();
-       }
+        int x=(jdeskPrincipal.getWidth()/2)-internalFrame.getWidth()/2; 
+        int y=(jdeskPrincipal.getHeight()/2)-internalFrame.getHeight()/2;
+        if(internalFrame.isShowing()){
+            internalFrame.setLocation(x, y);
+        }else{
+            jdeskPrincipal.add(internalFrame);
+            internalFrame.setLocation(x, y);
+            internalFrame.show();
+        }
     }
     
     
     
     public void centrarVentanaInternaPoliticas ( jifrPoliticasdePrivacidad internalFrameP){
-       int x=(jdeskPrincipal.getWidth()/2)-internalFrameP.getWidth()/2; 
-       int y=(jdeskPrincipal.getHeight()/2)-internalFrameP.getHeight()/2;
-       if(internalFrameP.isShowing()){
-           internalFrameP.setLocation(x, y);
-       }else{
-           jdeskPrincipal.add(internalFrameP);
-           internalFrameP.setLocation(x, y);
-           internalFrameP.show();
-       }
+        int x=(jdeskPrincipal.getWidth()/2)-internalFrameP.getWidth()/2; 
+        int y=(jdeskPrincipal.getHeight()/2)-internalFrameP.getHeight()/2;
+        if(internalFrameP.isShowing()){
+            internalFrameP.setLocation(x, y);
+        }else{
+            jdeskPrincipal.add(internalFrameP);
+            internalFrameP.setLocation(x, y);
+            internalFrameP.show();
+        }
     }
     
      public void centrarVentanaInternaNuevoUsuario ( jifrNuevoUsuario internalFrameNuevoU){
-       int x=(jdeskusuarios.getWidth()/2)-internalFrameNuevoU.getWidth()/2; 
-       int y=(jdeskusuarios.getHeight()/2)-internalFrameNuevoU.getHeight()/2;
-       if(internalFrameNuevoU.isShowing()){
-           internalFrameNuevoU.setLocation(x, y);
-       }else{
-           jdeskusuarios.add(internalFrameNuevoU);
-           internalFrameNuevoU.setLocation(x, y);
-           internalFrameNuevoU.show();
-       }
+        int x=(jdeskusuarios.getWidth()/2)-internalFrameNuevoU.getWidth()/2; 
+        int y=(jdeskusuarios.getHeight()/2)-internalFrameNuevoU.getHeight()/2;
+        if(internalFrameNuevoU.isShowing()){
+            internalFrameNuevoU.setLocation(x, y);
+        }else{
+            jdeskusuarios.add(internalFrameNuevoU);
+            internalFrameNuevoU.setLocation(x, y);
+            internalFrameNuevoU.show();
+        }
     }
     
     
@@ -316,17 +298,18 @@ public class Principal extends javax.swing.JFrame {
     }
     
      void Politicas(){
-          if(!(internalPoliticas instanceof jifrPoliticasdePrivacidad)){
+        if(!(internalPoliticas instanceof jifrPoliticasdePrivacidad)){
             internalPoliticas =new jifrPoliticasdePrivacidad();
             //lblPoliticasdePrivacidad.setEnabled(false);
-        }  centrarVentanaInternaPoliticas(internalPoliticas);
-
+        }
+        centrarVentanaInternaPoliticas(internalPoliticas);
      }
      
      void Terminos(){
-         if(!(internalTerminos instanceof jifrTerminosyCondiciones)){
+        if(!(internalTerminos instanceof jifrTerminosyCondiciones)){
             internalTerminos =new jifrTerminosyCondiciones();
-        }  centrarVentanaInterna(internalTerminos);
+        }
+        centrarVentanaInterna(internalTerminos);
      }
      
     private Principal(String principal) {
@@ -348,17 +331,16 @@ public class Principal extends javax.swing.JFrame {
     
     
     void cerrarSesion(){
-    Object [] opciones={"Aceptar","Cancelar"};
+        Object [] opciones={"Aceptar","Cancelar"};
         int eleccion=JOptionPane.showOptionDialog(null,"Está seguro que desea cerrar sesión","Mensaje de Confirmación",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
-        if(eleccion==JOptionPane.YES_OPTION)
-        {
+        if(eleccion==JOptionPane.YES_OPTION){
             Login frlog=new Login();
             frlog.show();
             dispose();
         }
-}
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -1669,7 +1651,7 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void lblPoliticasdePrivacidadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidadMouseClicked
-       Politicas();
+        Politicas();
     }//GEN-LAST:event_lblPoliticasdePrivacidadMouseClicked
 
     private void lblTerminosyCondicionesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondicionesMouseClicked
@@ -1681,19 +1663,19 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_lblTerminosyCondiciones1MouseClicked
 
     private void lblPoliticasdePrivacidad1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidad1MouseClicked
-    Politicas();
+        Politicas();
     }//GEN-LAST:event_lblPoliticasdePrivacidad1MouseClicked
 
     private void lblTerminosyCondiciones2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondiciones2MouseClicked
-    Terminos();
+        Terminos();
     }//GEN-LAST:event_lblTerminosyCondiciones2MouseClicked
 
     private void lblPoliticasdePrivacidad2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidad2MouseClicked
-    Politicas();
+        Politicas();
     }//GEN-LAST:event_lblPoliticasdePrivacidad2MouseClicked
 
     private void lblTerminosyCondiciones3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondiciones3MouseClicked
-     Terminos();
+        Terminos();
     }//GEN-LAST:event_lblTerminosyCondiciones3MouseClicked
 
     private void lblPoliticasdePrivacidad3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidad3MouseClicked
@@ -1701,11 +1683,11 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_lblPoliticasdePrivacidad3MouseClicked
 
     private void lblTerminosyCondiciones4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondiciones4MouseClicked
-       Terminos();
+        Terminos();
     }//GEN-LAST:event_lblTerminosyCondiciones4MouseClicked
 
     private void lblPoliticasdePrivacidad4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidad4MouseClicked
-       Politicas();
+        Politicas();
     }//GEN-LAST:event_lblPoliticasdePrivacidad4MouseClicked
 
     private void jtUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtUsuariosMouseClicked
@@ -1730,23 +1712,23 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
         switch (buscar) {
             case 1:
-            BuscarPorCedula();
-            break;
+                BuscarPorCedula();
+                break;
             case 2:
-            BuscarPorNombreUsuario();
-            break;
+                BuscarPorNombreUsuario();
+                break;
             case 3:
-            BuscarPorApellidoUsuario();
-            break;
+                BuscarPorApellidoUsuario();
+                break;
             case 4:
-            BuscarPorTipoUsuario();
-            break;
+                BuscarPorTipoUsuario();
+                break;
             case 5:
-            BuscarPorEstadoUsuario();
-            break;
+                BuscarPorEstadoUsuario();
+                break;
             default:
-            JOptionPane.showMessageDialog(this,"Debe seleccionar un tipo de usuario");
-            break;
+                JOptionPane.showMessageDialog(this,"Debe seleccionar un tipo de usuario");
+                break;
         }
     }//GEN-LAST:event_txtBuscarPorKeyPressed
 
@@ -1756,16 +1738,14 @@ public class Principal extends javax.swing.JFrame {
             char car=evt.getKeyChar();
             if((car<'0' || car>'9')) evt.consume();
             int limite  = 10;
-            if (txtBuscarPor.getText().length()== limite)              evt.consume();
-
+            if (txtBuscarPor.getText().length()== limite) evt.consume();
         }
     }//GEN-LAST:event_txtBuscarPorKeyTyped
 
     private void btnNuevoUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoUsuarioMouseClicked
         is.setAccionBoton("Guardar");
-         if(!(internalNuevoUsuario instanceof jifrNuevoUsuario)){
-            internalNuevoUsuario =new jifrNuevoUsuario();
-        }  centrarVentanaInternaNuevoUsuario(internalNuevoUsuario);
+        internalNuevoUsuario =new jifrNuevoUsuario();
+        centrarVentanaInternaNuevoUsuario(internalNuevoUsuario);
     }//GEN-LAST:event_btnNuevoUsuarioMouseClicked
 
     private void btnEliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseClicked
@@ -1788,9 +1768,7 @@ public class Principal extends javax.swing.JFrame {
             is.setEstado(estado);
             jtUsuarios.setFocusable(false);
             jtUsuarios.clearSelection();
-            if(!(internalNuevoUsuario instanceof jifrNuevoUsuario)){
-                internalNuevoUsuario =new jifrNuevoUsuario();
-            }
+            internalNuevoUsuario = new jifrNuevoUsuario();
             centrarVentanaInternaNuevoUsuario(internalNuevoUsuario);
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a modificar");
     }//GEN-LAST:event_btnActualizarMouseClicked

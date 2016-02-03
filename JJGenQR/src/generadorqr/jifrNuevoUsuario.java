@@ -26,6 +26,9 @@ String accion;
 String cedula,valCorreo,ok="\u2714";
 Boolean tipoUsuario, estadoUsuario;
 Validate val=new Validate();
+ItemSeleccionado is = new ItemSeleccionado();
+Principal llenarTablaUsuario = new Principal();
+
     /**
      * Creates new form jifrNuevoUsuario
      */
@@ -71,7 +74,6 @@ Validate val=new Validate();
                 }
             }
             catch(Exception e){
-
             }
         }
     }
@@ -90,7 +92,7 @@ Validate val=new Validate();
     }
 
     void Limpiar(){
-        lblIdUsuario.setText("");
+        /*lblIdUsuario.setText("");
         txtNombreUsuario.setText("");
         txtApellidoUsuario.setText("");
         jcbTipodeUsuario.setSelectedIndex(0);
@@ -104,7 +106,11 @@ Validate val=new Validate();
         txtContraseñaUsuario.setVisible(true);
         txtRepetirContraseñaUsuario.setVisible(true);
         lblNuevoUsuario.setText("Nuevo Usuario");
-        txtNombreUsuario.requestFocus();
+        txtNombreUsuario.requestFocus();*/
+        is.setAccionBoton("");
+        is.setIdUsuario("");
+        is.setRol("");
+        is.setEstado("");
     }
     
     void Guardar(){
@@ -137,7 +143,7 @@ Validate val=new Validate();
                                 + "CEDULAUSUARIO, CORREOUSUARIO, ESTADOUSUARIO)"
                                       + " VALUES(?,?,?,?,?,?,?)";
                         PreparedStatement ps = conn.prepareStatement(SQL);
-                        ps.setString(1, ItemSeleccionado.rol);
+                        ps.setString(1, jcbTipodeUsuario.getSelectedItem().toString());
                         ps.setString(2, txtNombreUsuario.getText());
                         ps.setString(3, txtApellidoUsuario.getText());
                         ps.setString(4, txtContraseñaUsuario.getText());
@@ -513,18 +519,17 @@ Validate val=new Validate();
     }//GEN-LAST:event_txtCedulaKeyReleased
 
     private void btnCancelarNuevoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarNuevoUsuarioActionPerformed
-        // TODO add your handling code here:
         this.dispose();
-        //validacionCorreo();
+        Limpiar();
     }//GEN-LAST:event_btnCancelarNuevoUsuarioActionPerformed
 
     private void btnGuardarNuevoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarNuevoUsuarioActionPerformed
         Guardar();
         Limpiar();
+        llenarTablaUsuario.LlenarTablaUsuarios();
     }//GEN-LAST:event_btnGuardarNuevoUsuarioActionPerformed
 
     private void jcbTipodeUsuarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbTipodeUsuarioItemStateChanged
-        // TODO add your handling code here:
         //Verifica que posicion del combobox del tipo de usuarios se esta escojiendo
         if(accion.contains("Actualizar")){
             Integer indice = jcbTipodeUsuario.getSelectedIndex();
@@ -563,13 +568,13 @@ Validate val=new Validate();
     private void txtApellidoUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoUsuarioKeyTyped
         ValidarLetras(evt); //LLamando al evento para ingresar solo letras
         int limite  = 30;
-        if (txtApellidoUsuario.getText().length()== limite)              evt.consume();
+        if (txtApellidoUsuario.getText().length()== limite) evt.consume();
     }//GEN-LAST:event_txtApellidoUsuarioKeyTyped
 
     private void txtNombreUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreUsuarioKeyTyped
         ValidarLetras(evt); //LLamando al evento para ingresar solo letras
         int limite  = 30;
-        if (txtNombreUsuario.getText().length()== limite)              evt.consume();
+        if (txtNombreUsuario.getText().length()== limite) evt.consume();
     }//GEN-LAST:event_txtNombreUsuarioKeyTyped
 
     private void txtRepetirContraseñaUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRepetirContraseñaUsuarioKeyTyped
