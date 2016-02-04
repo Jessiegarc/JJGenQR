@@ -27,7 +27,7 @@ String cedula,valCorreo,ok="\u2714";
 Boolean tipoUsuario, estadoUsuario;
 Validate val=new Validate();
 ItemSeleccionado is = new ItemSeleccionado();
-Principal llenarTablaUsuario = new Principal();
+//Principal llenarTablaUsuario = new Principal();
 
     /**
      * Creates new form jifrNuevoUsuario
@@ -526,7 +526,7 @@ Principal llenarTablaUsuario = new Principal();
     private void btnGuardarNuevoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarNuevoUsuarioActionPerformed
         Guardar();
         Limpiar();
-        llenarTablaUsuario.LlenarTablaUsuarios();
+        Principal.jtUsuarios.setModel(Principal.LlenarTablaUsuarios());
     }//GEN-LAST:event_btnGuardarNuevoUsuarioActionPerformed
 
     private void jcbTipodeUsuarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbTipodeUsuarioItemStateChanged
