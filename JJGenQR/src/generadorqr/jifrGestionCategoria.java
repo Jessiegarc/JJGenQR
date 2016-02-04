@@ -26,6 +26,7 @@ DefaultTableModel model;
     Statement sent;
     ItemSeleccionado isC=new ItemSeleccionado();
     String idC = "";
+    jifrNuevaCategoria internalNuevaCategoria;
     /**
      * Creates new form jifrGestionCategoria
      */
@@ -134,7 +135,18 @@ DefaultTableModel model;
     }
   }
           
-    
+    public void centrarVentanaNuevaCategoria ( jifrNuevaCategoria internalFrameNuevaCategoria){
+        int x=(Principal.jdeskGaleria.getWidth()/2)-internalFrameNuevaCategoria.getWidth()/2; 
+        int y=(Principal.jdeskGaleria.getHeight()/2)-internalFrameNuevaCategoria.getHeight()/2;
+        if(internalFrameNuevaCategoria.isShowing()){
+            internalFrameNuevaCategoria.setLocation(x, y);
+        }else{
+            Principal.jdeskGaleria.add(internalFrameNuevaCategoria);
+            internalFrameNuevaCategoria.setLocation(x, y);
+            internalFrameNuevaCategoria.show();
+            
+        }
+    }
     
     
     
@@ -153,7 +165,7 @@ DefaultTableModel model;
         txtBuscarContenidos = new javax.swing.JTextField();
         btnNuevaCategoria = new javax.swing.JLabel();
 
-        jPanel5.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
         jlNuevaCategoria.setForeground(new java.awt.Color(255, 255, 255));
         jlNuevaCategoria.setText("Nuevo");
@@ -334,9 +346,11 @@ DefaultTableModel model;
 
     private void btnNuevaCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevaCategoriaMouseClicked
         // TODO add your handling code here:
-        isC.setAccionBoton("Guardar");
-        //NuevasCategorias nca= new NuevasCategorias();
-        //nca.show();
+        if(!(internalNuevaCategoria instanceof jifrNuevaCategoria)){
+            internalNuevaCategoria =new jifrNuevaCategoria();
+            isC.setAccionBoton("Guardar");
+        }
+        centrarVentanaNuevaCategoria(internalNuevaCategoria);
     }//GEN-LAST:event_btnNuevaCategoriaMouseClicked
 
 
