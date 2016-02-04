@@ -71,10 +71,10 @@ public class Principal extends javax.swing.JFrame {
         rbtnActivo.setEnabled(false);
         rbtnInactivo.setEnabled(false);
         jcbBuscarPor.setVisible(false);
-        LlenarTablaUsuarios();
+        jtUsuarios.setModel(LlenarTablaUsuarios());
     }
     
-    void LlenarTablaUsuarios(){
+    public static DefaultTableModel LlenarTablaUsuarios(){
         try{
             //Muestra los usuarios existentes en la base de datos
             String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
@@ -96,9 +96,10 @@ public class Principal extends javax.swing.JFrame {
             }
             rs.close();
             //jtUsuarios.removeAll();
-            jtUsuarios.setModel(model);
+            return model;
             //model.fireTableDataChanged();
         }catch(Exception e){
+            return null;
         }
     }
     
@@ -2063,7 +2064,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jlJJ2019;
     private javax.swing.JLabel jlJJ2020;
     private javax.swing.JPanel jpPrincipal;
-    private javax.swing.JTable jtUsuarios;
+    public static javax.swing.JTable jtUsuarios;
     private javax.swing.JLabel lblAcercaDeAnimalito;
     private javax.swing.JLabel lblAcercaDeAppVersionNetbeans;
     private javax.swing.JLabel lblAcercaDeAppVersionandroid;
