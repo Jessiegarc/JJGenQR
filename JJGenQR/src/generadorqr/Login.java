@@ -100,6 +100,7 @@ int cont=0;
         btnIngresar = new javax.swing.JButton();
         txtUsuario = new javax.swing.JTextField();
         lblUserValidacion = new javax.swing.JLabel();
+        btnIngresar1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -206,6 +207,16 @@ int cont=0;
 
         lblUserValidacion.setText("CI");
 
+        btnIngresar1.setBackground(new java.awt.Color(153, 51, 0));
+        btnIngresar1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnIngresar1.setText("Anonimo");
+        btnIngresar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnIngresar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresar1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -228,7 +239,9 @@ int cont=0;
                         .addComponent(lblUserValidacion, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(157, 157, 157)
-                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnIngresar1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(154, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -251,7 +264,9 @@ int cont=0;
                             .addComponent(jlContraseña)
                             .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(69, 69, 69)
-                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnIngresar1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(185, Short.MAX_VALUE))
         );
 
@@ -316,6 +331,12 @@ int cont=0;
         Acceder();
     }//GEN-LAST:event_btnIngresarActionPerformed
 
+    private void btnIngresar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresar1ActionPerformed
+        Principal fr=new Principal();
+        fr.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_btnIngresar1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -353,6 +374,7 @@ int cont=0;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIngresar;
+    private javax.swing.JButton btnIngresar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
