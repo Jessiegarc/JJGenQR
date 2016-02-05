@@ -1872,7 +1872,7 @@ public class Principal extends javax.swing.JFrame {
                 BuscarPorEstadoUsuario();
                 break;
             default:
-                JOptionPane.showMessageDialog(this,"Debe seleccionar un tipo de usuario");
+                JOptionPane.showMessageDialog(this,"Debe seleccionar un tipo de búsqueda");
                 break;
         }
     }//GEN-LAST:event_txtBuscarPorKeyPressed

@@ -22,8 +22,8 @@ import javax.swing.JLabel;
 
 public class jifrGestionCategoria extends javax.swing.JInternalFrame {
 DefaultTableModel model;
-    Connection conn;
-    Statement sent;
+Connection conn;
+Statement sent;
     ItemSeleccionado isC=new ItemSeleccionado();
     String idC = "";
     jifrNuevaCategoria internalNuevaCategoria;
@@ -35,6 +35,7 @@ DefaultTableModel model;
         LlenarTablaCategorias();
         this.setLocation(WIDTH, HEIGHT);
         
+        LlenarTablaCategorias();
         /*String rutaNuevaCategoria=getClass().getResource("/images/Mas.png").getPath();
         Mostrar_Visualizador(btnNuevaCategoria, rutaNuevaCategoria);
         String rutaActualizarCategoria=getClass().getResource("/images/actualizar.png").getPath();
@@ -260,8 +261,8 @@ DefaultTableModel model;
                         .addComponent(jlCategorias))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1073, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(47, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 828, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(292, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 549, Short.MAX_VALUE)
@@ -363,7 +364,7 @@ DefaultTableModel model;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlCategorias;
     private javax.swing.JLabel jlNuevaCategoria;
-    private javax.swing.JTable jtCategorias;
+    public static javax.swing.JTable jtCategorias;
     private javax.swing.JTextField txtBuscarContenidos;
     // End of variables declaration//GEN-END:variables
 }
