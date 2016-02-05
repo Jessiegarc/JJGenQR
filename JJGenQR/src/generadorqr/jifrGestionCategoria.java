@@ -6,13 +6,12 @@
 package generadorqr;
 
 import Modelos.ItemSeleccionado;
-import static java.awt.Frame.MAXIMIZED_BOTH;
+import db.mysql;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import static generadorqr.Principal.Mostrar_Visualizador;
 import java.awt.Image;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -22,36 +21,33 @@ import javax.swing.JLabel;
 
 public class jifrGestionCategoria extends javax.swing.JInternalFrame {
 DefaultTableModel model;
-Connection conn;
-Statement sent;
-    ItemSeleccionado isC=new ItemSeleccionado();
-    String idC = "";
-    jifrNuevaCategoria internalNuevaCategoria;
+static Connection conn;
+static Statement sent;
+ItemSeleccionado isC=new ItemSeleccionado();
+String idC = "";
+jifrNuevaCategoria internalNuevaCategoria;
     /**
      * Creates new form jifrGestionCategoria
      */
     public jifrGestionCategoria() {
         initComponents();
-        LlenarTablaCategorias();
-        this.setLocation(WIDTH, HEIGHT);
-        
-        LlenarTablaCategorias();
-        /*String rutaNuevaCategoria=getClass().getResource("/images/Mas.png").getPath();
-        Mostrar_Visualizador(btnNuevaCategoria, rutaNuevaCategoria);
-        String rutaActualizarCategoria=getClass().getResource("/images/actualizar.png").getPath();
-        Mostrar_Visualizador(btnActualizarCategoria, rutaActualizarCategoria);
-        String rutaEliminarCategoria=getClass().getResource("/images/Eliminar.png").getPath();
-        Mostrar_Visualizador(btnEliminarCategoria, rutaEliminarCategoria);
-        String rutaBuscarCategoria=getClass().getResource("/images/search.png").getPath();
-        Mostrar_Visualizador(btnBuscarCategoria,rutaBuscarCategoria);*/
+        if(conn == null) conn = mysql.getConnect();
+        if (LlenarTablaCategorias() != null) jtCategorias.setModel(LlenarTablaCategorias());
+        String rutaCat = getClass().getResource("/images/Mas.png").getPath();
+        MostrarVisualizador(btnNuevaCategoria, rutaCat);
+        rutaCat = getClass().getResource("/images/actualizar.png").getPath();
+        MostrarVisualizador(btnActualizarCategoria, rutaCat);
+        rutaCat = getClass().getResource("/images/Eliminar.png").getPath();
+        MostrarVisualizador(btnEliminarCategoria, rutaCat);
+        rutaCat = getClass().getResource("/images/search.png").getPath();
+        MostrarVisualizador(btnBuscarCategoria, rutaCat);
     }
     
     
- public static void Mostrar_Visualizador(JLabel Pantalla, String RutaDestino){
-        try
-        {
+    public static void MostrarVisualizador(JLabel Pantalla, String RutaDestino){
+        try{
             Image capturarImgSoloLectura = ImageIO.read(new File(RutaDestino));
-            Image obtenerImagen = capturarImgSoloLectura.getScaledInstance(Pantalla.getWidth(),Pantalla.getHeight(), Image.SCALE_SMOOTH);
+            Image obtenerImagen = capturarImgSoloLectura.getScaledInstance(Pantalla.getPreferredSize().width, Pantalla.getPreferredSize().height - 10, Image.SCALE_SMOOTH);
             Icon iconoEscalado = new ImageIcon(obtenerImagen);
             Pantalla.setIcon(iconoEscalado);
         }
@@ -60,40 +56,33 @@ Statement sent;
         }
     }
  
-    void LlenarTablaCategorias(){
-    try{
-    String titulos[] = {"Id","Nombre","Descripcion"};
-    String SQLTC ="SELECT * FROM categorias ORDER BY NOMBRECATEGORIA ASC"; 
-    model = new DefaultTableModel(null, titulos);
-    sent = conn.createStatement();
-    ResultSet rs = sent.executeQuery(SQLTC);
-    
-    String[]fila=new String[3];
-    while(rs.next()){
-        fila[0] = rs.getString("IDCATEGORIA");
-        fila[1] = rs.getString("NOMBRECATEGORIA");
-        fila[2] = rs.getString("DESCRIPCIONCATEGORIA");
-       model.addRow(fila);
-        
+    public static DefaultTableModel LlenarTablaCategorias(){
+        try{
+            String titulos[] = {"Id","Nombre","Descripcion"};
+            String SQLTC ="SELECT * FROM categorias ORDER BY NOMBRECATEGORIA ASC"; 
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = conn.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTC);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDCATEGORIA");
+                fila[1] = rs.getString("NOMBRECATEGORIA");
+                fila[2] = rs.getString("DESCRIPCIONCATEGORIA");
+               model.addRow(fila);
+            }
+            return model;
+        }catch(Exception e){
+            return null;
+        }
     }
-    jtCategorias.setModel(model);
-    }catch(Exception e){
-        
-    }
-    
-}
-    
     
     void SeleccionarItemTablaC(java.awt.event.MouseEvent evt){
         DefaultTableModel modelo=(DefaultTableModel) jtCategorias.getModel();
         idC=String.valueOf(modelo.getValueAt(jtCategorias.getSelectedRow(),0));
-        
     }
     
-    
-    
     void EliminarCategoria(){
-    JOptionPane.showMessageDialog(null, "La categoría sera eliminada");
+        JOptionPane.showMessageDialog(null, "La categoría sera eliminada");
         int fila = jtCategorias.getSelectedRow();
         try {
             String SQL = "DELETE FROM categorias WHERE IDCATEGORIA=" + jtCategorias.getValueAt(fila, 0);
@@ -103,38 +92,32 @@ Statement sent;
                 JOptionPane.showMessageDialog(null, "Categoria eliminada correctamente ");
                 LlenarTablaCategorias();
             }
-            else                JOptionPane.showMessageDialog(null, "Categoria no eliminado ");
-            }catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: Debe Seleccionar un registro " );
-            }
+            else JOptionPane.showMessageDialog(null, "Categoria no eliminado ");
+        }catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error: Debe Seleccionar un registro " );
         }
-    
-    
+    }
     
     void BuscarPorNombreCategoria (){
-        
         try{
-         String titulos[] = {"IDCATEGORIA", "NOMBRECATEGORIA","DESCRIPCIONCATEGORIA"};
-         
-    //Consulta para la fecha de inicio a fecha de final
-    String SQL = "SELECT *FROM categorias WHERE NOMBRECATEGORIA Like '%"+txtBuscarContenidos.getText().toString().trim()+"%'ORDER BY NOMBRECATEGORIA ASC";
-
-    model= new DefaultTableModel(null, titulos);
-    sent = conn.createStatement();
-    ResultSet rs = sent.executeQuery(SQL);
-    String[]fila=new String[3];
-   while(rs.next()){
-        fila[0] = rs.getString("IDCATEGORIA");
-        fila[1] = rs.getString("NOMBRECATEGORIA");
-        fila[2] = rs.getString("DESCRIPCIONCATEGORIA");
-        model.addRow(fila);
-        
-   }
-    jtCategorias.setModel(model);
-    }catch(Exception e){
-        JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+            String titulos[] = {"IDCATEGORIA", "NOMBRECATEGORIA","DESCRIPCIONCATEGORIA"};
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM categorias WHERE NOMBRECATEGORIA Like '%"+txtBuscarContenidos.getText().toString().trim()+"%'ORDER BY NOMBRECATEGORIA ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = conn.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDCATEGORIA");
+                fila[1] = rs.getString("NOMBRECATEGORIA");
+                fila[2] = rs.getString("DESCRIPCIONCATEGORIA");
+                model.addRow(fila);
+            }
+            jtCategorias.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
     }
-  }
           
     public void centrarVentanaNuevaCategoria ( jifrNuevaCategoria internalFrameNuevaCategoria){
         int x=(Principal.jdeskGaleria.getWidth()/2)-internalFrameNuevaCategoria.getWidth()/2; 
@@ -145,11 +128,8 @@ Statement sent;
             Principal.jdeskGaleria.add(internalFrameNuevaCategoria);
             internalFrameNuevaCategoria.setLocation(x, y);
             internalFrameNuevaCategoria.show();
-            
         }
     }
-    
-    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -310,7 +290,6 @@ Statement sent;
     }// </editor-fold>//GEN-END:initComponents
 
     private void jtCategoriasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtCategoriasMouseClicked
-        // TODO add your handling code here:
         SeleccionarItemTablaC(evt);
     }//GEN-LAST:event_jtCategoriasMouseClicked
    
@@ -324,29 +303,24 @@ Statement sent;
     }//GEN-LAST:event_btnActualizarCategoriaMouseClicked
 
     private void btnEliminarCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarCategoriaMouseClicked
-        // TODO add your handling code here:
         Object [] opciones={"Aceptar","Cancelar"};
         if(!idC.isEmpty()){
             int eleccion=JOptionPane.showOptionDialog(null,"Está seguro que desea eliminar","Eliminar",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
             if(eleccion==JOptionPane.YES_OPTION)  EliminarCategoria();
-        }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
-
+        } else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
     }//GEN-LAST:event_btnEliminarCategoriaMouseClicked
 
     private void btnBuscarCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarCategoriaMouseClicked
-        // TODO add your handling code here:
         txtBuscarContenidos.setEnabled(true);
     }//GEN-LAST:event_btnBuscarCategoriaMouseClicked
 
     private void txtBuscarContenidosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarContenidosKeyPressed
-        // TODO add your handling code here:
         BuscarPorNombreCategoria();
     }//GEN-LAST:event_txtBuscarContenidosKeyPressed
 
     private void btnNuevaCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevaCategoriaMouseClicked
-        // TODO add your handling code here:
         if(!(internalNuevaCategoria instanceof jifrNuevaCategoria)){
             internalNuevaCategoria =new jifrNuevaCategoria();
             isC.setAccionBoton("Guardar");

@@ -7,10 +7,10 @@ package generadorqr;
 
 import Modelos.ItemSeleccionado;
 import Modelos.ValoresConstantes;
+import db.mysql;
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
-import static generadorqr.Principal.Mostrar_Visualizador;
 import java.awt.Image;
 import java.io.File;
 import java.sql.ResultSet;
@@ -27,8 +27,8 @@ import org.apache.commons.io.FileUtils;
  */
 public class jifrGestionArticulos extends javax.swing.JInternalFrame {
 DefaultTableModel model;
-Connection conn;
-Statement sent;   
+static Connection conn;
+static Statement sent;   
 String id = "", imagenes = "",categoria="";
 ItemSeleccionado isA=new ItemSeleccionado();
 String idA = "";
@@ -38,30 +38,27 @@ jifrNuevoQr internalNuevoQr;
 
     public jifrGestionArticulos() {
         initComponents();
-        
-        LlenarTablaArticulos();
-        
-        /*String RutaArt=getClass().getResource("/images/Mas.png").getPath();
-        Mostrar_Visualizador(btnNuevosArticulos, RutaArt);
-        String Ruta1=getClass().getResource("/images/actualizar.png").getPath();
-        Mostrar_Visualizador(btnActualizarArticulos, Ruta1);
-        String Ruta2=getClass().getResource("/images/Eliminar.png").getPath();
-        Mostrar_Visualizador(btnEliminarArticulos, Ruta2);
-        String Ruta3=getClass().getResource("/images/search.png").getPath();
-        Mostrar_Visualizador(btnBuscarArticulos, Ruta3);*/
+        if(conn == null) conn = mysql.getConnect();
+        if (LlenarTablaArticulos() != null) jtContenidosArticulos.setModel(LlenarTablaArticulos());
+        String rutaArt = getClass().getResource("/images/Mas.png").getPath();
+        MostrarVisualizador(btnNuevosArticulos, rutaArt);
+        rutaArt = getClass().getResource("/images/actualizar.png").getPath();
+        MostrarVisualizador(btnActualizarArticulos, rutaArt);
+        rutaArt = getClass().getResource("/images/Eliminar.png").getPath();
+        MostrarVisualizador(btnEliminarArticulos, rutaArt);
+        rutaArt = getClass().getResource("/images/search.png").getPath();
+        MostrarVisualizador(btnBuscarArticulos, rutaArt);
     }
     
-    
-
-    void LlenarTablaArticulos(){
+    public static DefaultTableModel LlenarTablaArticulos(){
         try{
             //String titulos[] = {"IdCategoria","Nombre","Descripcion","Editar","Eliminar"};
             String titulos[] = {"ID","CATEGORIA","NOMBRE","DESCRIPCION","IMAGEN UNO","IMAGEN DOS",
                 "IMAGEN TRES","SONIDO","VIDEO","IMAGEN QR"};
             //String SQL ="SELECT * FROM ingresos where CodigoParaiso Like '%"+txtBuscar.getText().toString().trim()+"%'AND ORDER BY Movimiento,Id,Fecha ASC"; 
             String SQLTA ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) ORDER BY a.IDARTICULO ASC"; 
-            model = new DefaultTableModel(null, titulos);
-            sent = conn.createStatement();
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQLTA);
             String[]fila=new String[10];
             while(rs.next()){
@@ -76,14 +73,12 @@ jifrNuevoQr internalNuevoQr;
                 fila[8] = rs.getString("VIDEOARTICULO");
                 fila[9] = rs.getString("IMAGENQRARTICULO");
                 model.addRow(fila);
-        
+            }
+            return model;
+        }catch(Exception e){
+            return null;
+        }
     }
-    jtContenidosArticulos.setModel(model);
-    }catch(Exception e){
-        
-    }
-    
-}
 
         
     void EliminarArticulos(){
@@ -110,15 +105,15 @@ jifrNuevoQr internalNuevoQr;
         idA=String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),0));
         categoria=String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),1));
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),4));
-        Mostrar_Visualizador(lblVistaPreviaImagen1, imagenes);
+        MostrarVisualizador(lblVistaPreviaImagen1, imagenes);
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),5));
-        if(!imagenes.isEmpty()) Mostrar_Visualizador(lblVistaPreviaImagen2, imagenes);
+        if(!imagenes.isEmpty()) MostrarVisualizador(lblVistaPreviaImagen2, imagenes);
         else lblVistaPreviaImagen2.setIcon(null);
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),6));
-        if(!imagenes.isEmpty()) Mostrar_Visualizador(lblVistaPreviaImagen3, imagenes);
+        if(!imagenes.isEmpty()) MostrarVisualizador(lblVistaPreviaImagen3, imagenes);
         else lblVistaPreviaImagen3.setIcon(null);
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),9));
-        if(!imagenes.isEmpty()) Mostrar_Visualizador(lblVistaPreviaImagen4, imagenes);
+        if(!imagenes.isEmpty()) MostrarVisualizador(lblVistaPreviaImagen4, imagenes);
         else lblVistaPreviaImagen4.setIcon(null);
     }
     
@@ -160,15 +155,14 @@ jifrNuevoQr internalNuevoQr;
             Principal.jdeskGaleria.add(internalFrameNuevoQr);
             internalFrameNuevoQr.setLocation(x, y);
             internalFrameNuevoQr.show();
-            
         }
     }
      
-     public static void Mostrar_Visualizador(JLabel Pantalla, String RutaDestino){
+    public static void MostrarVisualizador(JLabel Pantalla, String RutaDestino){
         try
         {
             Image capturarImgSoloLectura = ImageIO.read(new File(RutaDestino));
-            Image obtenerImagen = capturarImgSoloLectura.getScaledInstance(Pantalla.getWidth(),Pantalla.getHeight(), Image.SCALE_SMOOTH);
+            Image obtenerImagen = capturarImgSoloLectura.getScaledInstance(Pantalla.getPreferredSize().width, Pantalla.getPreferredSize().height - 10, Image.SCALE_SMOOTH);
             Icon iconoEscalado = new ImageIcon(obtenerImagen);
             Pantalla.setIcon(iconoEscalado);
         }
@@ -264,6 +258,22 @@ jifrNuevoQr internalNuevoQr;
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblVistaPreviaImagen1.setMaximumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen1.setMinimumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen1.setPreferredSize(new java.awt.Dimension(104, 140));
+
+        lblVistaPreviaImagen2.setMaximumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen2.setMinimumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen2.setPreferredSize(new java.awt.Dimension(104, 140));
+
+        lblVistaPreviaImagen3.setMaximumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen3.setMinimumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen3.setPreferredSize(new java.awt.Dimension(104, 140));
+
+        lblVistaPreviaImagen4.setMaximumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen4.setMinimumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen4.setPreferredSize(new java.awt.Dimension(104, 140));
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -281,7 +291,7 @@ jifrNuevoQr internalNuevoQr;
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE)
+            .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -346,14 +356,14 @@ jifrNuevoQr internalNuevoQr;
                                 .addGap(39, 39, 39)
                                 .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(36, 36, 36)
-                                .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(55, 55, 55)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(rbtnBuscarPorCategoria)
                                     .addComponent(rbtnBuscarPorNombre))
                                 .addGap(18, 18, 18)
                                 .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 428, Short.MAX_VALUE)
@@ -384,8 +394,8 @@ jifrNuevoQr internalNuevoQr;
                                 .addGap(3, 3, 3)))
                         .addComponent(rbtnBuscarPorNombre)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
@@ -410,7 +420,7 @@ jifrNuevoQr internalNuevoQr;
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 345, Short.MAX_VALUE)
+            .addGap(0, 436, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -475,7 +485,7 @@ jifrNuevoQr internalNuevoQr;
     private void btnNuevosArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevosArticulosMouseClicked
         // TODO add your handling code here:
         if(!(internalNuevoQr instanceof jifrNuevoQr)){
-            internalNuevoQr =new jifrNuevoQr();
+            internalNuevoQr = new jifrNuevoQr();
             isA.setAccionBoton("Guardar");
         //jifrNuevoQr nca = new jifrNuevoQr();
         //nca.show();
@@ -496,7 +506,7 @@ jifrNuevoQr internalNuevoQr;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlCategorias;
     private javax.swing.JLabel jlNuevaCategoria;
-    private javax.swing.JTable jtContenidosArticulos;
+    public static javax.swing.JTable jtContenidosArticulos;
     private javax.swing.JLabel lblVistaPreviaImagen1;
     private javax.swing.JLabel lblVistaPreviaImagen2;
     private javax.swing.JLabel lblVistaPreviaImagen3;
