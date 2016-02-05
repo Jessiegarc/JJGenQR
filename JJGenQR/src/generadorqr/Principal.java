@@ -1963,19 +1963,13 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_lblCerrarSesion4MouseClicked
 
     private void btnGestionCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionCategoriaMouseClicked
-        if(!(internalGestionCategoria instanceof jifrGestionCategoria)){
-            internalGestionCategoria =new jifrGestionCategoria();
-        }
+        internalGestionCategoria = new jifrGestionCategoria();
         centrarVentanaGestionCategoria(internalGestionCategoria);
-        
     }//GEN-LAST:event_btnGestionCategoriaMouseClicked
 
     private void btnGestionArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionArticulosMouseClicked
-         if(!(internalGestionArticulo instanceof jifrGestionArticulos)){
-            internalGestionArticulo =new jifrGestionArticulos();
-        }
+        internalGestionArticulo = new jifrGestionArticulos();
         centrarVentanaGestionArticulo(internalGestionArticulo);
-     
     }//GEN-LAST:event_btnGestionArticulosMouseClicked
 
     /**
