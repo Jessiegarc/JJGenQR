@@ -40,6 +40,8 @@ jifrNuevoQr internalNuevoQr;
         initComponents();
         if(conn == null) conn = mysql.getConnect();
         if (LlenarTablaArticulos() != null) jtContenidosArticulos.setModel(LlenarTablaArticulos());
+        btgSeleccion.add(rbtnBuscarPorCategoria);
+        btgSeleccion.add(rbtnBuscarPorNombre);
         String rutaArt = getClass().getResource("/images/Mas.png").getPath();
         MostrarVisualizador(btnNuevosArticulos, rutaArt);
         rutaArt = getClass().getResource("/images/actualizar.png").getPath();
@@ -79,24 +81,22 @@ jifrNuevoQr internalNuevoQr;
             return null;
         }
     }
-
-        
+  
     void EliminarArticulos(){
-        JOptionPane.showMessageDialog(null, "El artículo será eliminado");
         int fila = jtContenidosArticulos.getSelectedRow();
         try {
             String SQL = "DELETE FROM articulos WHERE IDARTICULO=" + idA;
             sent = conn.createStatement();
             int n = sent.executeUpdate(SQL);
             if (n > 0){
-                JOptionPane.showMessageDialog(null, "Artículo eliminado correctamente ");
+                JOptionPane.showMessageDialog(this, "Artículo eliminado correctamente ");
                 File directorioPrincipalArticulo = new File(ValoresConstantes.directorioPrincipal + "\\" + jtContenidosArticulos.getValueAt(fila, 2));
                 FileUtils.deleteDirectory(directorioPrincipalArticulo);
                 LlenarTablaArticulos();
             }
-            else JOptionPane.showMessageDialog(null, "Artículo no eliminado ");
+            else JOptionPane.showMessageDialog(this, "Artículo no eliminado ");
         }catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: Debe seleccionar un registro" );
+            JOptionPane.showMessageDialog(this, "Error: Debe seleccionar un registro" );
         }
     }
 
@@ -139,7 +139,6 @@ jifrNuevoQr internalNuevoQr;
                 fila[9] = rs.getString("IMAGENQRARTICULO");
                 model.addRow(fila);
             }
-
             jtContenidosArticulos.setModel(model);
         }catch(Exception e){
             JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
@@ -175,6 +174,7 @@ jifrNuevoQr internalNuevoQr;
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btgSeleccion = new javax.swing.ButtonGroup();
         jPanel5 = new javax.swing.JPanel();
         jlNuevaCategoria = new javax.swing.JLabel();
         jlCategorias = new javax.swing.JLabel();
@@ -297,7 +297,9 @@ jifrNuevoQr internalNuevoQr;
             .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        rbtnBuscarPorCategoria.setSelected(true);
         rbtnBuscarPorCategoria.setText("Categoría");
+        rbtnBuscarPorCategoria.setEnabled(false);
         rbtnBuscarPorCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbtnBuscarPorCategoriaActionPerformed(evt);
@@ -305,12 +307,14 @@ jifrNuevoQr internalNuevoQr;
         });
 
         rbtnBuscarPorNombre.setText("Nombre");
+        rbtnBuscarPorNombre.setEnabled(false);
         rbtnBuscarPorNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbtnBuscarPorNombreActionPerformed(evt);
             }
         });
 
+        txtBuscarArticulo.setEnabled(false);
         txtBuscarArticulo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtBuscarArticuloKeyPressed(evt);
@@ -439,8 +443,10 @@ jifrNuevoQr internalNuevoQr;
             isA.setAccionBoton("Actualizar");
             isA.setIdArticulo(idA);
             isA.setIdCategoria(categoria);
-            jifrNuevoQr frnu=new jifrNuevoQr();
-            frnu.show();
+            jtContenidosArticulos.setFocusable(false);
+            jtContenidosArticulos.clearSelection();
+            internalNuevoQr = new jifrNuevoQr();
+            centrarVentanaNuevoQr(internalNuevoQr);
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a modificar");
     }//GEN-LAST:event_btnActualizarArticulosMouseClicked
 
@@ -458,21 +464,17 @@ jifrNuevoQr internalNuevoQr;
 
     private void btnBuscarArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarArticulosMouseClicked
         // TODO add your handling code here:
-        rbtnBuscarPorCategoria.setVisible(true);
-        rbtnBuscarPorNombre.setVisible(true);
-        txtBuscarArticulo.setVisible(true);
+        rbtnBuscarPorCategoria.setEnabled(true);
+        rbtnBuscarPorNombre.setEnabled(true);
+        txtBuscarArticulo.setEnabled(true);
         txtBuscarArticulo.requestFocus();
     }//GEN-LAST:event_btnBuscarArticulosMouseClicked
 
     private void rbtnBuscarPorCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorCategoriaActionPerformed
-        // TODO add your handling code here:
-        //BuscarPorNombreCategoria();
         txtBuscarArticulo.setText("");
     }//GEN-LAST:event_rbtnBuscarPorCategoriaActionPerformed
 
     private void rbtnBuscarPorNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorNombreActionPerformed
-        // TODO add your handling code here:
-        rbtnBuscarPorCategoria.setSelected(false);
         txtBuscarArticulo.setText("");
     }//GEN-LAST:event_rbtnBuscarPorNombreActionPerformed
 
@@ -483,18 +485,14 @@ jifrNuevoQr internalNuevoQr;
     }//GEN-LAST:event_txtBuscarArticuloKeyPressed
 
     private void btnNuevosArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevosArticulosMouseClicked
-        // TODO add your handling code here:
-        if(!(internalNuevoQr instanceof jifrNuevoQr)){
-            internalNuevoQr = new jifrNuevoQr();
-            isA.setAccionBoton("Guardar");
-        //jifrNuevoQr nca = new jifrNuevoQr();
-        //nca.show();
-        }
+        isA.setAccionBoton("Guardar");
+        internalNuevoQr = new jifrNuevoQr();
         centrarVentanaNuevoQr(internalNuevoQr);
     }//GEN-LAST:event_btnNuevosArticulosMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup btgSeleccion;
     private javax.swing.JLabel btnActualizarArticulos;
     private javax.swing.JLabel btnBuscarArticulos;
     private javax.swing.JLabel btnEliminarArticulos;

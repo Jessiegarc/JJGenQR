@@ -22,12 +22,17 @@ public class jifrNuevaCategoria extends javax.swing.JInternalFrame {
 Connection conn;
 Statement sent;
 String accion;
-    
+ItemSeleccionado cs = new ItemSeleccionado();
+jifrGestionCategoria internalGestionCategoria;
 
     public jifrNuevaCategoria() {
         initComponents();
-      conn = mysql.getConnect();
+        txtNombreCategoria.requestFocus();
+        conn = mysql.getConnect();
         lblIdCategoria.setVisible(false);
+        lbllNuevaCategoria.setText("Nueva Categoria");
+        txtNombreCategoria.setText("");
+        txtDescripcionCategoria.setText("");
         accion=ItemSeleccionado.accionBoton;
         btnAceptar.setText(accion);
         try{
@@ -35,6 +40,7 @@ String accion;
             if(accion.contains("Actualizar")){
                 lbllNuevaCategoria.setText(accion + " Nueva Categoría");
                 lblIdCategoria.setText("ID de la Categoria: \t\t" + ItemSeleccionado.idCategoria);
+                lblIdCategoria.setVisible(true);
                 String SQLTC ="SELECT * FROM categorias WHERE IDCATEGORIA = " + ItemSeleccionado.idCategoria; 
                 sent = conn.createStatement();
                 ResultSet rs = sent.executeQuery(SQLTC);
@@ -48,15 +54,19 @@ String accion;
         }
     }
 
-    
+    void Limpiar(){
+        cs.setAccionBoton("");
+        cs.setIdCategoria("");
+    }
     
     void GuardarCategoria(){
         try {
             //Ingreso en nuevo usuario
             if(btnAceptar.getText().contains("Guardar")){
-                    if (txtNombreCategoria.getText().trim().isEmpty() || txtDescripcionCategoria.getText().trim().isEmpty() )                     JOptionPane.showMessageDialog(null, "Ingrese Los Campos Obligatorios");
-                    else{        
-                        try {
+                if (txtNombreCategoria.getText().trim().isEmpty() || txtDescripcionCategoria.getText().trim().isEmpty())
+                    JOptionPane.showMessageDialog(this, "Ingrese Los Campos Obligatorios");
+                else{        
+                    try {
                         String SQL = "INSERT INTO categorias(NOMBRECATEGORIA,DESCRIPCIONCATEGORIA)"
                                 + " VALUES(?,?)";
                         PreparedStatement ps = conn.prepareStatement(SQL);
@@ -64,39 +74,40 @@ String accion;
                         ps.setString(2, txtDescripcionCategoria.getText());
                         int n = ps.executeUpdate();
                         if (n > 0) {
-                                JOptionPane.showMessageDialog(null, "Categoria creada Correctamente");
-                                jifrGestionCategoria frcon=new jifrGestionCategoria();
-                                frcon.show();
-                                dispose();
-                            } 
-                      } catch (SQLException e) {
-                      JOptionPane.showConfirmDialog(null, "Error: " + e.getMessage());
-                      System.out.println();
-                      }
-                       } 
-                    }
-                    else{
-                        String SQL = "UPDATE categorias SET NOMBRECATEGORIA = ?, DESCRIPCIONCATEGORIA = ? WHERE IDCATEGORIA = " + ItemSeleccionado.idCategoria;
-                        PreparedStatement ps = conn.prepareStatement(SQL);
-                        ps.setString(1, txtNombreCategoria.getText());
-                        ps.setString(2, txtDescripcionCategoria.getText());
-                        int n = ps.executeUpdate();
-                        if (n > 0) {
-                            JOptionPane.showMessageDialog(null, "Categoria actualizada Correctamente");
+                            JOptionPane.showMessageDialog(this, "Categoria creada Correctamente");
+                            internalGestionCategoria = new jifrGestionCategoria();
+                            Principal.centrarVentanaGestionCA(internalGestionCategoria);
                             dispose();
-                            jifrGestionCategoria frc=new jifrGestionCategoria();
-                            frc.show();
-                        }
+                        } 
+                    } catch (SQLException e) {
+                        JOptionPane.showConfirmDialog(this, "Error: " + e.getMessage());
+                        System.out.println();
                     }
-                } catch (SQLException e) {
+                }
+            }
+            else{
+                if (txtNombreCategoria.getText().trim().isEmpty() || txtDescripcionCategoria.getText().trim().isEmpty())
+                    JOptionPane.showMessageDialog(this, "Ingrese Los Campos Obligatorios");
+                else{
+                    String SQL = "UPDATE categorias SET NOMBRECATEGORIA = ?, DESCRIPCIONCATEGORIA = ? WHERE IDCATEGORIA = " + ItemSeleccionado.idCategoria;
+                    PreparedStatement ps = conn.prepareStatement(SQL);
+                    ps.setString(1, txtNombreCategoria.getText());
+                    ps.setString(2, txtDescripcionCategoria.getText());
+                    int n = ps.executeUpdate();
+                    if (n > 0) {
+                        JOptionPane.showMessageDialog(this, "Categoria actualizada Correctamente");
+                        dispose();
+                        internalGestionCategoria = new jifrGestionCategoria();
+                        Principal.centrarVentanaGestionCA(internalGestionCategoria);
+                    }
+                }
+            }
+        } catch (SQLException e) {
             JOptionPane.showConfirmDialog(null, "Error: " + e.getMessage());
             //System.out.println();
         }
     }
-         
-       
-       
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -111,7 +122,6 @@ String accion;
         jlCamposObligatorios = new javax.swing.JLabel();
         btnCancelar = new javax.swing.JButton();
         btnAceptar = new javax.swing.JButton();
-        txtCerrar = new javax.swing.JButton();
         lblIdCategoria = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(2, 32, 62));
@@ -145,21 +155,15 @@ String accion;
         });
 
         btnAceptar.setBackground(new java.awt.Color(153, 204, 255));
-        btnAceptar.setText("Aceptar");
+        btnAceptar.setText("Guardar");
         btnAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAceptarActionPerformed(evt);
             }
         });
 
-        txtCerrar.setBackground(new java.awt.Color(2, 32, 62));
-        txtCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cerrar.png"))); // NOI18N
-        txtCerrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCerrarActionPerformed(evt);
-            }
-        });
-
+        lblIdCategoria.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblIdCategoria.setForeground(new java.awt.Color(255, 255, 255));
         lblIdCategoria.setText("lblIdCategoria");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -176,14 +180,11 @@ String accion;
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(91, 91, 91)
                 .addComponent(jlCamposObligatorios)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(101, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(80, 80, 80))
-                    .addComponent(txtCerrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(80, 80, 80))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,8 +206,7 @@ String accion;
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(txtCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(26, 26, 26)
                 .addComponent(lbllNuevaCategoria)
                 .addGap(3, 3, 3)
                 .addComponent(lblIdCategoria)
@@ -245,21 +245,14 @@ String accion;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        Limpiar();
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        // TODO add your handling code here:
         GuardarCategoria();
-        dispose();
+        Limpiar();
     }//GEN-LAST:event_btnAceptarActionPerformed
-
-    private void txtCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCerrarActionPerformed
-        // TODO add your handling code here:
-        dispose();
-    }//GEN-LAST:event_txtCerrarActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
@@ -271,7 +264,6 @@ String accion;
     private javax.swing.JLabel jlNombreCategoria;
     private javax.swing.JLabel lblIdCategoria;
     private javax.swing.JLabel lbllNuevaCategoria;
-    private javax.swing.JButton txtCerrar;
     private javax.swing.JTextArea txtDescripcionCategoria;
     private javax.swing.JTextField txtNombreCategoria;
     // End of variables declaration//GEN-END:variables

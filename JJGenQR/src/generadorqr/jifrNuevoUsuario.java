@@ -92,21 +92,6 @@ ItemSeleccionado is = new ItemSeleccionado();
     }
 
     void Limpiar(){
-        /*lblIdUsuario.setText("");
-        txtNombreUsuario.setText("");
-        txtApellidoUsuario.setText("");
-        jcbTipodeUsuario.setSelectedIndex(0);
-        txtCedula.setText("");
-        txtCorreo.setText("");
-        jcbEstadoUsuario.setSelectedIndex(0);
-        txtContraseñaUsuario.setText("");
-        txtRepetirContraseñaUsuario.setText("");
-        jlContraseña.setVisible(true);
-        jlContraseña1.setVisible(true);
-        txtContraseñaUsuario.setVisible(true);
-        txtRepetirContraseñaUsuario.setVisible(true);
-        lblNuevoUsuario.setText("Nuevo Usuario");
-        txtNombreUsuario.requestFocus();*/
         is.setAccionBoton("");
         is.setIdUsuario("");
         is.setRol("");

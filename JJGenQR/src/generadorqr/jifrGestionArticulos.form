@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.ButtonGroup" name="btgSeleccion">
+    </Component>
+  </NonVisualComponents>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
@@ -354,7 +358,9 @@
         </Container>
         <Component class="javax.swing.JRadioButton" name="rbtnBuscarPorCategoria">
           <Properties>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Categor&#xed;a"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbtnBuscarPorCategoriaActionPerformed"/>
@@ -363,12 +369,16 @@
         <Component class="javax.swing.JRadioButton" name="rbtnBuscarPorNombre">
           <Properties>
             <Property name="text" type="java.lang.String" value="Nombre"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbtnBuscarPorNombreActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtBuscarArticulo">
+          <Properties>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
           <Events>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBuscarArticuloKeyPressed"/>
           </Events>

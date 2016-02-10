@@ -68,7 +68,7 @@ jifrNuevaCategoria internalNuevaCategoria;
                 fila[0] = rs.getString("IDCATEGORIA");
                 fila[1] = rs.getString("NOMBRECATEGORIA");
                 fila[2] = rs.getString("DESCRIPCIONCATEGORIA");
-               model.addRow(fila);
+                model.addRow(fila);
             }
             return model;
         }catch(Exception e){
@@ -82,19 +82,18 @@ jifrNuevaCategoria internalNuevaCategoria;
     }
     
     void EliminarCategoria(){
-        JOptionPane.showMessageDialog(null, "La categoría sera eliminada");
         int fila = jtCategorias.getSelectedRow();
         try {
             String SQL = "DELETE FROM categorias WHERE IDCATEGORIA=" + jtCategorias.getValueAt(fila, 0);
             sent = conn.createStatement();
             int n = sent.executeUpdate(SQL);
             if (n > 0){
-                JOptionPane.showMessageDialog(null, "Categoria eliminada correctamente ");
-                LlenarTablaCategorias();
+                JOptionPane.showMessageDialog(this, "Categoria eliminada correctamente ");
+                jtCategorias.setModel(LlenarTablaCategorias());
             }
-            else JOptionPane.showMessageDialog(null, "Categoria no eliminado ");
+            else JOptionPane.showMessageDialog(this, "Categoria no eliminado ");
         }catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Error: Debe Seleccionar un registro " );
+            JOptionPane.showMessageDialog(this, "Error: Debe Seleccionar un registro " );
         }
     }
     
@@ -205,6 +204,7 @@ jifrNuevaCategoria internalNuevaCategoria;
             }
         });
 
+        txtBuscarContenidos.setEnabled(false);
         txtBuscarContenidos.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtBuscarContenidosKeyPressed(evt);
@@ -297,23 +297,26 @@ jifrNuevaCategoria internalNuevaCategoria;
         if(!idC.isEmpty()){
             isC.setAccionBoton("Actualizar");
             isC.setIdCategoria(idC);
-            //NuevasCategorias frnu=new NuevasCategorias();
-            //frnu.show();
+            jtCategorias.setFocusable(false);
+            jtCategorias.clearSelection();
+            internalNuevaCategoria = new jifrNuevaCategoria();
+            centrarVentanaNuevaCategoria(internalNuevaCategoria);
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado una categoria a modificar");
     }//GEN-LAST:event_btnActualizarCategoriaMouseClicked
 
     private void btnEliminarCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarCategoriaMouseClicked
-        Object [] opciones={"Aceptar","Cancelar"};
+        Object[] opciones={"Aceptar", "Cancelar"};
         if(!idC.isEmpty()){
-            int eleccion=JOptionPane.showOptionDialog(null,"Está seguro que desea eliminar","Eliminar",
+            int eleccion=JOptionPane.showOptionDialog(this, "Está seguro que desea eliminar", "Eliminar",
                 JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
+                JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
             if(eleccion==JOptionPane.YES_OPTION)  EliminarCategoria();
         } else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
     }//GEN-LAST:event_btnEliminarCategoriaMouseClicked
 
     private void btnBuscarCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarCategoriaMouseClicked
         txtBuscarContenidos.setEnabled(true);
+        txtBuscarContenidos.requestFocus();
     }//GEN-LAST:event_btnBuscarCategoriaMouseClicked
 
     private void txtBuscarContenidosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarContenidosKeyPressed
@@ -321,10 +324,8 @@ jifrNuevaCategoria internalNuevaCategoria;
     }//GEN-LAST:event_txtBuscarContenidosKeyPressed
 
     private void btnNuevaCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevaCategoriaMouseClicked
-        if(!(internalNuevaCategoria instanceof jifrNuevaCategoria)){
-            internalNuevaCategoria =new jifrNuevaCategoria();
-            isC.setAccionBoton("Guardar");
-        }
+        isC.setAccionBoton("Guardar");
+        internalNuevaCategoria =new jifrNuevaCategoria();
         centrarVentanaNuevaCategoria(internalNuevaCategoria);
     }//GEN-LAST:event_btnNuevaCategoriaMouseClicked
 

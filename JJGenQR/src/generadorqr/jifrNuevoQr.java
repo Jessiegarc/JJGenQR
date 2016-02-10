@@ -43,6 +43,8 @@ Connection conn;
 Statement sent;
 File fichero;
 int numeroAleatorioTitulo = 0, desde = 10000, hasta = 99999, idCategoria = 0, id = 0, idCat = 0;
+jifrGestionArticulos internalGestionArticulos;
+ItemSeleccionado as = new ItemSeleccionado();
 BufferedImage bufferedImage;
 DefaultComboBoxModel mdlC;
 Vector<Categorias> categorias;
@@ -60,11 +62,12 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         fechaActual = formatoFechaHora.format(fecha);
         //this.setLocationRelativeTo(null);
         conn = mysql.getConnect();
+        lblIdQR.setVisible(false);
         String SQLC="SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias";
         mdlC= new DefaultComboBoxModel(ConexionBase.leerDatosVector1(SQLC));
         categorias = ConexionBase.leerDatosVector1(SQLC);
         this.jcbCategoriasQR.setModel(mdlC);
-    lblIdQR.setVisible(false);
+        lblIdQR.setVisible(false);
         accion=ItemSeleccionado.accionBoton;
         btnGenerarNuevoQr.setText(accion);
         try{
@@ -104,7 +107,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         }
     }
     
-Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String nombre, Integer indice){
+    Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String nombre, Integer indice){
         File origen = new File(home);
         File destino = new File(destiny);
         try {
@@ -200,8 +203,8 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
                         if (n > 0) {
                             JOptionPane.showMessageDialog(null, "Nuevo Qr creado Correctamente");
                             dispose();
-                            jifrGestionArticulos frca=new jifrGestionArticulos();
-                            frca.show();
+                            internalGestionArticulos = new jifrGestionArticulos();
+                            Principal.centrarVentanaGestionCA(internalGestionArticulos);
                         }
                     } else JOptionPane.showMessageDialog(this, "Debe por lo menos agregar una imagen al reconocimiento QR");
                 } else {
@@ -266,8 +269,8 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
                         if (n > 0) {
                             JOptionPane.showMessageDialog(null, "Información del QR actualizada Correctamente");
                             dispose();
-                            jifrGestionArticulos frca=new jifrGestionArticulos();
-                            frca.show();
+                            internalGestionArticulos = new jifrGestionArticulos();
+                            Principal.centrarVentanaGestionCA(internalGestionArticulos);
                         }
                     }
                 }
@@ -282,7 +285,7 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
         try
         {
             Image capturarImgSoloLectura = ImageIO.read(new File(RutaDestino));
-            Image obtenerImagen = capturarImgSoloLectura.getScaledInstance(Pantalla.getWidth(),Pantalla.getHeight(), Image.SCALE_SMOOTH);
+            Image obtenerImagen = capturarImgSoloLectura.getScaledInstance(Pantalla.getPreferredSize().width, Pantalla.getPreferredSize().height, Image.SCALE_SMOOTH);
             Icon iconoEscalado = new ImageIcon(obtenerImagen);
             Pantalla.setIcon(iconoEscalado);
         }
@@ -360,6 +363,12 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
             lblImagenQR.setIcon(icon);
         }
     }
+    
+    void Limpiar(){
+        as.setAccionBoton("");
+        as.setIdArticulo("");
+        as.setIdCategoria("");
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -388,7 +397,6 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
         txtAreaDescripcionNuevoQr = new javax.swing.JTextArea();
         btnCancelarNuevoQr = new javax.swing.JButton();
         btnGenerarNuevoQr = new javax.swing.JButton();
-        btnCerrar = new javax.swing.JButton();
         btnImagen1 = new javax.swing.JLabel();
         btnImagen3 = new javax.swing.JLabel();
         btnImagen2 = new javax.swing.JLabel();
@@ -484,15 +492,11 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
             }
         });
 
-        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cerrar.png"))); // NOI18N
-        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCerrarActionPerformed(evt);
-            }
-        });
-
         btnImagen1.setForeground(new java.awt.Color(255, 255, 51));
         btnImagen1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImagen1.setMaximumSize(new java.awt.Dimension(72, 52));
+        btnImagen1.setMinimumSize(new java.awt.Dimension(72, 52));
+        btnImagen1.setPreferredSize(new java.awt.Dimension(72, 52));
         btnImagen1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnImagen1MouseClicked(evt);
@@ -501,6 +505,9 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
 
         btnImagen3.setForeground(new java.awt.Color(255, 255, 51));
         btnImagen3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImagen3.setMaximumSize(new java.awt.Dimension(72, 52));
+        btnImagen3.setMinimumSize(new java.awt.Dimension(72, 52));
+        btnImagen3.setPreferredSize(new java.awt.Dimension(72, 52));
         btnImagen3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnImagen3MouseClicked(evt);
@@ -509,6 +516,9 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
 
         btnImagen2.setForeground(new java.awt.Color(255, 255, 51));
         btnImagen2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImagen2.setMaximumSize(new java.awt.Dimension(72, 52));
+        btnImagen2.setMinimumSize(new java.awt.Dimension(72, 52));
+        btnImagen2.setPreferredSize(new java.awt.Dimension(72, 52));
         btnImagen2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnImagen2MouseClicked(evt);
@@ -516,6 +526,9 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
         });
 
         lblImagenQR.setBackground(new java.awt.Color(255, 255, 255));
+        lblImagenQR.setMaximumSize(new java.awt.Dimension(307, 395));
+        lblImagenQR.setMinimumSize(new java.awt.Dimension(307, 395));
+        lblImagenQR.setPreferredSize(new java.awt.Dimension(307, 395));
 
         lblIdQR.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
         lblIdQR.setForeground(new java.awt.Color(0, 153, 204));
@@ -529,16 +542,10 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnCancelarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(282, 282, 282))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(lblIdQR)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jlGenerarQr)
-                        .addGap(236, 236, 236)
-                        .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22))
+                        .addGap(314, 314, 314))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -559,9 +566,9 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
                                     .addComponent(txtNombreQr)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                         .addGap(10, 10, 10)
-                                        .addComponent(btnImagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnImagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                                        .addComponent(btnImagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnImagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(13, 13, 13))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jlNombreQr6)
@@ -576,22 +583,20 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                         .addComponent(lblImagenQR, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39))))
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(224, 224, 224)
-                    .addComponent(btnGenerarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(393, Short.MAX_VALUE)))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(225, 225, 225)
+                .addComponent(btnGenerarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancelarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnCerrar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jlGenerarQr)))
+                        .addContainerGap()
+                        .addComponent(jlGenerarQr)
                         .addGap(15, 15, 15))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(lblIdQR)
@@ -631,14 +636,11 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblImagenQR, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addComponent(btnCancelarNuevoQr)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                    .addContainerGap(458, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGenerarNuevoQr)
-                    .addContainerGap()))
+                    .addComponent(btnCancelarNuevoQr))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -649,9 +651,7 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -682,15 +682,13 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
 
     private void btnCancelarNuevoQrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarNuevoQrActionPerformed
         dispose();
+        Limpiar();
     }//GEN-LAST:event_btnCancelarNuevoQrActionPerformed
 
     private void btnGenerarNuevoQrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarNuevoQrActionPerformed
         GuardarQr();
+        Limpiar();
     }//GEN-LAST:event_btnGenerarNuevoQrActionPerformed
-
-    private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
-        dispose();
-    }//GEN-LAST:event_btnCerrarActionPerformed
 
     private void btnImagen1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImagen1MouseClicked
         CargarImagen(btnImagen1, 0);
@@ -711,16 +709,15 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAudioQr;
     private javax.swing.JButton btnCancelarNuevoQr;
-    private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnGenerarNuevoQr;
-    private javax.swing.JLabel btnImagen1;
-    private javax.swing.JLabel btnImagen2;
-    private javax.swing.JLabel btnImagen3;
+    public static javax.swing.JLabel btnImagen1;
+    public static javax.swing.JLabel btnImagen2;
+    public static javax.swing.JLabel btnImagen3;
     private javax.swing.JLabel btnVideoQr;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox jcbCategoriasQR;
-    private javax.swing.JLabel jlAudioQr;
+    public static javax.swing.JLabel jlAudioQr;
     private javax.swing.JLabel jlCategoriaQr;
     private javax.swing.JLabel jlGenerarQr;
     private javax.swing.JLabel jlImagen1;
@@ -728,7 +725,7 @@ Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String n
     private javax.swing.JLabel jlImagen3;
     private javax.swing.JLabel jlNombreQr;
     private javax.swing.JLabel jlNombreQr6;
-    private javax.swing.JLabel jlVideoQr;
+    public static javax.swing.JLabel jlVideoQr;
     private javax.swing.JLabel lblIdQR;
     private javax.swing.JLabel lblImagenQR;
     private javax.swing.JTextArea txtAreaDescripcionNuevoQr;

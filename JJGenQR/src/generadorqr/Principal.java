@@ -11,6 +11,7 @@ import java.sql.Statement;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,20 +28,21 @@ public class Principal extends javax.swing.JFrame {
     jifrGestionArticulos internalGestionArticulo;
     ItemSeleccionado is=new ItemSeleccionado();
     String id = "", rol = "", estado = "";
-    Integer buscar = 0;
+    Integer buscar = 0, x = 0, y = 0;
     
     public Principal() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
-        //tabMenu.setBackgroundAt(0,Color.BLACK);
+        btgSeleccion.add(rbtnActivo);
+        btgSeleccion.add(rbtnInactivo);
         if(con == null) con = mysql.getConnect();
         lblNuevo.setVisible(false);
-        lblUsuarioyRolPrincipal.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
-        lblUsuarioyRolUsuarios.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
-        lblUsuarioyRolGaleria.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
-        lblUsuarioyRolContactanos.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
-        lblUsuarioyRolAcerca.setText("Bienvenid@ " + UsuarioIngresado.parametroU+" tu rol es de " + UsuarioIngresado.parametroR);
+        lblUsuarioyRolPrincipal.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
+        lblUsuarioyRolUsuarios.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
+        lblUsuarioyRolGaleria.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
+        lblUsuarioyRolContactanos.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
+        lblUsuarioyRolAcerca.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         
         String Ruta=getClass().getResource("/images/Mas.png").getPath();
         Mostrar_Visualizador(btnNuevoUsuario, Ruta);
@@ -271,9 +273,9 @@ public class Principal extends javax.swing.JFrame {
         }
     }
     
-    public void centrarVentanaInternaTerminosPrincipal ( jifrTerminosyCondiciones internalFrame){
-        int x=(jdeskPrincipal.getWidth()/2)-internalFrame.getWidth()/2; 
-        int y=(jdeskPrincipal.getHeight()/2)-internalFrame.getHeight()/2;
+    public void centrarVentanaInterna (JInternalFrame internalFrame){
+        x = (jdeskPrincipal.getWidth() / 2) - internalFrame.getWidth() / 2; 
+        y = (jdeskPrincipal.getHeight() / 2) - internalFrame.getHeight() / 2;
         if(internalFrame.isShowing()){
             internalFrame.setLocation(x, y);
         }else{
@@ -282,151 +284,8 @@ public class Principal extends javax.swing.JFrame {
             internalFrame.show();
         }
     }
-    
-    
-    
-    public void centrarVentanaInternaPoliticasPrincipal ( jifrPoliticasdePrivacidad internalFrameP){
-        int x=(jdeskPrincipal.getWidth()/2)-internalFrameP.getWidth()/2; 
-        int y=(jdeskPrincipal.getHeight()/2)-internalFrameP.getHeight()/2;
-        if(internalFrameP.isShowing()){
-            internalFrameP.setLocation(x, y);
-        }else{
-            jdeskPrincipal.add(internalFrameP);
-            internalFrameP.setLocation(x, y);
-            internalFrameP.show();
-        }
-    }
-    
-    
-    public void centrarVentanaInternaTerminosUsuarios ( jifrTerminosyCondiciones internalFrame){
-        int x=(jdeskusuarios.getWidth()/2)-internalFrame.getWidth()/2; 
-        int y=(jdeskusuarios.getHeight()/2)-internalFrame.getHeight()/2;
-        if(internalFrame.isShowing()){
-            internalFrame.setLocation(x, y);
-        }else{
-            jdeskusuarios.add(internalFrame);
-            internalFrame.setLocation(x, y);
-            internalFrame.show();
-        }
-    }
-    
-    
-    
-    public void centrarVentanaInternaPoliticasUsuarios ( jifrPoliticasdePrivacidad internalFrameP){
-        int x=(jdeskusuarios.getWidth()/2)-internalFrameP.getWidth()/2; 
-        int y=(jdeskusuarios.getHeight()/2)-internalFrameP.getHeight()/2;
-        if(internalFrameP.isShowing()){
-            internalFrameP.setLocation(x, y);
-        }else{
-            jdeskusuarios.add(internalFrameP);
-            internalFrameP.setLocation(x, y);
-            internalFrameP.show();
-        }
-    }
-    
-    
-    public void centrarVentanaInternaTerminosGaleria ( jifrTerminosyCondiciones internalFrame){
-        int x=(jdeskGaleria.getWidth()/2)-internalFrame.getWidth()/2; 
-        int y=(jdeskGaleria.getHeight()/2)-internalFrame.getHeight()/2;
-        if(internalFrame.isShowing()){
-            internalFrame.setLocation(x, y);
-        }else{
-            jdeskGaleria.add(internalFrame);
-            internalFrame.setLocation(x, y);
-            internalFrame.show();
-        }
-    }
-    
-    
-    
-    public void centrarVentanaInternaPoliticasGaleria ( jifrPoliticasdePrivacidad internalFrameP){
-        int x=(jdeskGaleria.getWidth()/2)-internalFrameP.getWidth()/2; 
-        int y=(jdeskGaleria.getHeight()/2)-internalFrameP.getHeight()/2;
-        if(internalFrameP.isShowing()){
-            internalFrameP.setLocation(x, y);
-        }else{
-            jdeskGaleria.add(internalFrameP);
-            internalFrameP.setLocation(x, y);
-            internalFrameP.show();
-        }
-    }
-    
-     
-    public void centrarVentanaInternaTerminosContactanos ( jifrTerminosyCondiciones internalFrame){
-        int x=(jdeskContactanos.getWidth()/2)-internalFrame.getWidth()/2; 
-        int y=(jdeskContactanos.getHeight()/2)-internalFrame.getHeight()/2;
-        if(internalFrame.isShowing()){
-            internalFrame.setLocation(x, y);
-        }else{
-            jdeskContactanos.add(internalFrame);
-            internalFrame.setLocation(x, y);
-            internalFrame.show();
-        }
-    }
-    
-    
-    
-    public void centrarVentanaInternaPoliticasContactanos ( jifrPoliticasdePrivacidad internalFrameP){
-        int x=(jdeskContactanos.getWidth()/2)-internalFrameP.getWidth()/2; 
-        int y=(jdeskContactanos.getHeight()/2)-internalFrameP.getHeight()/2;
-        if(internalFrameP.isShowing()){
-            internalFrameP.setLocation(x, y);
-        }else{
-            jdeskContactanos.add(internalFrameP);
-            internalFrameP.setLocation(x, y);
-            internalFrameP.show();
-        }
-    }
-     
-    public void centrarVentanaInternaTerminosAcerca ( jifrTerminosyCondiciones internalFrame){
-        int x=(jdeskAcercade.getWidth()/2)-internalFrame.getWidth()/2; 
-        int y=(jdeskAcercade.getHeight()/2)-internalFrame.getHeight()/2;
-        if(internalFrame.isShowing()){
-            internalFrame.setLocation(x, y);
-        }else{
-            jdeskAcercade.add(internalFrame);
-            internalFrame.setLocation(x, y);
-            internalFrame.show();
-        }
-    }
-    
-    
-    
-    public void centrarVentanaInternaPoliticasAcerca ( jifrPoliticasdePrivacidad internalFrameP){
-        int x=(jdeskAcercade.getWidth()/2)-internalFrameP.getWidth()/2; 
-        int y=(jdeskAcercade.getHeight()/2)-internalFrameP.getHeight()/2;
-        if(internalFrameP.isShowing()){
-            internalFrameP.setLocation(x, y);
-        }else{
-            jdeskAcercade.add(internalFrameP);
-            internalFrameP.setLocation(x, y);
-            internalFrameP.show();
-        }
-    }
-    
-     public void centrarVentanaInternaNuevoUsuario ( jifrNuevoUsuario internalFrameNuevoU){
-        int x=(jdeskusuarios.getWidth()/2)-internalFrameNuevoU.getWidth()/2; 
-        int y=(jdeskusuarios.getHeight()/2)-internalFrameNuevoU.getHeight()/2;
-        if(internalFrameNuevoU.isShowing()){
-            internalFrameNuevoU.setLocation(x, y);
-        }else{
-            jdeskusuarios.add(internalFrameNuevoU);
-            internalFrameNuevoU.setLocation(x, y);
-            internalFrameNuevoU.show();
-        }
-    }
-    
-    public void centrarVentanaGestionCategoria ( jifrGestionCategoria internalFrame){
-        /*int x=(jdeskGaleria.getWidth()/2)-internalFrame.getWidth()/2; 
-        int y=(jdeskGaleria.getHeight()/2)-internalFrame.getHeight()/2;
         
-        if(internalFrame.isShowing()){
-            internalFrame.setLocation(x, y);
-        }else{
-            jdeskGaleria.add(internalFrame);
-            internalFrame.setLocation(x, y);       
-            internalFrame.show();
-        }*/
+    public static void centrarVentanaGestionCA (JInternalFrame internalFrame){
         jdeskGaleria.add(internalFrame);
         int width = jdeskGaleria.getWidth();
         int Height = jdeskGaleria.getHeight();
@@ -434,16 +293,7 @@ public class Principal extends javax.swing.JFrame {
         internalFrame.show();
     }
     
-    public void centrarVentanaGestionArticulo( jifrGestionArticulos internalFrame){
-        jdeskGaleria.add(internalFrame);
-        int width = jdeskGaleria.getWidth();
-        int Height = jdeskGaleria.getHeight();
-        internalFrame.setSize(width, Height);
-        internalFrame.show();
-    }
-    
-    
-     void SeleccionarItemTablaU(java.awt.event.MouseEvent evt){
+    void SeleccionarItemTablaU(java.awt.event.MouseEvent evt){
         DefaultTableModel modelo=(DefaultTableModel) jtUsuarios.getModel();
         id=String.valueOf(modelo.getValueAt(jtUsuarios.getSelectedRow(),0));
         rol=String.valueOf(modelo.getValueAt(jtUsuarios.getSelectedRow(),1));
@@ -451,12 +301,6 @@ public class Principal extends javax.swing.JFrame {
         lblNuevo.setText(id);
     }
     
-     
-     
-    private Principal(String principal) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public static void Mostrar_Visualizador(JLabel Pantalla, String RutaDestino){
         try
         {
@@ -469,7 +313,6 @@ public class Principal extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
     
     void cerrarSesion(){
         Object [] opciones={"Aceptar","Cancelar"};
@@ -487,6 +330,7 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btgSeleccion = new javax.swing.ButtonGroup();
         tabMenu = new javax.swing.JTabbedPane();
         jpPrincipal = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
@@ -1766,73 +1610,53 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void lblPoliticasdePrivacidadPrincipalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidadPrincipalMouseClicked
-       if(!(internalPoliticas instanceof jifrPoliticasdePrivacidad)){
-            internalPoliticas =new jifrPoliticasdePrivacidad();
-        }
-        centrarVentanaInternaPoliticasPrincipal(internalPoliticas);
+        internalPoliticas = new jifrPoliticasdePrivacidad();
+        centrarVentanaInterna(internalPoliticas);
     }//GEN-LAST:event_lblPoliticasdePrivacidadPrincipalMouseClicked
 
     private void lblTerminosyCondicionesPrincipalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondicionesPrincipalMouseClicked
-        if(!(internalTerminos instanceof jifrTerminosyCondiciones)){
-            internalTerminos =new jifrTerminosyCondiciones();
-        }
-        centrarVentanaInternaTerminosPrincipal(internalTerminos);
+        internalTerminos = new jifrTerminosyCondiciones();
+        centrarVentanaInterna(internalTerminos);
     }//GEN-LAST:event_lblTerminosyCondicionesPrincipalMouseClicked
 
     private void lblTerminosyCondicionesContactanosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondicionesContactanosMouseClicked
-        if(!(internalTerminos instanceof jifrTerminosyCondiciones)){
-            internalTerminos =new jifrTerminosyCondiciones();
-        }
-        centrarVentanaInternaTerminosContactanos(internalTerminos);
+        internalTerminos = new jifrTerminosyCondiciones();
+        centrarVentanaInterna(internalTerminos);
     }//GEN-LAST:event_lblTerminosyCondicionesContactanosMouseClicked
 
     private void lblPoliticasdePrivacidadContactanosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidadContactanosMouseClicked
-         if(!(internalPoliticas instanceof jifrPoliticasdePrivacidad)){
-            internalPoliticas =new jifrPoliticasdePrivacidad();
-        }
-        centrarVentanaInternaPoliticasContactanos(internalPoliticas);
+        internalPoliticas = new jifrPoliticasdePrivacidad();
+        centrarVentanaInterna(internalPoliticas);
     }//GEN-LAST:event_lblPoliticasdePrivacidadContactanosMouseClicked
 
     private void lblTerminosyCondicionesAcercaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondicionesAcercaMouseClicked
-         if(!(internalTerminos instanceof jifrTerminosyCondiciones)){
-            internalTerminos =new jifrTerminosyCondiciones();
-        }
-        centrarVentanaInternaTerminosAcerca(internalTerminos);
+        internalTerminos = new jifrTerminosyCondiciones();
+        centrarVentanaInterna(internalTerminos);
     }//GEN-LAST:event_lblTerminosyCondicionesAcercaMouseClicked
 
     private void lblPoliticasdePrivacidadacercaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidadacercaMouseClicked
-        if(!(internalPoliticas instanceof jifrPoliticasdePrivacidad)){
-            internalPoliticas =new jifrPoliticasdePrivacidad();
-        }
-        centrarVentanaInternaPoliticasAcerca(internalPoliticas);
+        internalPoliticas = new jifrPoliticasdePrivacidad();
+        centrarVentanaInterna(internalPoliticas);
     }//GEN-LAST:event_lblPoliticasdePrivacidadacercaMouseClicked
 
     private void lblTerminosyCondicionesUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondicionesUsuariosMouseClicked
-         if(!(internalTerminos instanceof jifrTerminosyCondiciones)){
-            internalTerminos =new jifrTerminosyCondiciones();
-        }
-        centrarVentanaInternaTerminosUsuarios(internalTerminos);
+        internalTerminos = new jifrTerminosyCondiciones();
+        centrarVentanaInterna(internalTerminos);
     }//GEN-LAST:event_lblTerminosyCondicionesUsuariosMouseClicked
 
     private void lblPoliticasdePrivacidadUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidadUsuariosMouseClicked
-        if(!(internalPoliticas instanceof jifrPoliticasdePrivacidad)){
-            internalPoliticas =new jifrPoliticasdePrivacidad();
-        }
-        centrarVentanaInternaPoliticasUsuarios(internalPoliticas);
+        internalPoliticas = new jifrPoliticasdePrivacidad();
+        centrarVentanaInterna(internalPoliticas);
     }//GEN-LAST:event_lblPoliticasdePrivacidadUsuariosMouseClicked
 
     private void lblTerminosyCondicionesGaleriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblTerminosyCondicionesGaleriaMouseClicked
-         if(!(internalTerminos instanceof jifrTerminosyCondiciones)){
-            internalTerminos =new jifrTerminosyCondiciones();
-        }
-        centrarVentanaInternaTerminosGaleria(internalTerminos);
+        internalTerminos = new jifrTerminosyCondiciones();
+        centrarVentanaInterna(internalTerminos);
     }//GEN-LAST:event_lblTerminosyCondicionesGaleriaMouseClicked
 
     private void lblPoliticasdePrivacidadGaleriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPoliticasdePrivacidadGaleriaMouseClicked
-        if(!(internalPoliticas instanceof jifrPoliticasdePrivacidad)){
-            internalPoliticas =new jifrPoliticasdePrivacidad();
-        }
-        centrarVentanaInternaPoliticasGaleria(internalPoliticas);
+        internalPoliticas = new jifrPoliticasdePrivacidad();
+        centrarVentanaInterna(internalPoliticas);
     }//GEN-LAST:event_lblPoliticasdePrivacidadGaleriaMouseClicked
 
     private void jtUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtUsuariosMouseClicked
@@ -1890,7 +1714,7 @@ public class Principal extends javax.swing.JFrame {
     private void btnNuevoUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoUsuarioMouseClicked
         is.setAccionBoton("Guardar");
         internalNuevoUsuario =new jifrNuevoUsuario();
-        centrarVentanaInternaNuevoUsuario(internalNuevoUsuario);
+        centrarVentanaInterna(internalNuevoUsuario);
     }//GEN-LAST:event_btnNuevoUsuarioMouseClicked
 
     private void btnEliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseClicked
@@ -1914,7 +1738,7 @@ public class Principal extends javax.swing.JFrame {
             jtUsuarios.setFocusable(false);
             jtUsuarios.clearSelection();
             internalNuevoUsuario = new jifrNuevoUsuario();
-            centrarVentanaInternaNuevoUsuario(internalNuevoUsuario);
+            centrarVentanaInterna(internalNuevoUsuario);
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a modificar");
     }//GEN-LAST:event_btnActualizarMouseClicked
 
@@ -1964,12 +1788,12 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnGestionCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionCategoriaMouseClicked
         internalGestionCategoria = new jifrGestionCategoria();
-        centrarVentanaGestionCategoria(internalGestionCategoria);
+        centrarVentanaGestionCA(internalGestionCategoria);
     }//GEN-LAST:event_btnGestionCategoriaMouseClicked
 
     private void btnGestionArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionArticulosMouseClicked
         internalGestionArticulo = new jifrGestionArticulos();
-        centrarVentanaGestionArticulo(internalGestionArticulo);
+        centrarVentanaGestionCA(internalGestionArticulo);
     }//GEN-LAST:event_btnGestionArticulosMouseClicked
 
     /**
@@ -1986,6 +1810,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup btgSeleccion;
     private javax.swing.JLabel btnActualizar;
     private javax.swing.JLabel btnBuscarUsuarios;
     private javax.swing.JLabel btnEliminar;
