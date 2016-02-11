@@ -114,7 +114,7 @@ public class Principal extends javax.swing.JFrame {
             int n = sent.executeUpdate(SQL);
             if (n > 0){
                 JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente ");
-                LlenarTablaUsuarios();
+                jtUsuarios.setModel(LlenarTablaUsuarios());
             }
             else JOptionPane.showMessageDialog(null, "Usuario no eliminado ");
         } catch (Exception e) {
@@ -1725,7 +1725,7 @@ public class Principal extends javax.swing.JFrame {
             int eleccion=JOptionPane.showOptionDialog(null,"Está seguro que desea eliminar","Eliminar",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
-            if(eleccion==JOptionPane.YES_OPTION)  Eliminar();
+            if(eleccion==JOptionPane.YES_OPTION) Eliminar();
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
 
     }//GEN-LAST:event_btnEliminarMouseClicked

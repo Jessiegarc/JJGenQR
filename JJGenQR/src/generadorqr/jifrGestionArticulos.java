@@ -92,7 +92,8 @@ jifrNuevoQr internalNuevoQr;
                 JOptionPane.showMessageDialog(this, "Artículo eliminado correctamente ");
                 File directorioPrincipalArticulo = new File(ValoresConstantes.directorioPrincipal + "\\" + jtContenidosArticulos.getValueAt(fila, 2));
                 FileUtils.deleteDirectory(directorioPrincipalArticulo);
-                LlenarTablaArticulos();
+                jifrGestionArticulos internalGA = new jifrGestionArticulos();
+                Principal.centrarVentanaGestionCA(internalGA);
             }
             else JOptionPane.showMessageDialog(this, "Artículo no eliminado ");
         }catch (Exception e) {
@@ -454,10 +455,10 @@ jifrNuevoQr internalNuevoQr;
         // TODO add your handling code here:
         Object [] opciones={"Aceptar","Cancelar"};
         if(!idA.isEmpty()){
-            int eleccion=JOptionPane.showOptionDialog(null,"Está seguro que desea eliminar","Eliminar",
+            int eleccion=JOptionPane.showOptionDialog(this, "Está seguro que desea eliminar", "Eliminar",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
-            if(eleccion==JOptionPane.YES_OPTION)  EliminarArticulos();
+            if(eleccion==JOptionPane.YES_OPTION) EliminarArticulos();
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
 
     }//GEN-LAST:event_btnEliminarArticulosMouseClicked

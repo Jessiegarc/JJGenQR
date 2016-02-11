@@ -17,6 +17,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 
 public class jifrGestionCategoria extends javax.swing.JInternalFrame {
@@ -89,7 +90,9 @@ jifrNuevaCategoria internalNuevaCategoria;
             int n = sent.executeUpdate(SQL);
             if (n > 0){
                 JOptionPane.showMessageDialog(this, "Categoria eliminada correctamente ");
-                jtCategorias.setModel(LlenarTablaCategorias());
+                jifrGestionCategoria internalGC = new jifrGestionCategoria();
+                Principal.centrarVentanaGestionCA(internalGC);
+                //jtCategorias.setModel(LlenarTablaCategorias());
             }
             else JOptionPane.showMessageDialog(this, "Categoria no eliminado ");
         }catch (Exception e) {
@@ -310,7 +313,7 @@ jifrNuevaCategoria internalNuevaCategoria;
             int eleccion=JOptionPane.showOptionDialog(this, "Está seguro que desea eliminar", "Eliminar",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
-            if(eleccion==JOptionPane.YES_OPTION)  EliminarCategoria();
+            if(eleccion==JOptionPane.YES_OPTION) EliminarCategoria();
         } else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
     }//GEN-LAST:event_btnEliminarCategoriaMouseClicked
 
