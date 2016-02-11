@@ -83,20 +83,21 @@ jifrNuevaCategoria internalNuevaCategoria;
     }
     
     void EliminarCategoria(){
-        int fila = jtCategorias.getSelectedRow();
         try {
-            String SQL = "DELETE FROM categorias WHERE IDCATEGORIA=" + jtCategorias.getValueAt(fila, 0);
-            sent = conn.createStatement();
-            int n = sent.executeUpdate(SQL);
-            if (n > 0){
-                JOptionPane.showMessageDialog(this, "Categoria eliminada correctamente ");
-                jifrGestionCategoria internalGC = new jifrGestionCategoria();
-                Principal.centrarVentanaGestionCA(internalGC);
-                //jtCategorias.setModel(LlenarTablaCategorias());
-            }
-            else JOptionPane.showMessageDialog(this, "Categoria no eliminado ");
+            if (!idC.equals("")) {
+                String SQL = "DELETE FROM categorias WHERE IDCATEGORIA = " + idC;
+                sent = conn.createStatement();
+                int n = sent.executeUpdate(SQL);
+                if (n > 0){
+                    JOptionPane.showMessageDialog(this, "Categoria eliminada correctamente ");
+                    jifrGestionCategoria internalGC = new jifrGestionCategoria();
+                    Principal.centrarVentanaGestionCA(internalGC);
+                    //jtCategorias.setModel(LlenarTablaCategorias());
+                }
+                else JOptionPane.showMessageDialog(this, "Categoria no eliminado ");
+            } else JOptionPane.showMessageDialog(this, "Error: Debe Seleccionar un registro " );
         }catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error: Debe Seleccionar un registro " );
+            JOptionPane.showMessageDialog(this, "Error: No puede eliminar una categoria que contenga articulos enlazados\nPreferible, modifique esta categoria para su conveniencia!" );
         }
     }
     
