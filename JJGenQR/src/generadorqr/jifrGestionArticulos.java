@@ -50,6 +50,8 @@ jifrNuevoQr internalNuevoQr;
         MostrarVisualizador(btnEliminarArticulos, rutaArt);
         rutaArt = getClass().getResource("/images/search.png").getPath();
         MostrarVisualizador(btnBuscarArticulos, rutaArt);
+        rutaArt = getClass().getResource("/images/imprimir.png").getPath();
+        MostrarVisualizador(btnImprimir, rutaArt);
     }
     
     public static DefaultTableModel LlenarTablaArticulos(){
@@ -190,6 +192,7 @@ jifrNuevoQr internalNuevoQr;
         lblVistaPreviaImagen2 = new javax.swing.JLabel();
         lblVistaPreviaImagen3 = new javax.swing.JLabel();
         lblVistaPreviaImagen4 = new javax.swing.JLabel();
+        btnImprimir = new javax.swing.JLabel();
         rbtnBuscarPorCategoria = new javax.swing.JRadioButton();
         rbtnBuscarPorNombre = new javax.swing.JRadioButton();
         txtBuscarArticulo = new javax.swing.JTextField();
@@ -275,6 +278,17 @@ jifrNuevoQr internalNuevoQr;
         lblVistaPreviaImagen4.setMinimumSize(new java.awt.Dimension(104, 140));
         lblVistaPreviaImagen4.setPreferredSize(new java.awt.Dimension(104, 140));
 
+        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
+        btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimir.setMaximumSize(new java.awt.Dimension(73, 56));
+        btnImprimir.setMinimumSize(new java.awt.Dimension(73, 56));
+        btnImprimir.setPreferredSize(new java.awt.Dimension(73, 56));
+        btnImprimir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnImprimirMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -288,14 +302,20 @@ jifrNuevoQr internalNuevoQr;
                 .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(274, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
+                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
             .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         rbtnBuscarPorCategoria.setSelected(true);
@@ -491,12 +511,28 @@ jifrNuevoQr internalNuevoQr;
         centrarVentanaNuevoQr(internalNuevoQr);
     }//GEN-LAST:event_btnNuevosArticulosMouseClicked
 
+    private void btnImprimirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirMouseClicked
+        // TODO add your handling code here:
+        Object [] opciones={"TODOS LOS QR","QR UNICO"};
+        int eleccion=JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
+        if(eleccion==JOptionPane.YES_OPTION){
+            
+        } else {
+            if(!idA.isEmpty()){
+                
+            }else JOptionPane.showMessageDialog(this, "Busque y Seleccione un registro para imprimir");
+        }
+    }//GEN-LAST:event_btnImprimirMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btgSeleccion;
     private javax.swing.JLabel btnActualizarArticulos;
     private javax.swing.JLabel btnBuscarArticulos;
     private javax.swing.JLabel btnEliminarArticulos;
+    private javax.swing.JLabel btnImprimir;
     private javax.swing.JLabel btnNuevosArticulos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
