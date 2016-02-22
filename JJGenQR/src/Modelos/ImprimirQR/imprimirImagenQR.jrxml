@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="imprimirImagenQR" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b302f5e6-1958-499b-a8fd-15759f660581">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\Niborson\\Desktop\\Utilidades\\PruebaReportes\\src\\pruebareportes\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[]]>
+	</queryString>
+	<field name="nombreArticulo" class="java.lang.String"/>
+	<field name="imagenQRArticulo" class="java.lang.Object"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="1" width="436" height="24" uuid="0ef1be12-5083-4fc0-a270-a8ea1b30c5f1"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Times New Roman" size="13" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Impresión de códigos QR de Articulos de Museo de la Escuela "Isidro Ayora"]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="467" y="1" width="49" height="24" uuid="3dd8f9ae-6f6b-467c-9a04-91cf826d3172"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="13" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pg. "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="516" y="1" width="38" height="24" uuid="196500fb-4d68-447f-be72-40d17a9100cf"/>
+				<textElement>
+					<font fontName="Times New Roman" size="13" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="139" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="139" uuid="37bae859-25fd-47e5-9a98-26084ec3b08c"/>
+			</rectangle>
+			<frame>
+				<reportElement x="1" y="0" width="555" height="139" uuid="28dae7a5-a0c4-44e5-9d61-ffe664b98694"/>
+				<image>
+					<reportElement x="0" y="1" width="553" height="137" uuid="5ce11451-9e7d-4032-b4ac-e272a2ca0d28"/>
+					<imageExpression><![CDATA["C:\\Users\\Niborson\\Desktop\\Utilidades\\PruebaReportes\\src\\Imagenes\\imagenFondo.jpg"]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement x="34" y="23" width="185" height="16" uuid="d02b17b8-e39b-4cf7-82e9-617b4a2eccbf"/>
+					<textElement textAlignment="Center">
+						<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[PARA MAYOR INFORMACIÓN]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="219" y="60" width="185" height="20" uuid="0fd0e65a-8c4c-4926-b99e-f2047f0396a9"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombreArticulo}]]></textFieldExpression>
+				</textField>
+				<image scaleImage="FillFrame">
+					<reportElement x="422" y="9" width="115" height="116" uuid="b32d3972-78fc-4bef-b44c-7ec62691eaab"/>
+					<imageExpression><![CDATA[$F{imagenQRArticulo}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement x="306" y="109" width="84" height="16" uuid="c64c4c18-fefc-4d81-80cd-6137787c01be"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font fontName="Times New Roman" size="11" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Powered By JJQR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="219" y="23" width="185" height="16" uuid="b4fdabd1-a6a1-437d-aee6-392090079cf8"/>
+					<textElement textAlignment="Center">
+						<font fontName="Times New Roman" size="12" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[ESCANEA ESTE CÓDIGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="34" y="63" width="185" height="16" uuid="75d43de7-a3d8-418f-9f1b-9acd522dc806"/>
+					<textElement textAlignment="Right">
+						<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[Nombre del articulo: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="5" y="118" width="142" height="16" uuid="2d6008f1-2026-49fe-827e-8ce184526719"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font fontName="Times New Roman" size="11" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[Museo Escuela "Isidro Ayora"]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="32" splitType="Stretch">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="370" y="12" width="120" height="20" uuid="a7fe5d8d-3dbc-41ef-9d14-cf2b714063ad"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="Times New Roman" size="11" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="226" y="13" width="136" height="19" uuid="5f3b4b89-6275-4abd-9718-8ec9a8e815c5"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Powered By JJQR - ]]></text>
+			</staticText>
+			<textField pattern="h.mm.ss a">
+				<reportElement x="490" y="12" width="63" height="20" uuid="3ef62286-6a98-471c-b02e-a3d6c5f03365"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Times New Roman" size="11" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

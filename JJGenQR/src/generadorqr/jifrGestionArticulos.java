@@ -173,6 +173,15 @@ jifrNuevoQr internalNuevoQr;
         }
     }
     
+    public void LimpiarTablaEImagenes(){
+        jtContenidosArticulos.setFocusable(false);
+        jtContenidosArticulos.clearSelection();
+        lblVistaPreviaImagen1.setIcon(null);
+        lblVistaPreviaImagen2.setIcon(null);
+        lblVistaPreviaImagen3.setIcon(null);
+        lblVistaPreviaImagen4.setIcon(null);
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -464,8 +473,7 @@ jifrNuevoQr internalNuevoQr;
             isA.setAccionBoton("Actualizar");
             isA.setIdArticulo(idA);
             isA.setIdCategoria(categoria);
-            jtContenidosArticulos.setFocusable(false);
-            jtContenidosArticulos.clearSelection();
+            LimpiarTablaEImagenes();
             internalNuevoQr = new jifrNuevoQr();
             centrarVentanaNuevoQr(internalNuevoQr);
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a modificar");
@@ -514,16 +522,20 @@ jifrNuevoQr internalNuevoQr;
     private void btnImprimirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirMouseClicked
         // TODO add your handling code here:
         Object [] opciones={"TODOS LOS QR","QR UNICO"};
-        int eleccion=JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
+        int eleccion = JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
         if(eleccion==JOptionPane.YES_OPTION){
-            
+            ItemSeleccionado.accionBoton = "ImprimirTotal";
         } else {
             if(!idA.isEmpty()){
-                
+                ItemSeleccionado.accionBoton = "ImprimirParcial";
+                isA.setIdArticulo(idA);
             }else JOptionPane.showMessageDialog(this, "Busque y Seleccione un registro para imprimir");
         }
+        LimpiarTablaEImagenes();
+        ImprimirQRs iqr = new ImprimirQRs();
+        iqr.setVisible(true);
     }//GEN-LAST:event_btnImprimirMouseClicked
 
 

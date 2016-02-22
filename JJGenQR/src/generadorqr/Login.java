@@ -293,7 +293,7 @@ int cont=0;
         //se asegura de capturar la tecla ENTER y descartar todas las demas
         char cTeclaPresionada=evt.getKeyChar();
         //Da click al boton aceptar al detectar la tecla ENTER
-        if(cTeclaPresionada==KeyEvent.VK_ENTER)            btnIngresar.doClick();
+        if(cTeclaPresionada==KeyEvent.VK_ENTER) btnIngresar.doClick();
     }//GEN-LAST:event_txtPasswordKeyTyped
 
     private void txtUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyTyped
