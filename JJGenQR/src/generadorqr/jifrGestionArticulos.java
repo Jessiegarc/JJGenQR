@@ -180,6 +180,7 @@ jifrNuevoQr internalNuevoQr;
         lblVistaPreviaImagen2.setIcon(null);
         lblVistaPreviaImagen3.setIcon(null);
         lblVistaPreviaImagen4.setIcon(null);
+        idA = "";
     }
     
     @SuppressWarnings("unchecked")
@@ -527,15 +528,17 @@ jifrNuevoQr internalNuevoQr;
                 JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
         if(eleccion==JOptionPane.YES_OPTION){
             ItemSeleccionado.accionBoton = "ImprimirTotal";
+            ImprimirQRs iqr = new ImprimirQRs();
+            iqr.setVisible(true);
         } else {
             if(!idA.isEmpty()){
                 ItemSeleccionado.accionBoton = "ImprimirParcial";
                 isA.setIdArticulo(idA);
+                ImprimirQRs iqr = new ImprimirQRs();
+                iqr.setVisible(true);
             }else JOptionPane.showMessageDialog(this, "Busque y Seleccione un registro para imprimir");
         }
         LimpiarTablaEImagenes();
-        ImprimirQRs iqr = new ImprimirQRs();
-        iqr.setVisible(true);
     }//GEN-LAST:event_btnImprimirMouseClicked
 
 

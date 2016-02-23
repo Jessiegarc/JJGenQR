@@ -65,7 +65,7 @@ public class InformacionImprimirQR {
             rs.close();
             return info;
 	} catch (SQLException ex) {
-		Logger.getLogger(InformacionImprimirQR.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InformacionImprimirQR.class.getName()).log(Level.SEVERE, null, ex);
 	}
 	return null;
     }
