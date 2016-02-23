@@ -7,6 +7,7 @@ package generadorqr;
 
 import Modelos.ItemSeleccionado;
 import Modelos.ValoresConstantes;
+import com.mysql.jdbc.StringUtils;
 import db.mysql;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -110,13 +111,13 @@ jifrNuevoQr internalNuevoQr;
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),4));
         MostrarVisualizador(lblVistaPreviaImagen1, imagenes);
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),5));
-        if(!imagenes.isEmpty()) MostrarVisualizador(lblVistaPreviaImagen2, imagenes);
+        if(!StringUtils.isNullOrEmpty(imagenes) && !imagenes.contains("null")) MostrarVisualizador(lblVistaPreviaImagen2, imagenes);
         else lblVistaPreviaImagen2.setIcon(null);
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),6));
-        if(!imagenes.isEmpty()) MostrarVisualizador(lblVistaPreviaImagen3, imagenes);
+        if(!StringUtils.isNullOrEmpty(imagenes) && !imagenes.contains("null")) MostrarVisualizador(lblVistaPreviaImagen3, imagenes);
         else lblVistaPreviaImagen3.setIcon(null);
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),9));
-        if(!imagenes.isEmpty()) MostrarVisualizador(lblVistaPreviaImagen4, imagenes);
+        if(!StringUtils.isNullOrEmpty(imagenes) && !imagenes.contains("null")) MostrarVisualizador(lblVistaPreviaImagen4, imagenes);
         else lblVistaPreviaImagen4.setIcon(null);
     }
     
@@ -522,15 +523,15 @@ jifrNuevoQr internalNuevoQr;
 
     private void btnImprimirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirMouseClicked
         // TODO add your handling code here:
-        Object [] opciones={"TODOS LOS QR","QR UNICO"};
+        Object [] opciones={"TODOS LOS QR", "QR UNICO", "CANCELAR"};
         int eleccion = JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
         if(eleccion==JOptionPane.YES_OPTION){
             ItemSeleccionado.accionBoton = "ImprimirTotal";
             ImprimirQRs iqr = new ImprimirQRs();
             iqr.setVisible(true);
-        } else {
+        } else if(eleccion == JOptionPane.NO_OPTION) {
             if(!idA.isEmpty()){
                 ItemSeleccionado.accionBoton = "ImprimirParcial";
                 isA.setIdArticulo(idA);
