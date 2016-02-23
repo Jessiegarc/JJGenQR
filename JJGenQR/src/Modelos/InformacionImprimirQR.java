@@ -37,7 +37,8 @@ public class InformacionImprimirQR {
                     consulta = new ModeloImprimirQR();
                     //agregamos la informacion a el objeto consulta
                     consulta.setNombreArticulo(rs.getObject("NOMBREARTICULO").toString());
-                    if(!rs.getString("IMAGENQRARTICULO").isEmpty()){
+                    String rutaImagen = rs.getString("IMAGENQRARTICULO");
+                    if(!rutaImagen.isEmpty() || rutaImagen == null){
                         //Image capturarImgSoloLectura = ImageIO.read(new File(rs.getString("IMAGENQRARTICULO")));
                         BufferedImage imagen = ImageIO.read(new File(rs.getString("IMAGENQRARTICULO")));
                         BufferedImage imagenARGB = convertToARGB(imagen);
