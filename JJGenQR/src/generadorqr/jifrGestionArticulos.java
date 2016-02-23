@@ -93,7 +93,7 @@ jifrNuevoQr internalNuevoQr;
             int n = sent.executeUpdate(SQL);
             if (n > 0){
                 JOptionPane.showMessageDialog(this, "Artículo eliminado correctamente ");
-                File directorioPrincipalArticulo = new File(ValoresConstantes.directorioPrincipal + "\\" + jtContenidosArticulos.getValueAt(fila, 2));
+                File directorioPrincipalArticulo = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + jtContenidosArticulos.getValueAt(fila, 2));
                 FileUtils.deleteDirectory(directorioPrincipalArticulo);
                 jifrGestionArticulos internalGA = new jifrGestionArticulos();
                 Principal.centrarVentanaGestionCA(internalGA);

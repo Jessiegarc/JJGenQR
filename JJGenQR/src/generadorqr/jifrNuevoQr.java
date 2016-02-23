@@ -665,19 +665,19 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         if(txtNombreQr.getText().length() != 0){
             GeneradorQR gQR = new GeneradorQR();
             codigoImagenQR = txtNombreQr.getText() + "-" + fechaActual + "/" + numeroAleatorioTitulo;
-            imagenQR = ValoresConstantes.directorioPrincipal + "\\" + txtNombreQr.getText().toString() + "\\QR.png";
+            imagenQR = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreQr.getText().toString() + "\\QR.png";
             setImagenQR(gQR.CrearQR(codigoImagenQR, 300));
         } else lblImagenQR.setIcon(null);
     }//GEN-LAST:event_txtNombreQrKeyReleased
 
     private void btnVideoQrMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVideoQrMouseClicked
         CargarVideo(jlVideoQr, 1);
-        video = ValoresConstantes.directorioPrincipal + "\\" + txtNombreQr.getText().toString() + "\\Multimedia";
+        video = ValoresConstantes.DIRECTORIO_PRINCIPAL+ "\\" + txtNombreQr.getText().toString() + "\\Multimedia";
     }//GEN-LAST:event_btnVideoQrMouseClicked
 
     private void btnAudioQrMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAudioQrMouseClicked
         CargarAudio(jlAudioQr, 0);
-        audio = ValoresConstantes.directorioPrincipal + "\\" + txtNombreQr.getText().toString() + "\\Multimedia";
+        audio = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreQr.getText().toString() + "\\Multimedia";
     }//GEN-LAST:event_btnAudioQrMouseClicked
 
     private void btnCancelarNuevoQrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarNuevoQrActionPerformed
@@ -692,17 +692,17 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
 
     private void btnImagen1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImagen1MouseClicked
         CargarImagen(btnImagen1, 0);
-        imagen[0] = ValoresConstantes.directorioPrincipal + "\\" + txtNombreQr.getText().toString();
+        imagen[0] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreQr.getText().toString();
     }//GEN-LAST:event_btnImagen1MouseClicked
 
     private void btnImagen3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImagen3MouseClicked
         CargarImagen(btnImagen3, 2);
-        imagen[2] = ValoresConstantes.directorioPrincipal + "\\" + txtNombreQr.getText().toString() + "\\Imagenes";
+        imagen[2] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreQr.getText().toString() + "\\Imagenes";
     }//GEN-LAST:event_btnImagen3MouseClicked
 
     private void btnImagen2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImagen2MouseClicked
         CargarImagen(btnImagen2, 1);
-        imagen[1] = ValoresConstantes.directorioPrincipal + "\\" + txtNombreQr.getText().toString() + "\\Imagenes";
+        imagen[1] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreQr.getText().toString() + "\\Imagenes";
     }//GEN-LAST:event_btnImagen2MouseClicked
 
 
