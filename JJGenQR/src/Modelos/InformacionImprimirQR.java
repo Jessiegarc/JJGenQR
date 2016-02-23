@@ -1,6 +1,6 @@
 package Modelos;
 
-import com.sun.istack.internal.NotNull;
+import com.mysql.jdbc.StringUtils;
 import db.mysql;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -38,8 +38,8 @@ public class InformacionImprimirQR {
                     consulta = new ModeloImprimirQR();
                     //agregamos la informacion a el objeto consulta
                     consulta.setNombreArticulo(rs.getObject("NOMBREARTICULO").toString());
-                    @NotNull String rutaImagen = rs.getString("IMAGENQRARTICULO");
-                    if(!rutaImagen.isEmpty() || rutaImagen != null){
+                    String rutaImagen = rs.getString("IMAGENQRARTICULO");
+                    if(!StringUtils.isNullOrEmpty(rutaImagen)) {
                         //Image capturarImgSoloLectura = ImageIO.read(new File(rs.getString("IMAGENQRARTICULO")));
                         BufferedImage imagen = ImageIO.read(new File(rs.getString("IMAGENQRARTICULO")));
                         BufferedImage imagenARGB = convertToARGB(imagen);
