@@ -3,9 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\Niborson\\Desktop\\Utilidades\\PruebaReportes\\src\\pruebareportes\\"]]></defaultValueExpression>
-	</parameter>
+	<parameter name="imagen" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
@@ -53,8 +51,8 @@
 			<frame>
 				<reportElement x="1" y="0" width="555" height="139" uuid="28dae7a5-a0c4-44e5-9d61-ffe664b98694"/>
 				<image>
-					<reportElement x="0" y="1" width="553" height="137" uuid="5ce11451-9e7d-4032-b4ac-e272a2ca0d28"/>
-					<imageExpression><![CDATA["C:\\Users\\Niborson\\Desktop\\Utilidades\\PruebaReportes\\src\\Imagenes\\imagenFondo.jpg"]]></imageExpression>
+					<reportElement x="0" y="1" width="553" height="137" uuid="3915875b-9ce8-4d2e-8c24-06802bd9b8d3"/>
+					<imageExpression><![CDATA[$P{imagen}]]></imageExpression>
 				</image>
 				<staticText>
 					<reportElement x="34" y="23" width="185" height="16" uuid="d02b17b8-e39b-4cf7-82e9-617b4a2eccbf"/>

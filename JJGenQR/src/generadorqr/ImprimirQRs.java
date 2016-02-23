@@ -4,7 +4,9 @@ import Modelos.InformacionImprimirQR;
 import Modelos.ItemSeleccionado;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -36,7 +38,9 @@ public class ImprimirQRs extends javax.swing.JFrame {
         { 
             JasperReport reporte;
             reporte = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirQR/imprimirImagenQR.jasper").getPath()));
-            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, null, new JRBeanCollectionDataSource(info));
+            Map parametros = new HashMap();
+            parametros.put("imagen", getClass().getResource("/images/imagenFondo.jpg").getPath());
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, new JRBeanCollectionDataSource(info));
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
             exporter.setParameter(JRExporterParameter.OUTPUT_FILE, new File(RUTA_TEMPORAL));
