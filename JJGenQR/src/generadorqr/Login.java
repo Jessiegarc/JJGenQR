@@ -3,17 +3,18 @@ package generadorqr;
 
 import Modelos.UsuarioIngresado;
 import Modelos.Validate;
-import java.sql.Connection;
+import Modelos.ValoresConstantes;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import javax.swing.JOptionPane;
 import java.awt.event.KeyEvent;
 import db.mysql;
-import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Statement;
-import javax.swing.JTabbedPane;
-import javax.swing.WindowConstants;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 
 public class Login extends javax.swing.JFrame {
@@ -28,6 +29,14 @@ Validate val=new Validate();
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
+        File directorioPrincipal = new File(ValoresConstantes.DIRECTORIO_HOST + "\\Proyectos_PHP");
+        File directorioDestino = new File(getClass().getResource("/conf").getPath());
+        File directorioHost = new File(ValoresConstantes.DIRECTORIO_HOST);
+        if(!directorioPrincipal.exists()) try {
+            FileUtils.copyDirectory(directorioDestino, directorioHost);
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
         conn = mysql.getConnect();
         txtUsuario.requestFocus();
          
