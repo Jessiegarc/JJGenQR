@@ -2,6 +2,7 @@ package generadorqr;
 
 import Modelos.InformacionImprimirQR;
 import Modelos.ItemSeleccionado;
+import Modelos.ValoresConstantes;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
 
 public class ImprimirQRs extends javax.swing.JFrame {
-    private static final String RUTA_TEMPORAL = System.getProperty("user.home") + "\\AppData\\Local\\JJQR_Data\\" + "temporal.pdf";
+    private static final String RUTA_TEMPORAL = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\temporal.pdf";
     SwingController controlador;
     InformacionImprimirQR iiqr = new InformacionImprimirQR();
     

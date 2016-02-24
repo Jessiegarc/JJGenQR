@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
-import static generadorqr.Principal.Mostrar_Visualizador;
 import java.awt.Image;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
