@@ -10,8 +10,8 @@ package Modelos;
  * @author Niborson
  */
 public class ValoresConstantes {
-    public static final String DIRECTORIO_PRINCIPAL = System.getProperty("user.home") + "\\AppData\\Local\\JJQR_Data";
-    public static final String DIRECTORIO_PRINCIPAL_ALTERNO = "C:\\xampp\\htdocs\\Proyectos_PHP";
-    public static final String DIRECTORIO_PRINCIPAL_ALTERNO_MULT = "C:\\xampp\\htdocs\\Proyectos_PHP\\JJQR_Data";
+    public static final String DIRECTORIO_PRINCIPAL_ALTERNO = System.getProperty("user.home") + "\\AppData\\Local\\JJQR_Data";
+    public static final String DIRECTORIO_PRINCIPAL = "C:\\xampp\\htdocs\\Proyectos_PHP\\JJQR_Data";
+    public static final String DIRECTORIO_HOST = "C:\\xampp\\htdocs";
    // public static final String patronEmail="";
 }
