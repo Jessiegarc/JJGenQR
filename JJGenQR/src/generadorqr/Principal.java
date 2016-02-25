@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
-public class Principal extends javax.swing.JFrame {
+public final class Principal extends javax.swing.JFrame {
     DefaultTableModel model;
     static Connection con;
     static Statement sent;
@@ -77,23 +77,24 @@ public class Principal extends javax.swing.JFrame {
         jcbBuscarPor.setVisible(false);
         jtUsuarios.setModel(LlenarTablaUsuarios());
         
-        contarTotalU();
+        lblTotalUsuarios.setText(contarTotalU());
     }
     
-    void contarTotalU(){
-        
+    public static String contarTotalU(){
+        String cont;
         try {
             String SQL ="SELECT COUNT(*) AS Total FROM usuarios";
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
-            while(rs.next()){
-            lblTotalUsuarios.setText(rs.getString("Total"));
-        }
+            rs.next();
+            cont = rs.getString("Total");
+            rs.close();
         
-           } catch (SQLException e) {
-            lblTotalUsuarios.setText("null");
-         }
-        }    
+        } catch (SQLException e) {
+            cont = "Sin conexión";
+        }
+        return cont;
+    }    
     
     public static DefaultTableModel LlenarTablaUsuarios(){
         try{
@@ -136,7 +137,7 @@ public class Principal extends javax.swing.JFrame {
             if (n > 0){
                 JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente ");
                 jtUsuarios.setModel(LlenarTablaUsuarios());
-                
+                lblTotalUsuarios.setText(contarTotalU());
             }
             else JOptionPane.showMessageDialog(null, "Usuario no eliminado ");
         } catch (Exception e) {
@@ -816,8 +817,10 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        jLabel39.setForeground(new java.awt.Color(255, 255, 255));
         jLabel39.setText("# USUARIOS : ");
 
+        lblTotalUsuarios.setForeground(new java.awt.Color(255, 255, 255));
         lblTotalUsuarios.setText("0");
         lblTotalUsuarios.setName("lblTotalUsuarios"); // NOI18N
 
@@ -900,13 +903,13 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(rbtnInactivo)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(65, 65, 65)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(45, 45, 45)
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel39)
                     .addComponent(lblTotalUsuarios))
-                .addGap(25, 25, 25)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1768,7 +1771,6 @@ public class Principal extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
             if(eleccion==JOptionPane.YES_OPTION) Eliminar();
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
-
     }//GEN-LAST:event_btnEliminarMouseClicked
 
     private void btnActualizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnActualizarMouseClicked
@@ -1949,7 +1951,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel lblTerminosyCondicionesGaleria;
     private javax.swing.JLabel lblTerminosyCondicionesPrincipal;
     private javax.swing.JLabel lblTerminosyCondicionesUsuarios;
-    public javax.swing.JLabel lblTotalUsuarios;
+    public static javax.swing.JLabel lblTotalUsuarios;
     private javax.swing.JLabel lblUsuarioyRolAcerca;
     private javax.swing.JLabel lblUsuarioyRolContactanos;
     private javax.swing.JLabel lblUsuarioyRolGaleria;
