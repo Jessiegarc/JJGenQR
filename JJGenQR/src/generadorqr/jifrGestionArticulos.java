@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.Image;
 import java.io.File;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -53,14 +54,28 @@ jifrNuevoQr internalNuevoQr;
         MostrarVisualizador(btnBuscarArticulos, rutaArt);
         rutaArt = getClass().getResource("/images/imprimir.png").getPath();
         MostrarVisualizador(btnImprimir, rutaArt);
+        contarTotalA();
+        lblEtiquetaPreviewImagenes.setVisible(false);
+        lblEtiquetaPreviewQr.setVisible(false);
     }
+    
+    void contarTotalA(){
+        try {
+            String SQL ="SELECT COUNT(*) AS Total FROM articulos";
+            sent = conn.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            while(rs.next()){
+            lblTotalArticulos.setText(rs.getString("Total"));
+        }
+           } catch (SQLException e) {
+            lblTotalArticulos.setText("null");
+         }
+        }  
     
     public static DefaultTableModel LlenarTablaArticulos(){
         try{
-            //String titulos[] = {"IdCategoria","Nombre","Descripcion","Editar","Eliminar"};
             String titulos[] = {"ID","CATEGORIA","NOMBRE","DESCRIPCION","IMAGEN UNO","IMAGEN DOS",
                 "IMAGEN TRES","SONIDO","VIDEO","IMAGEN QR"};
-            //String SQL ="SELECT * FROM ingresos where CodigoParaiso Like '%"+txtBuscar.getText().toString().trim()+"%'AND ORDER BY Movimiento,Id,Fecha ASC"; 
             String SQLTA ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) ORDER BY a.IDARTICULO ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = conn.createStatement();
@@ -119,6 +134,38 @@ jifrNuevoQr internalNuevoQr;
         imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),9));
         if(!StringUtils.isNullOrEmpty(imagenes) && !imagenes.contains("null")) MostrarVisualizador(lblVistaPreviaImagen4, imagenes);
         else lblVistaPreviaImagen4.setIcon(null);
+        lblEtiquetaPreviewImagenes.setVisible(true);
+        lblEtiquetaPreviewQr.setVisible(true);
+    }
+    
+    void BuscarPorCategoriaArticulo (){
+        try{
+            //Consulta para la fecha de inicio a fecha de final
+            String titulos[] = {"ID","CATEGORIA","NOMBRE","DESCRIPCION","IMAGEN UNO","IMAGEN DOS",
+                "IMAGEN TRES","SONIDO","VIDEO","IMAGEN QR"};
+            String SQL ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) WHERE c.NOMBRECATEGORIA Like '%"+txtBuscarArticulo.getText().toString().trim()+"%'ORDER BY c.NOMBRECATEGORIA ASC"; 
+          
+            model = new DefaultTableModel(null, titulos);
+            sent = conn.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[10];
+            while(rs.next()){
+                fila[0] = rs.getString("IDARTICULO");
+                fila[1] = rs.getString("NOMBREARTICULO");
+                fila[2] = rs.getString("DESCRIPCIONARTICULO");
+                fila[3] = rs.getString("IMAGENUNOARTICULO");
+                fila[4] = rs.getString("IMAGENDOSARTICULO");
+                fila[5] = rs.getString("IMAGENTRESARTICULO");
+                fila[6] = rs.getString("SONIDOARTICULO");
+                fila[7] = rs.getString("VIDEOARTICULO");
+                fila[8] = rs.getString("CODIGOQRARTICULO");
+                fila[9] = rs.getString("IMAGENQRARTICULO");
+                model.addRow(fila);
+            }
+            jtContenidosArticulos.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
     }
     
     void BuscarPorNombreArticulo (){
@@ -184,6 +231,8 @@ jifrNuevoQr internalNuevoQr;
         idA = "";
     }
     
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -197,18 +246,20 @@ jifrNuevoQr internalNuevoQr;
         btnActualizarArticulos = new javax.swing.JLabel();
         btnEliminarArticulos = new javax.swing.JLabel();
         btnBuscarArticulos = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         lblVistaPreviaImagen1 = new javax.swing.JLabel();
         lblVistaPreviaImagen2 = new javax.swing.JLabel();
         lblVistaPreviaImagen3 = new javax.swing.JLabel();
         lblVistaPreviaImagen4 = new javax.swing.JLabel();
         btnImprimir = new javax.swing.JLabel();
+        lblEtiquetaPreviewImagenes = new javax.swing.JLabel();
+        lblEtiquetaPreviewQr = new javax.swing.JLabel();
         rbtnBuscarPorCategoria = new javax.swing.JRadioButton();
         rbtnBuscarPorNombre = new javax.swing.JRadioButton();
         txtBuscarArticulo = new javax.swing.JTextField();
         btnNuevosArticulos = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        lblTotalArticulos = new javax.swing.JLabel();
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -269,8 +320,6 @@ jifrNuevoQr internalNuevoQr;
             }
         });
 
-        jLabel1.setText("Imagenes");
-
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
 
         lblVistaPreviaImagen1.setMaximumSize(new java.awt.Dimension(104, 140));
@@ -300,6 +349,10 @@ jifrNuevoQr internalNuevoQr;
             }
         });
 
+        lblEtiquetaPreviewImagenes.setText("Imagenes");
+
+        lblEtiquetaPreviewQr.setText("Qr");
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -307,25 +360,41 @@ jifrNuevoQr internalNuevoQr;
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(51, 51, 51)
                 .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addGap(49, 49, 49)
                 .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
                 .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
-                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(74, 74, 74)
+                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(192, 192, 192)
+                .addComponent(lblEtiquetaPreviewImagenes)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblEtiquetaPreviewQr)
+                .addGap(201, 201, 201))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
-            .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblEtiquetaPreviewQr)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addComponent(lblEtiquetaPreviewImagenes)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnImprimir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
 
@@ -361,7 +430,7 @@ jifrNuevoQr internalNuevoQr;
             }
         });
 
-        jLabel2.setText("Qr");
+        jLabel3.setText("# Articulos : ");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -373,32 +442,28 @@ jifrNuevoQr internalNuevoQr;
                         .addGap(372, 372, 372)
                         .addComponent(jlCategorias))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel1)
-                                .addGap(352, 352, 352)
-                                .addComponent(jLabel2))
-                            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(48, 48, 48)
+                        .addComponent(btnNuevosArticulos)
+                        .addGap(47, 47, 47)
+                        .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36)
+                        .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(55, 55, 55)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 641, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(btnNuevosArticulos)
-                                .addGap(47, 47, 47)
-                                .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(39, 39, 39)
-                                .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(36, 36, 36)
-                                .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(55, 55, 55)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(rbtnBuscarPorCategoria)
-                                    .addComponent(rbtnBuscarPorNombre))
-                                .addGap(18, 18, 18)
-                                .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(rbtnBuscarPorCategoria)
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel3)
+                                .addComponent(rbtnBuscarPorNombre)))
+                        .addGap(18, 18, 18)
+                        .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(78, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
@@ -411,14 +476,15 @@ jifrNuevoQr internalNuevoQr;
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jlCategorias)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnNuevosArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnNuevosArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -428,27 +494,30 @@ jifrNuevoQr internalNuevoQr;
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                                 .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(3, 3, 3)))
-                        .addComponent(rbtnBuscarPorNombre)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                        .addComponent(rbtnBuscarPorNombre)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addGap(0, 165, Short.MAX_VALUE)
+                    .addGap(0, 255, Short.MAX_VALUE)
                     .addComponent(jlNuevaCategoria)
-                    .addGap(0, 166, Short.MAX_VALUE)))
+                    .addGap(0, 256, Short.MAX_VALUE)))
         );
+
+        lblTotalArticulos.setText("0");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 888, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(801, Short.MAX_VALUE)
+                .addComponent(lblTotalArticulos)
+                .addGap(81, 81, 81))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -456,7 +525,10 @@ jifrNuevoQr internalNuevoQr;
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 436, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(144, 144, 144)
+                .addComponent(lblTotalArticulos)
+                .addContainerGap(379, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -512,6 +584,7 @@ jifrNuevoQr internalNuevoQr;
     private void txtBuscarArticuloKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarArticuloKeyPressed
         // TODO add your handling code here:
         if(rbtnBuscarPorNombre.isSelected()) BuscarPorNombreArticulo();
+        else BuscarPorCategoriaArticulo();
 
     }//GEN-LAST:event_txtBuscarArticuloKeyPressed
 
@@ -550,14 +623,16 @@ jifrNuevoQr internalNuevoQr;
     private javax.swing.JLabel btnEliminarArticulos;
     private javax.swing.JLabel btnImprimir;
     private javax.swing.JLabel btnNuevosArticulos;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlCategorias;
     private javax.swing.JLabel jlNuevaCategoria;
     public static javax.swing.JTable jtContenidosArticulos;
+    public javax.swing.JLabel lblEtiquetaPreviewImagenes;
+    public javax.swing.JLabel lblEtiquetaPreviewQr;
+    public javax.swing.JLabel lblTotalArticulos;
     private javax.swing.JLabel lblVistaPreviaImagen1;
     private javax.swing.JLabel lblVistaPreviaImagen2;
     private javax.swing.JLabel lblVistaPreviaImagen3;

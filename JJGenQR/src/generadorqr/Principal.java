@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -75,7 +76,24 @@ public class Principal extends javax.swing.JFrame {
         rbtnInactivo.setEnabled(false);
         jcbBuscarPor.setVisible(false);
         jtUsuarios.setModel(LlenarTablaUsuarios());
+        
+        contarTotalU();
     }
+    
+    void contarTotalU(){
+        
+        try {
+            String SQL ="SELECT COUNT(*) AS Total FROM usuarios";
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            while(rs.next()){
+            lblTotalUsuarios.setText(rs.getString("Total"));
+        }
+        
+           } catch (SQLException e) {
+            lblTotalUsuarios.setText("null");
+         }
+        }    
     
     public static DefaultTableModel LlenarTablaUsuarios(){
         try{
@@ -96,14 +114,17 @@ public class Principal extends javax.swing.JFrame {
                 fila[5] = rs.getString("CORREOUSUARIO");
                 fila[6] = rs.getString("ESTADOUSUARIO");
                 model.addRow(fila);
+                
             }
             rs.close();
             //jtUsuarios.removeAll();
             return model;
             //model.fireTableDataChanged();
+            
         }catch(Exception e){
             return null;
         }
+        
     }
     
     void Eliminar(){
@@ -115,6 +136,7 @@ public class Principal extends javax.swing.JFrame {
             if (n > 0){
                 JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente ");
                 jtUsuarios.setModel(LlenarTablaUsuarios());
+                
             }
             else JOptionPane.showMessageDialog(null, "Usuario no eliminado ");
         } catch (Exception e) {
@@ -369,6 +391,8 @@ public class Principal extends javax.swing.JFrame {
         txtBuscarPor = new javax.swing.JTextField();
         rbtnActivo = new javax.swing.JRadioButton();
         rbtnInactivo = new javax.swing.JRadioButton();
+        jLabel39 = new javax.swing.JLabel();
+        lblTotalUsuarios = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jdeskGaleria = new javax.swing.JDesktopPane();
         jPanel10 = new javax.swing.JPanel();
@@ -792,6 +816,11 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        jLabel39.setText("# USUARIOS : ");
+
+        lblTotalUsuarios.setText("0");
+        lblTotalUsuarios.setName("lblTotalUsuarios"); // NOI18N
+
         jdeskusuarios.setLayer(jPanel9, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(lblCerrarSesion1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -804,43 +833,51 @@ public class Principal extends javax.swing.JFrame {
         jdeskusuarios.setLayer(txtBuscarPor, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(rbtnActivo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(rbtnInactivo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(jLabel39, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(lblTotalUsuarios, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskusuariosLayout = new javax.swing.GroupLayout(jdeskusuarios);
         jdeskusuarios.setLayout(jdeskusuariosLayout);
         jdeskusuariosLayout.setHorizontalGroup(
             jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jdeskusuariosLayout.createSequentialGroup()
-                .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jdeskusuariosLayout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addComponent(btnNuevoUsuario)
-                        .addGap(29, 29, 29)
-                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(btnBuscarUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jdeskusuariosLayout.createSequentialGroup()
-                                .addComponent(jcbBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(rbtnActivo)
-                                .addGap(18, 18, 18)
-                                .addComponent(rbtnInactivo))))
-                    .addGroup(jdeskusuariosLayout.createSequentialGroup()
-                        .addGap(59, 59, 59)
-                        .addComponent(lblNuevo))
-                    .addGroup(jdeskusuariosLayout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 987, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskusuariosLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(lblCerrarSesion1)
                 .addGap(67, 67, 67))
+            .addGroup(jdeskusuariosLayout.createSequentialGroup()
+                .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jdeskusuariosLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel39)
+                        .addGap(127, 127, 127)
+                        .addComponent(lblTotalUsuarios))
+                    .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jdeskusuariosLayout.createSequentialGroup()
+                            .addGap(42, 42, 42)
+                            .addComponent(btnNuevoUsuario)
+                            .addGap(29, 29, 29)
+                            .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(36, 36, 36)
+                            .addComponent(btnBuscarUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(28, 28, 28)
+                            .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jdeskusuariosLayout.createSequentialGroup()
+                                    .addComponent(jcbBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(rbtnActivo)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(rbtnInactivo))))
+                        .addGroup(jdeskusuariosLayout.createSequentialGroup()
+                            .addGap(59, 59, 59)
+                            .addComponent(lblNuevo))
+                        .addGroup(jdeskusuariosLayout.createSequentialGroup()
+                            .addGap(33, 33, 33)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 987, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jdeskusuariosLayout.setVerticalGroup(
             jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -865,7 +902,11 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(txtBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(65, 65, 65)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel39)
+                    .addComponent(lblTotalUsuarios))
+                .addGap(25, 25, 25)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1086,7 +1127,7 @@ public class Principal extends javax.swing.JFrame {
         lblImgContactanosJJ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/nosotras.png"))); // NOI18N
 
         lblCerrarSesion3.setFont(new java.awt.Font("Sylfaen", 1, 14)); // NOI18N
-        lblCerrarSesion3.setForeground(new java.awt.Color(153, 0, 0));
+        lblCerrarSesion3.setForeground(new java.awt.Color(255, 0, 0));
         lblCerrarSesion3.setText("[Cerrar Sesión]");
         lblCerrarSesion3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblCerrarSesion3.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1235,19 +1276,18 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskContactanosLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblCerrarSesion3)
-                .addGap(176, 176, 176))
+                .addGap(71, 71, 71))
         );
         jdeskContactanosLayout.setVerticalGroup(
             jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskContactanosLayout.createSequentialGroup()
-                .addComponent(lblCerrarSesion3)
                 .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jdeskContactanosLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblImgContactanosJJ, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(81, 81, 81))
                     .addGroup(jdeskContactanosLayout.createSequentialGroup()
-                        .addGap(194, 194, 194)
+                        .addGap(213, 213, 213)
                         .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1269,6 +1309,7 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(244, 244, 244))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskContactanosLayout.createSequentialGroup()
+                        .addComponent(lblCerrarSesion3)
                         .addGap(200, 200, 200)
                         .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel17)
@@ -1790,6 +1831,7 @@ public class Principal extends javax.swing.JFrame {
     private void btnGestionCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionCategoriaMouseClicked
         internalGestionCategoria = new jifrGestionCategoria();
         centrarVentanaGestionCA(internalGestionCategoria);
+
     }//GEN-LAST:event_btnGestionCategoriaMouseClicked
 
     private void btnGestionArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionArticulosMouseClicked
@@ -1852,6 +1894,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
@@ -1895,7 +1938,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel lblCerrarSesion3;
     private javax.swing.JLabel lblCerrarSesion4;
     private javax.swing.JLabel lblImgContactanosJJ;
-    private javax.swing.JLabel lblNuevo;
+    public javax.swing.JLabel lblNuevo;
     private javax.swing.JLabel lblPoliticasdePrivacidadContactanos;
     private javax.swing.JLabel lblPoliticasdePrivacidadGaleria;
     private javax.swing.JLabel lblPoliticasdePrivacidadPrincipal;
@@ -1906,6 +1949,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel lblTerminosyCondicionesGaleria;
     private javax.swing.JLabel lblTerminosyCondicionesPrincipal;
     private javax.swing.JLabel lblTerminosyCondicionesUsuarios;
+    public javax.swing.JLabel lblTotalUsuarios;
     private javax.swing.JLabel lblUsuarioyRolAcerca;
     private javax.swing.JLabel lblUsuarioyRolContactanos;
     private javax.swing.JLabel lblUsuarioyRolGaleria;

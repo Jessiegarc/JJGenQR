@@ -7,6 +7,7 @@ package generadorqr;
 
 import Modelos.ItemSeleccionado;
 import db.mysql;
+import static generadorqr.Principal.sent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Image;
 import java.io.File;
+import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -42,8 +44,21 @@ jifrNuevaCategoria internalNuevaCategoria;
         MostrarVisualizador(btnEliminarCategoria, rutaCat);
         rutaCat = getClass().getResource("/images/search.png").getPath();
         MostrarVisualizador(btnBuscarCategoria, rutaCat);
+        contarTotalC();
     }
     
+    void contarTotalC(){
+        try {
+            String SQL ="SELECT COUNT(*) AS Total FROM categorias";
+            sent = conn.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            while(rs.next()){
+            lblTotalCategorias.setText(rs.getString("Total"));
+        }
+           } catch (SQLException e) {
+            lblTotalCategorias.setText("null");
+         }
+        }   
     
     public static void MostrarVisualizador(JLabel Pantalla, String RutaDestino){
         try{
@@ -59,7 +74,7 @@ jifrNuevaCategoria internalNuevaCategoria;
  
     public static DefaultTableModel LlenarTablaCategorias(){
         try{
-            String titulos[] = {"Id","Nombre","Descripcion"};
+            String titulos[] = {"ID","NOMBRE","DESCRIPCION"};
             String SQLTC ="SELECT * FROM categorias ORDER BY NOMBRECATEGORIA ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = conn.createStatement();
@@ -148,6 +163,9 @@ jifrNuevaCategoria internalNuevaCategoria;
         btnBuscarCategoria = new javax.swing.JLabel();
         txtBuscarContenidos = new javax.swing.JTextField();
         btnNuevaCategoria = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        lblTotalCategorias = new javax.swing.JLabel();
+        lblBuscarNombreCategoria = new javax.swing.JLabel();
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -223,30 +241,45 @@ jifrNuevaCategoria internalNuevaCategoria;
             }
         });
 
+        jLabel1.setText("# Categorias : ");
+
+        lblTotalCategorias.setText("0");
+
+        lblBuscarNombreCategoria.setText("Nombre");
+        lblBuscarNombreCategoria.setEnabled(false);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGap(317, 317, 317)
+                            .addComponent(jlCategorias))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                            .addGap(7, 7, 7)
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(98, 98, 98)
+                                    .addComponent(lblTotalCategorias))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
+                        .addGap(20, 20, 20)
                         .addComponent(btnNuevaCategoria)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnActualizarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(26, 26, 26)
                         .addComponent(btnEliminarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(30, 30, 30)
                         .addComponent(btnBuscarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(72, 72, 72)
+                        .addComponent(lblBuscarNombreCategoria)
                         .addGap(18, 18, 18)
-                        .addComponent(txtBuscarContenidos, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(372, 372, 372)
-                        .addComponent(jlCategorias))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 828, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(292, Short.MAX_VALUE))
+                        .addComponent(txtBuscarContenidos, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(328, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 549, Short.MAX_VALUE)
@@ -259,17 +292,22 @@ jifrNuevaCategoria internalNuevaCategoria;
                 .addGap(21, 21, 21)
                 .addComponent(jlCategorias)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnEliminarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnNuevaCategoria, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnActualizarCategoria, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtBuscarContenidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblBuscarNombreCategoria))
                     .addComponent(btnBuscarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(txtBuscarContenidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnNuevaCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnActualizarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnEliminarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(32, 32, 32)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lblTotalCategorias))
+                .addContainerGap(23, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -320,6 +358,7 @@ jifrNuevaCategoria internalNuevaCategoria;
 
     private void btnBuscarCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarCategoriaMouseClicked
         txtBuscarContenidos.setEnabled(true);
+        lblBuscarNombreCategoria.setEnabled(true);
         txtBuscarContenidos.requestFocus();
     }//GEN-LAST:event_btnBuscarCategoriaMouseClicked
 
@@ -339,11 +378,14 @@ jifrNuevaCategoria internalNuevaCategoria;
     private javax.swing.JLabel btnBuscarCategoria;
     private javax.swing.JLabel btnEliminarCategoria;
     private javax.swing.JLabel btnNuevaCategoria;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlCategorias;
     private javax.swing.JLabel jlNuevaCategoria;
     public static javax.swing.JTable jtCategorias;
+    private javax.swing.JLabel lblBuscarNombreCategoria;
+    public javax.swing.JLabel lblTotalCategorias;
     private javax.swing.JTextField txtBuscarContenidos;
     // End of variables declaration//GEN-END:variables
 }
