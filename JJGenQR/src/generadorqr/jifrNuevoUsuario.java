@@ -277,7 +277,7 @@ ItemSeleccionado is = new ItemSeleccionado();
             }
         });
 
-        jcbTipodeUsuario.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Seleccione opcion--", "Administrador/a", "Secretario/a", "Consultor/a", " ", " " }));
+        jcbTipodeUsuario.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Seleccione opcion--", "Administrador/a", "Secretario/a", "Consultor/a" }));
         jcbTipodeUsuario.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jcbTipodeUsuarioItemStateChanged(evt);
@@ -510,6 +510,7 @@ ItemSeleccionado is = new ItemSeleccionado();
 
     private void btnGuardarNuevoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarNuevoUsuarioActionPerformed
         Guardar();
+        Principal.lblTotalUsuarios.setText(Principal.contarTotalU());
         Limpiar();
         Principal.jtUsuarios.setModel(Principal.LlenarTablaUsuarios());
     }//GEN-LAST:event_btnGuardarNuevoUsuarioActionPerformed
