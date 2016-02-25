@@ -27,7 +27,7 @@ import org.apache.commons.io.FileUtils;
  *
  * @author Jess
  */
-public class jifrGestionArticulos extends javax.swing.JInternalFrame {
+public final class jifrGestionArticulos extends javax.swing.JInternalFrame {
 DefaultTableModel model;
 static Connection conn;
 static Statement sent;   
@@ -141,24 +141,22 @@ jifrNuevoQr internalNuevoQr;
     void BuscarPorCategoriaArticulo (){
         try{
             //Consulta para la fecha de inicio a fecha de final
-            String titulos[] = {"ID","CATEGORIA","NOMBRE","DESCRIPCION","IMAGEN UNO","IMAGEN DOS",
-                "IMAGEN TRES","SONIDO","VIDEO","IMAGEN QR"};
+            String titulos[] = {"ID","CATEGORIA","NOMBRE","DESCRIPCION","IMAGEN UNO","IMAGEN DOS","IMAGEN TRES","SONIDO","VIDEO","IMAGEN QR"};
             String SQL ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) WHERE c.NOMBRECATEGORIA Like '%"+txtBuscarArticulo.getText().toString().trim()+"%'ORDER BY c.NOMBRECATEGORIA ASC"; 
-          
             model = new DefaultTableModel(null, titulos);
             sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
             String[]fila=new String[10];
             while(rs.next()){
                 fila[0] = rs.getString("IDARTICULO");
-                fila[1] = rs.getString("NOMBREARTICULO");
-                fila[2] = rs.getString("DESCRIPCIONARTICULO");
-                fila[3] = rs.getString("IMAGENUNOARTICULO");
-                fila[4] = rs.getString("IMAGENDOSARTICULO");
-                fila[5] = rs.getString("IMAGENTRESARTICULO");
-                fila[6] = rs.getString("SONIDOARTICULO");
-                fila[7] = rs.getString("VIDEOARTICULO");
-                fila[8] = rs.getString("CODIGOQRARTICULO");
+                fila[1] = rs.getString("NOMBRECATEGORIA");
+                fila[2] = rs.getString("NOMBREARTICULO");
+                fila[3] = rs.getString("DESCRIPCIONARTICULO");
+                fila[4] = rs.getString("IMAGENUNOARTICULO");
+                fila[5] = rs.getString("IMAGENDOSARTICULO");
+                fila[6] = rs.getString("IMAGENTRESARTICULO");
+                fila[7] = rs.getString("SONIDOARTICULO");
+                fila[8] = rs.getString("VIDEOARTICULO");
                 fila[9] = rs.getString("IMAGENQRARTICULO");
                 model.addRow(fila);
             }
@@ -246,20 +244,19 @@ jifrNuevoQr internalNuevoQr;
         btnActualizarArticulos = new javax.swing.JLabel();
         btnEliminarArticulos = new javax.swing.JLabel();
         btnBuscarArticulos = new javax.swing.JLabel();
-        jPanel8 = new javax.swing.JPanel();
-        lblVistaPreviaImagen1 = new javax.swing.JLabel();
-        lblVistaPreviaImagen2 = new javax.swing.JLabel();
-        lblVistaPreviaImagen3 = new javax.swing.JLabel();
-        lblVistaPreviaImagen4 = new javax.swing.JLabel();
-        btnImprimir = new javax.swing.JLabel();
-        lblEtiquetaPreviewImagenes = new javax.swing.JLabel();
-        lblEtiquetaPreviewQr = new javax.swing.JLabel();
         rbtnBuscarPorCategoria = new javax.swing.JRadioButton();
         rbtnBuscarPorNombre = new javax.swing.JRadioButton();
         txtBuscarArticulo = new javax.swing.JTextField();
         btnNuevosArticulos = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        lblEtiquetaPreviewImagenes = new javax.swing.JLabel();
+        lblEtiquetaPreviewQr = new javax.swing.JLabel();
+        lblVistaPreviaImagen2 = new javax.swing.JLabel();
+        lblVistaPreviaImagen1 = new javax.swing.JLabel();
+        lblVistaPreviaImagen3 = new javax.swing.JLabel();
+        lblVistaPreviaImagen4 = new javax.swing.JLabel();
         lblTotalArticulos = new javax.swing.JLabel();
+        btnImprimir = new javax.swing.JLabel();
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -320,84 +317,6 @@ jifrNuevoQr internalNuevoQr;
             }
         });
 
-        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
-
-        lblVistaPreviaImagen1.setMaximumSize(new java.awt.Dimension(104, 140));
-        lblVistaPreviaImagen1.setMinimumSize(new java.awt.Dimension(104, 140));
-        lblVistaPreviaImagen1.setPreferredSize(new java.awt.Dimension(104, 140));
-
-        lblVistaPreviaImagen2.setMaximumSize(new java.awt.Dimension(104, 140));
-        lblVistaPreviaImagen2.setMinimumSize(new java.awt.Dimension(104, 140));
-        lblVistaPreviaImagen2.setPreferredSize(new java.awt.Dimension(104, 140));
-
-        lblVistaPreviaImagen3.setMaximumSize(new java.awt.Dimension(104, 140));
-        lblVistaPreviaImagen3.setMinimumSize(new java.awt.Dimension(104, 140));
-        lblVistaPreviaImagen3.setPreferredSize(new java.awt.Dimension(104, 140));
-
-        lblVistaPreviaImagen4.setMaximumSize(new java.awt.Dimension(104, 140));
-        lblVistaPreviaImagen4.setMinimumSize(new java.awt.Dimension(104, 140));
-        lblVistaPreviaImagen4.setPreferredSize(new java.awt.Dimension(104, 140));
-
-        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
-        btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImprimir.setMaximumSize(new java.awt.Dimension(73, 56));
-        btnImprimir.setMinimumSize(new java.awt.Dimension(73, 56));
-        btnImprimir.setPreferredSize(new java.awt.Dimension(73, 56));
-        btnImprimir.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnImprimirMouseClicked(evt);
-            }
-        });
-
-        lblEtiquetaPreviewImagenes.setText("Imagenes");
-
-        lblEtiquetaPreviewQr.setText("Qr");
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
-                .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
-                .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-                .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(74, 74, 74)
-                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(192, 192, 192)
-                .addComponent(lblEtiquetaPreviewImagenes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblEtiquetaPreviewQr)
-                .addGap(201, 201, 201))
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblEtiquetaPreviewQr)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                                .addComponent(lblEtiquetaPreviewImagenes)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnImprimir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap())
-        );
-
         rbtnBuscarPorCategoria.setSelected(true);
         rbtnBuscarPorCategoria.setText("Categoría");
         rbtnBuscarPorCategoria.setEnabled(false);
@@ -432,6 +351,39 @@ jifrNuevoQr internalNuevoQr;
 
         jLabel3.setText("# Articulos : ");
 
+        lblEtiquetaPreviewImagenes.setText("Imagenes");
+
+        lblEtiquetaPreviewQr.setText("Qr");
+
+        lblVistaPreviaImagen2.setMaximumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen2.setMinimumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen2.setPreferredSize(new java.awt.Dimension(104, 140));
+
+        lblVistaPreviaImagen1.setMaximumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen1.setMinimumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen1.setPreferredSize(new java.awt.Dimension(104, 140));
+
+        lblVistaPreviaImagen3.setMaximumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen3.setMinimumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen3.setPreferredSize(new java.awt.Dimension(104, 140));
+
+        lblVistaPreviaImagen4.setMaximumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen4.setMinimumSize(new java.awt.Dimension(104, 140));
+        lblVistaPreviaImagen4.setPreferredSize(new java.awt.Dimension(104, 140));
+
+        lblTotalArticulos.setText("0");
+
+        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
+        btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimir.setMaximumSize(new java.awt.Dimension(84, 81));
+        btnImprimir.setMinimumSize(new java.awt.Dimension(84, 81));
+        btnImprimir.setPreferredSize(new java.awt.Dimension(84, 81));
+        btnImprimir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnImprimirMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -450,30 +402,50 @@ jifrNuevoQr internalNuevoQr;
                         .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(36, 36, 36)
                         .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(55, 55, 55)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rbtnBuscarPorCategoria)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel3)
-                                .addComponent(rbtnBuscarPorNombre)))
                         .addGap(18, 18, 18)
-                        .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(rbtnBuscarPorCategoria)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(rbtnBuscarPorNombre))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblTotalArticulos))))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(78, Short.MAX_VALUE))
+                        .addGap(45, 45, 45)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(174, 174, 174)
+                                .addComponent(lblEtiquetaPreviewImagenes)
+                                .addGap(239, 239, 239)
+                                .addComponent(lblEtiquetaPreviewQr))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(103, 103, 103)
+                                .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(46, 46, 46)
+                                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addGap(0, 428, Short.MAX_VALUE)
+                    .addGap(0, 396, Short.MAX_VALUE)
                     .addComponent(jlNuevaCategoria)
-                    .addGap(0, 429, Short.MAX_VALUE)))
+                    .addGap(0, 396, Short.MAX_VALUE)))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jlCategorias)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -483,8 +455,7 @@ jifrNuevoQr internalNuevoQr;
                             .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnNuevosArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18))
+                            .addComponent(btnNuevosArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -495,12 +466,26 @@ jifrNuevoQr internalNuevoQr;
                                 .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(3, 3, 3)))
                         .addComponent(rbtnBuscarPorNombre)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(lblTotalArticulos))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEtiquetaPreviewImagenes)
+                    .addComponent(lblEtiquetaPreviewQr))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblVistaPreviaImagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                            .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnImprimir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(31, 31, 31))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 255, Short.MAX_VALUE)
@@ -508,38 +493,64 @@ jifrNuevoQr internalNuevoQr;
                     .addGap(0, 256, Short.MAX_VALUE)))
         );
 
-        lblTotalArticulos.setText("0");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(801, Short.MAX_VALUE)
-                .addComponent(lblTotalArticulos)
-                .addGap(81, 81, 81))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(144, 144, 144)
-                .addComponent(lblTotalArticulos)
-                .addContainerGap(379, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jtContenidosArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtContenidosArticulosMouseClicked
+    private void btnImprimirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirMouseClicked
         // TODO add your handling code here:
-        SeleccionarItemTablaCA(evt);
-    }//GEN-LAST:event_jtContenidosArticulosMouseClicked
+    }//GEN-LAST:event_btnImprimirMouseClicked
+
+    private void btnNuevosArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevosArticulosMouseClicked
+        isA.setAccionBoton("Guardar");
+        internalNuevoQr = new jifrNuevoQr();
+        centrarVentanaNuevoQr(internalNuevoQr);
+    }//GEN-LAST:event_btnNuevosArticulosMouseClicked
+
+    private void txtBuscarArticuloKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarArticuloKeyPressed
+        // TODO add your handling code here:
+        if(rbtnBuscarPorNombre.isSelected()) BuscarPorNombreArticulo();
+        else BuscarPorCategoriaArticulo();
+    }//GEN-LAST:event_txtBuscarArticuloKeyPressed
+
+    private void rbtnBuscarPorNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorNombreActionPerformed
+        txtBuscarArticulo.setText("");
+    }//GEN-LAST:event_rbtnBuscarPorNombreActionPerformed
+
+    private void rbtnBuscarPorCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorCategoriaActionPerformed
+        txtBuscarArticulo.setText("");
+    }//GEN-LAST:event_rbtnBuscarPorCategoriaActionPerformed
+
+    private void btnBuscarArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarArticulosMouseClicked
+        // TODO add your handling code here:
+        rbtnBuscarPorCategoria.setEnabled(true);
+        rbtnBuscarPorNombre.setEnabled(true);
+        txtBuscarArticulo.setEnabled(true);
+        txtBuscarArticulo.requestFocus();
+    }//GEN-LAST:event_btnBuscarArticulosMouseClicked
+
+    private void btnEliminarArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarArticulosMouseClicked
+        // TODO add your handling code here:
+        Object [] opciones={"Aceptar","Cancelar"};
+        if(!idA.isEmpty()){
+            int eleccion=JOptionPane.showOptionDialog(this, "Está seguro que desea eliminar", "Eliminar",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
+            if(eleccion==JOptionPane.YES_OPTION) EliminarArticulos();
+        }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
+    }//GEN-LAST:event_btnEliminarArticulosMouseClicked
 
     private void btnActualizarArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnActualizarArticulosMouseClicked
         // TODO add your handling code here:
@@ -553,67 +564,10 @@ jifrNuevoQr internalNuevoQr;
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a modificar");
     }//GEN-LAST:event_btnActualizarArticulosMouseClicked
 
-    private void btnEliminarArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarArticulosMouseClicked
+    private void jtContenidosArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtContenidosArticulosMouseClicked
         // TODO add your handling code here:
-        Object [] opciones={"Aceptar","Cancelar"};
-        if(!idA.isEmpty()){
-            int eleccion=JOptionPane.showOptionDialog(this, "Está seguro que desea eliminar", "Eliminar",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
-            if(eleccion==JOptionPane.YES_OPTION) EliminarArticulos();
-        }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
-
-    }//GEN-LAST:event_btnEliminarArticulosMouseClicked
-
-    private void btnBuscarArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarArticulosMouseClicked
-        // TODO add your handling code here:
-        rbtnBuscarPorCategoria.setEnabled(true);
-        rbtnBuscarPorNombre.setEnabled(true);
-        txtBuscarArticulo.setEnabled(true);
-        txtBuscarArticulo.requestFocus();
-    }//GEN-LAST:event_btnBuscarArticulosMouseClicked
-
-    private void rbtnBuscarPorCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorCategoriaActionPerformed
-        txtBuscarArticulo.setText("");
-    }//GEN-LAST:event_rbtnBuscarPorCategoriaActionPerformed
-
-    private void rbtnBuscarPorNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorNombreActionPerformed
-        txtBuscarArticulo.setText("");
-    }//GEN-LAST:event_rbtnBuscarPorNombreActionPerformed
-
-    private void txtBuscarArticuloKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarArticuloKeyPressed
-        // TODO add your handling code here:
-        if(rbtnBuscarPorNombre.isSelected()) BuscarPorNombreArticulo();
-        else BuscarPorCategoriaArticulo();
-
-    }//GEN-LAST:event_txtBuscarArticuloKeyPressed
-
-    private void btnNuevosArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevosArticulosMouseClicked
-        isA.setAccionBoton("Guardar");
-        internalNuevoQr = new jifrNuevoQr();
-        centrarVentanaNuevoQr(internalNuevoQr);
-    }//GEN-LAST:event_btnNuevosArticulosMouseClicked
-
-    private void btnImprimirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirMouseClicked
-        // TODO add your handling code here:
-        Object [] opciones={"TODOS LOS QR", "QR UNICO", "CANCELAR"};
-        int eleccion = JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
-        if(eleccion==JOptionPane.YES_OPTION){
-            ItemSeleccionado.accionBoton = "ImprimirTotal";
-            ImprimirQRs iqr = new ImprimirQRs();
-            iqr.setVisible(true);
-        } else if(eleccion == JOptionPane.NO_OPTION) {
-            if(!idA.isEmpty()){
-                ItemSeleccionado.accionBoton = "ImprimirParcial";
-                isA.setIdArticulo(idA);
-                ImprimirQRs iqr = new ImprimirQRs();
-                iqr.setVisible(true);
-            }else JOptionPane.showMessageDialog(this, "Busque y Seleccione un registro para imprimir");
-        }
-        LimpiarTablaEImagenes();
-    }//GEN-LAST:event_btnImprimirMouseClicked
+        SeleccionarItemTablaCA(evt);
+    }//GEN-LAST:event_jtContenidosArticulosMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -625,14 +579,13 @@ jifrNuevoQr internalNuevoQr;
     private javax.swing.JLabel btnNuevosArticulos;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlCategorias;
     private javax.swing.JLabel jlNuevaCategoria;
-    public static javax.swing.JTable jtContenidosArticulos;
-    public javax.swing.JLabel lblEtiquetaPreviewImagenes;
-    public javax.swing.JLabel lblEtiquetaPreviewQr;
-    public javax.swing.JLabel lblTotalArticulos;
+    private javax.swing.JTable jtContenidosArticulos;
+    private javax.swing.JLabel lblEtiquetaPreviewImagenes;
+    private javax.swing.JLabel lblEtiquetaPreviewQr;
+    private javax.swing.JLabel lblTotalArticulos;
     private javax.swing.JLabel lblVistaPreviaImagen1;
     private javax.swing.JLabel lblVistaPreviaImagen2;
     private javax.swing.JLabel lblVistaPreviaImagen3;
