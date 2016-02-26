@@ -33,6 +33,7 @@ jifrGestionCategoria internalGestionCategoria;
         lbllNuevaCategoria.setText("Nueva Categoria");
         txtNombreCategoria.setText("");
         txtDescripcionCategoria.setText("");
+        lblLimiteDescripcionCategoria.setVisible(false);
         accion=ItemSeleccionado.accionBoton;
         btnAceptar.setText(accion);
         try{
@@ -123,6 +124,7 @@ jifrGestionCategoria internalGestionCategoria;
         btnCancelar = new javax.swing.JButton();
         btnAceptar = new javax.swing.JButton();
         lblIdCategoria = new javax.swing.JLabel();
+        lblLimiteDescripcionCategoria = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(2, 32, 62));
 
@@ -139,7 +141,16 @@ jifrGestionCategoria internalGestionCategoria;
         jlDescripcionCategoria.setText("Descripcion");
 
         txtDescripcionCategoria.setColumns(20);
+        txtDescripcionCategoria.setLineWrap(true);
         txtDescripcionCategoria.setRows(5);
+        txtDescripcionCategoria.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtDescripcionCategoriaKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDescripcionCategoriaKeyTyped(evt);
+            }
+        });
         jScrollPane2.setViewportView(txtDescripcionCategoria);
 
         jlCamposObligatorios.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -165,6 +176,9 @@ jifrGestionCategoria internalGestionCategoria;
         lblIdCategoria.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblIdCategoria.setForeground(new java.awt.Color(255, 255, 255));
         lblIdCategoria.setText("lblIdCategoria");
+
+        lblLimiteDescripcionCategoria.setForeground(new java.awt.Color(255, 0, 0));
+        lblLimiteDescripcionCategoria.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -193,9 +207,15 @@ jifrGestionCategoria internalGestionCategoria;
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jlDescripcionCategoria)
-                            .addComponent(jlNombreCategoria)
-                            .addComponent(jScrollPane2))
+                            .addComponent(jScrollPane2)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jlNombreCategoria)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jlDescripcionCategoria)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(lblLimiteDescripcionCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap(25, javax.swing.GroupLayout.PREFERRED_SIZE))))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -215,7 +235,9 @@ jifrGestionCategoria internalGestionCategoria;
                     .addComponent(jlNombreCategoria)
                     .addComponent(txtNombreCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
-                .addComponent(jlDescripcionCategoria)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jlDescripcionCategoria)
+                    .addComponent(lblLimiteDescripcionCategoria))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -254,6 +276,20 @@ jifrGestionCategoria internalGestionCategoria;
         Limpiar();
     }//GEN-LAST:event_btnAceptarActionPerformed
 
+    private void txtDescripcionCategoriaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionCategoriaKeyReleased
+        if (txtDescripcionCategoria.getText().length()>2000){
+            lblLimiteDescripcionCategoria.setVisible(true);
+            lblLimiteDescripcionCategoria.setText("Límite Exedido");
+        }
+        else lblLimiteDescripcionCategoria.setVisible(false);
+    }//GEN-LAST:event_txtDescripcionCategoriaKeyReleased
+
+    private void txtDescripcionCategoriaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionCategoriaKeyTyped
+        char car=evt.getKeyChar();
+        int limite  = 2000;
+        if (txtDescripcionCategoria.getText().length()==limite) evt.consume();
+    }//GEN-LAST:event_txtDescripcionCategoriaKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCancelar;
@@ -263,6 +299,7 @@ jifrGestionCategoria internalGestionCategoria;
     private javax.swing.JLabel jlDescripcionCategoria;
     private javax.swing.JLabel jlNombreCategoria;
     private javax.swing.JLabel lblIdCategoria;
+    private javax.swing.JLabel lblLimiteDescripcionCategoria;
     private javax.swing.JLabel lbllNuevaCategoria;
     private javax.swing.JTextArea txtDescripcionCategoria;
     private javax.swing.JTextField txtNombreCategoria;

@@ -518,6 +518,7 @@ ItemSeleccionado is = new ItemSeleccionado();
         if((car<'0' || car>'9')) evt.consume();
         int limite  = 10;
         if (txtCedula.getText().length()==limite) evt.consume();
+        else lblCedulaSinGuion.setText("Cédula incorrecta");
     }//GEN-LAST:event_txtCedulaKeyTyped
 
     private void txtCedulaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCedulaKeyReleased

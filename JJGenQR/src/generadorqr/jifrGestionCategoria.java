@@ -120,7 +120,7 @@ jifrNuevaCategoria internalNuevaCategoria;
         try{
             String titulos[] = {"IDCATEGORIA", "NOMBRECATEGORIA","DESCRIPCIONCATEGORIA"};
             //Consulta para la fecha de inicio a fecha de final
-            String SQL = "SELECT *FROM categorias WHERE NOMBRECATEGORIA Like '%"+txtBuscarContenidos.getText().toString().trim()+"%'ORDER BY NOMBRECATEGORIA ASC";
+            String SQL = "SELECT *FROM categorias WHERE NOMBRECATEGORIA Like '"+txtBuscarContenidos.getText().toString().trim()+"%'ORDER BY NOMBRECATEGORIA ASC";
             model= new DefaultTableModel(null, titulos);
             sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
