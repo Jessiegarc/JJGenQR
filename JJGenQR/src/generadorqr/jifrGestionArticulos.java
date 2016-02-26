@@ -510,7 +510,23 @@ jifrNuevoQr internalNuevoQr;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnImprimirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirMouseClicked
-        // TODO add your handling code here:
+        Object [] opciones={"TODOS LOS QR", "QR UNICO", "CANCELAR"};
+        int eleccion = JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
+        if(eleccion==JOptionPane.YES_OPTION){
+            ItemSeleccionado.accionBoton = "ImprimirTotal";
+            ImprimirQRs iqr = new ImprimirQRs();
+            iqr.setVisible(true);
+        } else if(eleccion == JOptionPane.NO_OPTION) {
+            if(!idA.isEmpty()){
+                ItemSeleccionado.accionBoton = "ImprimirParcial";
+                isA.setIdArticulo(idA);
+                ImprimirQRs iqr = new ImprimirQRs();
+                iqr.setVisible(true);
+            }else JOptionPane.showMessageDialog(this, "Busque y Seleccione un registro para imprimir");
+        }
+        LimpiarTablaEImagenes();
     }//GEN-LAST:event_btnImprimirMouseClicked
 
     private void btnNuevosArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevosArticulosMouseClicked
