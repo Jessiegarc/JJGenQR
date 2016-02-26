@@ -40,7 +40,7 @@ jifrNuevaCategoria internalNuevaCategoria;
         MostrarVisualizador(btnNuevaCategoria, rutaCat);
         rutaCat = getClass().getResource("/images/actualizar.png").getPath();
         MostrarVisualizador(btnActualizarCategoria, rutaCat);
-        rutaCat = getClass().getResource("/images/Eliminar.png").getPath();
+        rutaCat = getClass().getResource("/images/Eliminar1.png").getPath();
         MostrarVisualizador(btnEliminarCategoria, rutaCat);
         rutaCat = getClass().getResource("/images/search.png").getPath();
         MostrarVisualizador(btnBuscarCategoria, rutaCat);
@@ -172,7 +172,7 @@ jifrNuevaCategoria internalNuevaCategoria;
         jlNuevaCategoria.setForeground(new java.awt.Color(255, 255, 255));
         jlNuevaCategoria.setText("Nuevo");
 
-        jlCategorias.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jlCategorias.setFont(new java.awt.Font("Nirmala UI", 1, 24)); // NOI18N
         jlCategorias.setText("Categorias");
 
         jtCategorias.setModel(new javax.swing.table.DefaultTableModel(
@@ -204,7 +204,7 @@ jifrNuevaCategoria internalNuevaCategoria;
             }
         });
 
-        btnEliminarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Eliminar.png"))); // NOI18N
+        btnEliminarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Eliminar1.png"))); // NOI18N
         btnEliminarCategoria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEliminarCategoria.setMaximumSize(new java.awt.Dimension(84, 81));
         btnEliminarCategoria.setMinimumSize(new java.awt.Dimension(84, 81));
@@ -228,8 +228,8 @@ jifrNuevaCategoria internalNuevaCategoria;
 
         txtBuscarContenidos.setEnabled(false);
         txtBuscarContenidos.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtBuscarContenidosKeyPressed(evt);
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarContenidosKeyReleased(evt);
             }
         });
 
@@ -245,6 +245,7 @@ jifrNuevaCategoria internalNuevaCategoria;
 
         lblTotalCategorias.setText("0");
 
+        lblBuscarNombreCategoria.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblBuscarNombreCategoria.setText("Nombre");
         lblBuscarNombreCategoria.setEnabled(false);
 
@@ -254,28 +255,25 @@ jifrNuevaCategoria internalNuevaCategoria;
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jlCategorias)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(98, 98, 98)
                         .addComponent(lblTotalCategorias))
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(317, 317, 317)
-                                .addComponent(jlCategorias))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addComponent(btnNuevaCategoria)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnActualizarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(26, 26, 26)
-                                .addComponent(btnEliminarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addComponent(btnBuscarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(72, 72, 72)
-                                .addComponent(lblBuscarNombreCategoria)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtBuscarContenidos, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGap(20, 20, 20)
+                            .addComponent(btnNuevaCategoria)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnActualizarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(26, 26, 26)
+                            .addComponent(btnEliminarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(30, 30, 30)
+                            .addComponent(btnBuscarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(72, 72, 72)
+                            .addComponent(lblBuscarNombreCategoria)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtBuscarContenidos, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel5Layout.createSequentialGroup()
                             .addGap(7, 7, 7)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -306,7 +304,7 @@ jifrNuevaCategoria internalNuevaCategoria;
                     .addComponent(lblTotalCategorias))
                 .addGap(7, 7, 7)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -361,15 +359,15 @@ jifrNuevaCategoria internalNuevaCategoria;
         txtBuscarContenidos.requestFocus();
     }//GEN-LAST:event_btnBuscarCategoriaMouseClicked
 
-    private void txtBuscarContenidosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarContenidosKeyPressed
-        BuscarPorNombreCategoria();
-    }//GEN-LAST:event_txtBuscarContenidosKeyPressed
-
     private void btnNuevaCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevaCategoriaMouseClicked
         isC.setAccionBoton("Guardar");
         internalNuevaCategoria =new jifrNuevaCategoria();
         centrarVentanaNuevaCategoria(internalNuevaCategoria);
     }//GEN-LAST:event_btnNuevaCategoriaMouseClicked
+
+    private void txtBuscarContenidosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarContenidosKeyReleased
+        BuscarPorNombreCategoria();
+    }//GEN-LAST:event_txtBuscarContenidosKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

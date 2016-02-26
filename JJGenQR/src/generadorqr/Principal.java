@@ -2,10 +2,12 @@ package generadorqr;
 
 import Modelos.ItemSeleccionado;
 import Modelos.UsuarioIngresado;
+import Modelos.ValoresConstantes;
 import db.mysql;
 import java.awt.Image;
 import java.io.File;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,16 +15,20 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import org.apache.commons.io.FileUtils;
 
 
 public final class Principal extends javax.swing.JFrame {
     DefaultTableModel model;
     static Connection con;
     static Statement sent;
+    File fichero;
     jifrTerminosyCondiciones internalTerminos;
     jifrPoliticasdePrivacidad internalPoliticas;
     jifrNuevoUsuario internalNuevoUsuario;
@@ -31,6 +37,9 @@ public final class Principal extends javax.swing.JFrame {
     ItemSeleccionado is=new ItemSeleccionado();
     String id = "", rol = "", estado = "";
     Integer buscar = 0, x = 0, y = 0;
+    String imagenQR = "", codigoImagenQR = "";
+    String[] imagen = {"", "", "","",""}, tempImagen = {"", "", "","",""}, tempNombreArchivo = {"", "", "","",""},tempNombreMultimedia = {""},tempRutaActual = {"", "", "", "", ""};
+
     
     public Principal() {
         initComponents();
@@ -46,11 +55,25 @@ public final class Principal extends javax.swing.JFrame {
         lblUsuarioyRolContactanos.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRolAcerca.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         
+        String img1=getClass().getResource("/images/imagen.jpg").getPath();
+        Mostrar_Visualizador(imgMuseo1, img1);
+        String img2=getClass().getResource("/images/imagen.jpg").getPath();
+        Mostrar_Visualizador(imgMuseo2, img2);
+        String img3=getClass().getResource("/images/imagen.jpg").getPath();
+        Mostrar_Visualizador(imgMuseo3, img3);
+        String img4=getClass().getResource("/images/imagen.jpg").getPath();
+        Mostrar_Visualizador(imgMuseo4,img4);       
+        String img5=getClass().getResource("/images/imagen.jpg").getPath();
+        Mostrar_Visualizador(imgMuseo5, img5);
+        String imgqr=getClass().getResource("/images/QR.png").getPath();
+        Mostrar_Visualizador(imgQrMuseo, imgqr);
+        
+        
         String Ruta=getClass().getResource("/images/Mas.png").getPath();
         Mostrar_Visualizador(btnNuevoUsuario, Ruta);
         String Ruta1=getClass().getResource("/images/actualizar.png").getPath();
         Mostrar_Visualizador(btnActualizar, Ruta1);
-        String Ruta2=getClass().getResource("/images/Eliminar.png").getPath();
+        String Ruta2=getClass().getResource("/images/Eliminar1.png").getPath();
         Mostrar_Visualizador(btnEliminar, Ruta2);
         String Ruta3=getClass().getResource("/images/search.png").getPath();
         Mostrar_Visualizador(btnBuscarUsuarios, Ruta3);
@@ -71,6 +94,8 @@ public final class Principal extends javax.swing.JFrame {
         Mostrar_Visualizador(lblImgContactanosJJ, rutaContactanosJJ);
         
         
+        
+        
         txtBuscarPor.setEnabled(false);
         rbtnActivo.setEnabled(false);
         rbtnInactivo.setEnabled(false);
@@ -78,7 +103,173 @@ public final class Principal extends javax.swing.JFrame {
         jtUsuarios.setModel(LlenarTablaUsuarios());
         
         lblTotalUsuarios.setText(contarTotalU());
+           
+            try {
+            String SQLTM ="SELECT * FROM museo WHERE IDMUSEO ='MUSEO ISIDRO AYORA'"; 
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTM);
+            while(rs.next()){
+            txtNombreMuseo.setText(rs.getString("NOMBREMUSEO"));
+            txtFechaFundacionMuseo.setText(rs.getString("FECHAFUNDACIONMUSEO"));
+            txtFundadorMuseo.setText(rs.getString("FUNDADORMUSEO"));
+            txtHistoriaMuseo.setText(rs.getString("HISTORIAMUSEO"));
+            tempRutaActual[0] = rs.getString("IMAGENUNOMUSEO");
+            tempRutaActual[1] = rs.getString("IMAGENDOSMUSEO");
+            tempRutaActual[2] = rs.getString("IMAGENTRESMUSEO");
+            tempRutaActual[3] = rs.getString("IMAGECUATRORESMUSEO");
+            tempRutaActual[4] = rs.getString("IMAGENCINCOMUSEO");
+            }
+                rs.close();
+                
+            } catch (SQLException e) {
+            //JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
+            }
+            
     }
+    
+    
+    void CargarImagen(JLabel label, Integer identificador){
+        int resultado;
+        // ventana = new CargarFoto();
+        JFileChooser jfchCargarfoto= new JFileChooser();
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("JPG", "jpg");
+        jfchCargarfoto.setFileFilter(filtro);
+        resultado= jfchCargarfoto.showOpenDialog(null);
+        if (JFileChooser.APPROVE_OPTION == resultado){
+            fichero = jfchCargarfoto.getSelectedFile();
+            try{
+                tempImagen[identificador] = fichero.getPath();
+                tempNombreArchivo[identificador] = fichero.getName();
+                ImageIcon icon = new ImageIcon(fichero.toString());
+                Icon icono = new ImageIcon(icon.getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_DEFAULT));
+                label.setText(null);
+                label.setIcon(icono);
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(null, "Error abriendo la imagen" + ex);
+            }
+        } 
+    }
+    
+    Boolean CopiaArchivos(String home, String destiny, String[] multimedia, String nombre, Integer indice){
+        File origen = new File(home);
+        File destino = new File(destiny);
+        try {
+            //Localisa la carpeta de origen y ubica la carpeta d destino
+            File rutaPrincipalImagenes = new File(multimedia[indice]);
+            if(!rutaPrincipalImagenes.exists()) rutaPrincipalImagenes.mkdir();
+            FileUtils.copyFileToDirectory(origen, destino, false);
+            File nombreOriginal = new File(destiny + "\\" + tempNombreArchivo[indice]);
+            File nombreModificado = new File(destiny + "\\" + nombre);
+            Boolean cambioNombre = nombreOriginal.renameTo(nombreModificado);
+            if(!cambioNombre){
+                JOptionPane.showMessageDialog(this, "El renombrado no se pudo realizar");
+                return false;
+            }
+        } catch (Exception e) {
+        }
+        return true;
+    }
+
+    
+    void EditarQr(){
+        
+        if(btnEditarMuseo.getText().contains("Editar")) {
+        btnEditarMuseo.setText("Guardar");
+        txtNombreMuseo.setEditable(true);
+        txtFechaFundacionMuseo.setEditable(true);
+        txtFundadorMuseo.setEditable(true);
+        txtHistoriaMuseo.setEditable(true);
+        imgMuseo1.setEnabled(true);
+        imgMuseo2.setEnabled(true);
+        imgMuseo3.setEnabled(true);
+        imgMuseo4.setEnabled(true);
+        imgMuseo5.setEnabled(true);
+        txtNombreMuseo.requestFocus();
+        }
+        
+        else {
+            
+        if (txtNombreMuseo.getText().trim().isEmpty() || txtFundadorMuseo.getText().trim().isEmpty()
+                || txtFechaFundacionMuseo.getText().trim().isEmpty()|| txtHistoriaMuseo.getText().trim().isEmpty())
+            JOptionPane.showMessageDialog(null, "Ingrese Los Campos Obligatorios");
+        else{  
+                              
+            try {       
+                //Actualizar usuario
+                    imagen[0] += "\\Imagenes";
+                    if(tempImagen[0].isEmpty()) imagen[0] = tempRutaActual[0];
+                    else {
+                        File borrarImagenAntigua = new File(tempRutaActual[0]);
+                        borrarImagenAntigua.delete();
+                        if(CopiaArchivos(tempImagen[0], imagen[0], imagen, "Imagen1.jpg", 0)) imagen[0] += "\\Imagen1.jpg";
+                        else return;
+                    }
+                    if(tempImagen[1].isEmpty()) imagen[1] = tempRutaActual[1];
+                    else {
+                        File borrarImagenAntigua = new File(tempRutaActual[1]);
+                        borrarImagenAntigua.delete();
+                        if(CopiaArchivos(tempImagen[1], imagen[1], imagen, "Imagen2.jpg", 1)) imagen[1] += "\\Imagen2.jpg";
+                        else return;
+                    }
+                    if(tempImagen[2].isEmpty()) imagen[2] = tempRutaActual[2];
+                    else {
+                        File borrarImagenAntigua = new File(tempRutaActual[2]);
+                        borrarImagenAntigua.delete();
+                        if(CopiaArchivos(tempImagen[2], imagen[2], imagen, "Imagen3.jpg", 2)) imagen[2] += "\\Imagen3.jpg";
+                        else return;
+                    }
+                    if(tempImagen[3].isEmpty()) imagen[3] = tempRutaActual[3];
+                    else {
+                        File borrarImagenAntigua = new File(tempRutaActual[3]);
+                        borrarImagenAntigua.delete();
+                        if(CopiaArchivos(tempImagen[3], imagen[3], imagen, "Imagen4.jpg", 2)) imagen[3] += "\\Imagen4.jpg";
+                        else return;
+                    }
+                    if(tempImagen[4].isEmpty()) imagen[4] = tempRutaActual[4];
+                    else {
+                        File borrarImagenAntigua = new File(tempRutaActual[4]);
+                        borrarImagenAntigua.delete();
+                        if(CopiaArchivos(tempImagen[4], imagen[4], imagen, "Imagen5.jpg", 2)) imagen[4] += "\\Imagen5.jpg";
+                        else return;
+                    }
+                    
+                       String SQL = "UPDATE museo SET NOMBREMUSEO = ?, FECHAFUNDACIONMUSEO = ?, FUNDADORMUSEO = ?, HISTORIAMUSEO = ?, "
+                            + "IMAGENUNOMUSEO = ?, IMAGENDOSMUSEO = ?, IMAGENTRESMUSEO = ?, IMAGENCUATROMUSEO = ?,IMAGENCINCOMUSEO = ?, "
+                               + " WHERE IDMUSEO ='MUSEO ISIDRO AYORA'";
+                        PreparedStatement ps = con.prepareStatement(SQL);
+                        ps.setString(1, txtNombreMuseo.getText());
+                        ps.setString(2, txtFechaFundacionMuseo.getText());
+                        ps.setString(3, txtFundadorMuseo.getText());
+                        ps.setString(4, txtHistoriaMuseo.getText());
+                        ps.setString(5, imagen[0]);
+                        ps.setString(6, imagen[1]);
+                        ps.setString(7, imagen[2]);
+                        ps.setString(8, imagen[3]);
+                        ps.setString(9, imagen[4]);
+                        int n = ps.executeUpdate();
+                        if (n > 0) {
+                            JOptionPane.showMessageDialog(null, "Información actualizada Correctamente");
+                            btnEditarMuseo.setText("Editar");
+                            txtNombreMuseo.setEditable(false);
+                            txtFechaFundacionMuseo.setEditable(false);
+                            txtFundadorMuseo.setEditable(false);
+                            txtHistoriaMuseo.setEditable(false);
+                            imgMuseo1.setEnabled(false);
+                            imgMuseo2.setEnabled(false);
+                            imgMuseo3.setEnabled(false);
+                            imgMuseo4.setEnabled(false);
+                            imgMuseo5.setEnabled(false);
+                        }
+                        ps.close();
+                        
+                } catch (SQLException e) {
+                        JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
+                        }       
+            }
+        }
+            
+}
+
     
     public static String contarTotalU(){
         String cont;
@@ -135,7 +326,7 @@ public final class Principal extends javax.swing.JFrame {
             sent = con.createStatement();
             int n = sent.executeUpdate(SQL);
             if (n > 0){
-                JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente ");
+                //JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente ");
                 jtUsuarios.setModel(LlenarTablaUsuarios());
                 lblTotalUsuarios.setText(contarTotalU());
             }
@@ -364,15 +555,23 @@ public final class Principal extends javax.swing.JFrame {
         lblUsuarioyRolPrincipal = new javax.swing.JLabel();
         jdeskPrincipal = new javax.swing.JDesktopPane();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         imgMuseo1 = new javax.swing.JLabel();
         imgMuseo2 = new javax.swing.JLabel();
         jlGaleria = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         lblCerrarSesion = new javax.swing.JLabel();
+        txtNombreMuseo = new javax.swing.JTextField();
+        jLabel43 = new javax.swing.JLabel();
+        jLabel44 = new javax.swing.JLabel();
+        jLabel46 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtHistoriaMuseo = new javax.swing.JTextArea();
+        imgMuseo3 = new javax.swing.JLabel();
+        imgMuseo4 = new javax.swing.JLabel();
+        imgMuseo5 = new javax.swing.JLabel();
+        txtFundadorMuseo = new javax.swing.JTextField();
+        txtFechaFundacionMuseo = new javax.swing.JTextField();
+        imgQrMuseo = new javax.swing.JLabel();
+        btnEditarMuseo = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jdeskusuarios = new javax.swing.JDesktopPane();
         jPanel9 = new javax.swing.JPanel();
@@ -394,6 +593,7 @@ public final class Principal extends javax.swing.JFrame {
         rbtnInactivo = new javax.swing.JRadioButton();
         jLabel39 = new javax.swing.JLabel();
         lblTotalUsuarios = new javax.swing.JLabel();
+        jLabel40 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jdeskGaleria = new javax.swing.JDesktopPane();
         jPanel10 = new javax.swing.JPanel();
@@ -497,6 +697,7 @@ public final class Principal extends javax.swing.JFrame {
 
         lblUsuarioyRolPrincipal.setForeground(new java.awt.Color(255, 0, 0));
         lblUsuarioyRolPrincipal.setText("jLabel1");
+        lblUsuarioyRolPrincipal.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -515,48 +716,44 @@ public final class Principal extends javax.swing.JFrame {
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap(19, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jlJJ2016)
-                            .addComponent(lblTerminosyCondicionesPrincipal)
-                            .addComponent(lblPoliticasdePrivacidadPrincipal))
-                        .addGap(25, 25, 25))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addComponent(lblUsuarioyRolPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblUsuarioyRolPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jlJJ2016)
+                        .addComponent(lblTerminosyCondicionesPrincipal)
+                        .addComponent(lblPoliticasdePrivacidadPrincipal)))
+                .addGap(25, 25, 25))
         );
 
         jdeskPrincipal.setBackground(new java.awt.Color(204, 204, 255));
 
-        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 24)); // NOI18N
-        jLabel1.setText("MUSEO \"ISIDRO AYORA\"");
-
-        jLabel2.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
-        jLabel2.setText("Museo, que lleva el nombre de \"Jorgue Gallegos Cruz\", honrando asi la  memoria del amigo,  compañero y director,  que se debe al aporte de los");
-
-        jLabel3.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
-        jLabel3.setText("maestros que lo integran. Cuenta con las siguientes secciones: Zoología, Botánica, Numismática, Arqueología, Mineralogía, Folklore, Maquetas ");
-
-        jLabel4.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
-        jLabel4.setText("Tecnológias relacionadas con la ciencia y la industria de la provincia.");
+        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jLabel1.setText("NOMBRE : ");
 
         imgMuseo1.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
         imgMuseo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/museo2.jpg"))); // NOI18N
+        imgMuseo1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        imgMuseo1.setEnabled(false);
+        imgMuseo1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                imgMuseo1MouseClicked(evt);
+            }
+        });
 
         imgMuseo2.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
         imgMuseo2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/museo1.jpg"))); // NOI18N
+        imgMuseo2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        imgMuseo2.setEnabled(false);
+        imgMuseo2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                imgMuseo2MouseClicked(evt);
+            }
+        });
 
         jlGaleria.setFont(new java.awt.Font("Century Schoolbook", 1, 14)); // NOI18N
         jlGaleria.setText("Galería del Museo de la Escuela Isidro Ayora");
-
-        jLabel5.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
-        jLabel5.setText("El Compromiso de los Profesores de la Escuela Isidro Ayora y el Acto de inauguración se lo fijó para el 15 de mayo de 1963, coincidiendo con el día");
-
-        jLabel6.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
-        jLabel6.setText("de San Isidro, la constancia de este importante aconteciimiento quedó grabado para siempre.");
 
         lblCerrarSesion.setFont(new java.awt.Font("Sylfaen", 1, 14)); // NOI18N
         lblCerrarSesion.setForeground(new java.awt.Color(255, 0, 0));
@@ -568,72 +765,182 @@ public final class Principal extends javax.swing.JFrame {
             }
         });
 
+        txtNombreMuseo.setEditable(false);
+
+        jLabel43.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jLabel43.setText("FUNDADOR : ");
+
+        jLabel44.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jLabel44.setText("FECHA DE FUNDACION : ");
+
+        jLabel46.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jLabel46.setText("HISTORIA : ");
+
+        txtHistoriaMuseo.setEditable(false);
+        txtHistoriaMuseo.setColumns(20);
+        txtHistoriaMuseo.setLineWrap(true);
+        txtHistoriaMuseo.setRows(5);
+        jScrollPane2.setViewportView(txtHistoriaMuseo);
+
+        imgMuseo3.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
+        imgMuseo3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/museo1.jpg"))); // NOI18N
+        imgMuseo3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        imgMuseo3.setEnabled(false);
+        imgMuseo3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                imgMuseo3MouseClicked(evt);
+            }
+        });
+
+        imgMuseo4.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
+        imgMuseo4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/museo1.jpg"))); // NOI18N
+        imgMuseo4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        imgMuseo4.setEnabled(false);
+        imgMuseo4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                imgMuseo4MouseClicked(evt);
+            }
+        });
+
+        imgMuseo5.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
+        imgMuseo5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/museo1.jpg"))); // NOI18N
+        imgMuseo5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        imgMuseo5.setEnabled(false);
+        imgMuseo5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                imgMuseo5MouseClicked(evt);
+            }
+        });
+
+        txtFundadorMuseo.setEditable(false);
+
+        txtFechaFundacionMuseo.setEditable(false);
+
+        imgQrMuseo.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
+        imgQrMuseo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/QR.png"))); // NOI18N
+
+        btnEditarMuseo.setBackground(new java.awt.Color(0, 0, 0));
+        btnEditarMuseo.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
+        btnEditarMuseo.setForeground(new java.awt.Color(255, 255, 255));
+        btnEditarMuseo.setText("Editar");
+        btnEditarMuseo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarMuseoActionPerformed(evt);
+            }
+        });
+
         jdeskPrincipal.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(jlGaleria, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(jLabel5, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(jLabel6, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(lblCerrarSesion, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(txtNombreMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(jLabel43, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(jLabel44, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(jLabel46, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(jScrollPane2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(imgMuseo3, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(imgMuseo4, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(imgMuseo5, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(txtFundadorMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(txtFechaFundacionMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(imgQrMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(btnEditarMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskPrincipalLayout = new javax.swing.GroupLayout(jdeskPrincipal);
         jdeskPrincipal.setLayout(jdeskPrincipalLayout);
         jdeskPrincipalLayout.setHorizontalGroup(
             jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(146, 146, 146)
-                                .addComponent(imgMuseo2))
-                            .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 924, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                        .addGap(342, 342, 342)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                        .addGap(333, 333, 333)
-                        .addComponent(jlGaleria)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(lblCerrarSesion)
+                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblCerrarSesion))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jdeskPrincipalLayout.createSequentialGroup()
+                        .addGap(68, 68, 68)
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2)
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel44)
+                                            .addComponent(jLabel46))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtFechaFundacionMuseo))
+                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel43)
+                                            .addComponent(jLabel1))
+                                        .addGap(103, 103, 103)
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtNombreMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                                            .addComponent(txtFundadorMuseo))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(imgQrMuseo))
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addComponent(imgMuseo2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                        .addComponent(imgMuseo3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(29, 29, 29)
+                                        .addComponent(imgMuseo4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(30, 30, 30)
+                                        .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnEditarMuseo))
+                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                        .addComponent(jlGaleria)
+                                        .addGap(0, 0, Short.MAX_VALUE)))))))
                 .addGap(98, 98, 98))
         );
         jdeskPrincipalLayout.setVerticalGroup(
             jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                 .addComponent(lblCerrarSesion)
-                .addGap(19, 19, 19)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(70, 70, 70)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jlGaleria)
-                .addGap(18, 18, 18)
+                .addGap(34, 34, 34)
                 .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgMuseo2))
-                .addGap(32, 32, 32)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
-                .addContainerGap(117, Short.MAX_VALUE))
+                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNombreMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFundadorMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFechaFundacionMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(11, 11, 11)
+                        .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(imgQrMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addComponent(btnEditarMuseo)
+                                .addGap(54, 54, 54))
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addComponent(jlGaleria)
+                                .addGap(126, 126, 126))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(imgMuseo3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(imgMuseo2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(imgMuseo4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jpPrincipalLayout = new javax.swing.GroupLayout(jpPrincipal);
@@ -682,6 +989,7 @@ public final class Principal extends javax.swing.JFrame {
 
         lblUsuarioyRolUsuarios.setForeground(new java.awt.Color(255, 0, 0));
         lblUsuarioyRolUsuarios.setText("jLabel1");
+        lblUsuarioyRolUsuarios.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -700,18 +1008,15 @@ public final class Principal extends javax.swing.JFrame {
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                 .addContainerGap(19, Short.MAX_VALUE)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jlJJ2019)
-                            .addComponent(lblTerminosyCondicionesUsuarios)
-                            .addComponent(lblPoliticasdePrivacidadUsuarios))
-                        .addGap(25, 25, 25))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addComponent(lblUsuarioyRolUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblUsuarioyRolUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jlJJ2019)
+                        .addComponent(lblTerminosyCondicionesUsuarios)
+                        .addComponent(lblPoliticasdePrivacidadUsuarios)))
+                .addGap(25, 25, 25))
         );
 
         jtUsuarios.setModel(new javax.swing.table.DefaultTableModel(
@@ -763,7 +1068,7 @@ public final class Principal extends javax.swing.JFrame {
             }
         });
 
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/eliminar.jpg"))); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Eliminar1.png"))); // NOI18N
         btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEliminar.setMaximumSize(new java.awt.Dimension(84, 81));
         btnEliminar.setMinimumSize(new java.awt.Dimension(84, 81));
@@ -798,6 +1103,9 @@ public final class Principal extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtBuscarPorKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarPorKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtBuscarPorKeyTyped(evt);
             }
@@ -824,6 +1132,9 @@ public final class Principal extends javax.swing.JFrame {
         lblTotalUsuarios.setText("0");
         lblTotalUsuarios.setName("lblTotalUsuarios"); // NOI18N
 
+        jLabel40.setFont(new java.awt.Font("Nirmala UI", 1, 24)); // NOI18N
+        jLabel40.setText("Usuarios");
+
         jdeskusuarios.setLayer(jPanel9, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(lblCerrarSesion1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -838,6 +1149,7 @@ public final class Principal extends javax.swing.JFrame {
         jdeskusuarios.setLayer(rbtnInactivo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(jLabel39, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(lblTotalUsuarios, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(jLabel40, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskusuariosLayout = new javax.swing.GroupLayout(jdeskusuarios);
         jdeskusuarios.setLayout(jdeskusuariosLayout);
@@ -850,11 +1162,6 @@ public final class Principal extends javax.swing.JFrame {
                 .addGap(67, 67, 67))
             .addGroup(jdeskusuariosLayout.createSequentialGroup()
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jdeskusuariosLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel39)
-                        .addGap(127, 127, 127)
-                        .addComponent(lblTotalUsuarios))
                     .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jdeskusuariosLayout.createSequentialGroup()
                             .addGap(42, 42, 42)
@@ -879,7 +1186,15 @@ public final class Principal extends javax.swing.JFrame {
                             .addComponent(lblNuevo))
                         .addGroup(jdeskusuariosLayout.createSequentialGroup()
                             .addGap(33, 33, 33)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 987, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 987, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jdeskusuariosLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel40)
+                            .addGroup(jdeskusuariosLayout.createSequentialGroup()
+                                .addComponent(jLabel39)
+                                .addGap(127, 127, 127)
+                                .addComponent(lblTotalUsuarios)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jdeskusuariosLayout.setVerticalGroup(
@@ -888,7 +1203,9 @@ public final class Principal extends javax.swing.JFrame {
                 .addComponent(lblCerrarSesion1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblNuevo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                .addGap(25, 25, 25)
+                .addComponent(jLabel40)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(btnNuevoUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -966,6 +1283,7 @@ public final class Principal extends javax.swing.JFrame {
 
         lblUsuarioyRolGaleria.setForeground(new java.awt.Color(255, 0, 0));
         lblUsuarioyRolGaleria.setText("jLabel1");
+        lblUsuarioyRolGaleria.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -984,18 +1302,15 @@ public final class Principal extends javax.swing.JFrame {
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                 .addContainerGap(19, Short.MAX_VALUE)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jlJJ2020)
-                            .addComponent(lblTerminosyCondicionesGaleria)
-                            .addComponent(lblPoliticasdePrivacidadGaleria))
-                        .addGap(25, 25, 25))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addComponent(lblUsuarioyRolGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblUsuarioyRolGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jlJJ2020)
+                        .addComponent(lblTerminosyCondicionesGaleria)
+                        .addComponent(lblPoliticasdePrivacidadGaleria)))
+                .addGap(25, 25, 25))
         );
 
         lblCerrarSesion2.setFont(new java.awt.Font("Sylfaen", 1, 14)); // NOI18N
@@ -1095,6 +1410,7 @@ public final class Principal extends javax.swing.JFrame {
 
         lblUsuarioyRolContactanos.setForeground(new java.awt.Color(255, 0, 0));
         lblUsuarioyRolContactanos.setText("jLabel1");
+        lblUsuarioyRolContactanos.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -1113,18 +1429,15 @@ public final class Principal extends javax.swing.JFrame {
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(19, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jlJJ2017)
-                            .addComponent(lblTerminosyCondicionesContactanos)
-                            .addComponent(lblPoliticasdePrivacidadContactanos))
-                        .addGap(25, 25, 25))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(lblUsuarioyRolContactanos, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblUsuarioyRolContactanos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jlJJ2017)
+                        .addComponent(lblTerminosyCondicionesContactanos)
+                        .addComponent(lblPoliticasdePrivacidadContactanos)))
+                .addGap(25, 25, 25))
         );
 
         lblImgContactanosJJ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/nosotras.png"))); // NOI18N
@@ -1379,6 +1692,7 @@ public final class Principal extends javax.swing.JFrame {
 
         lblUsuarioyRolAcerca.setForeground(new java.awt.Color(255, 0, 0));
         lblUsuarioyRolAcerca.setText("jLabel1");
+        lblUsuarioyRolAcerca.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -1397,18 +1711,15 @@ public final class Principal extends javax.swing.JFrame {
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap(19, Short.MAX_VALUE)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jlJJ2018)
-                            .addComponent(lblTerminosyCondicionesAcerca)
-                            .addComponent(lblPoliticasdePrivacidadacerca))
-                        .addGap(25, 25, 25))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addComponent(lblUsuarioyRolAcerca, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblUsuarioyRolAcerca, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jlJJ2018)
+                        .addComponent(lblTerminosyCondicionesAcerca)
+                        .addComponent(lblPoliticasdePrivacidadacerca)))
+                .addGap(25, 25, 25))
         );
 
         lblCerrarSesion4.setFont(new java.awt.Font("Sylfaen", 1, 14)); // NOI18N
@@ -1722,30 +2033,6 @@ public final class Principal extends javax.swing.JFrame {
         txtBuscarPor.setVisible(true);
     }//GEN-LAST:event_jcbBuscarPorMouseClicked
 
-    private void txtBuscarPorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPorKeyPressed
-        // TODO add your handling code here:
-        switch (buscar) {
-            case 1:
-                BuscarPorCedula();
-                break;
-            case 2:
-                BuscarPorNombreUsuario();
-                break;
-            case 3:
-                BuscarPorApellidoUsuario();
-                break;
-            case 4:
-                BuscarPorTipoUsuario();
-                break;
-            case 5:
-                BuscarPorEstadoUsuario();
-                break;
-            default:
-                JOptionPane.showMessageDialog(this,"Debe seleccionar un tipo de búsqueda");
-                break;
-        }
-    }//GEN-LAST:event_txtBuscarPorKeyPressed
-
     private void txtBuscarPorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPorKeyTyped
         // TODO add your handling code here:
         if(buscar==1){
@@ -1841,6 +2128,67 @@ public final class Principal extends javax.swing.JFrame {
         centrarVentanaGestionCA(internalGestionArticulo);
     }//GEN-LAST:event_btnGestionArticulosMouseClicked
 
+    private void btnEditarMuseoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarMuseoActionPerformed
+        EditarQr();
+    }//GEN-LAST:event_btnEditarMuseoActionPerformed
+
+    private void imgMuseo1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo1MouseClicked
+        CargarImagen(imgMuseo1, 0);
+        imagen[0] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
+    }//GEN-LAST:event_imgMuseo1MouseClicked
+
+    private void imgMuseo2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo2MouseClicked
+        CargarImagen(imgMuseo2, 0);
+        imagen[1] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
+       }//GEN-LAST:event_imgMuseo2MouseClicked
+
+    private void imgMuseo3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo3MouseClicked
+        CargarImagen(imgMuseo3, 0);
+        imagen[2] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
+   
+    }//GEN-LAST:event_imgMuseo3MouseClicked
+
+    private void imgMuseo4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo4MouseClicked
+         CargarImagen(imgMuseo4, 0);
+        imagen[3] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
+   
+    }//GEN-LAST:event_imgMuseo4MouseClicked
+
+    private void imgMuseo5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo5MouseClicked
+         CargarImagen(imgMuseo5, 0);
+        imagen[4] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
+   
+    }//GEN-LAST:event_imgMuseo5MouseClicked
+
+    private void txtBuscarPorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPorKeyReleased
+        if(txtBuscarPor.getText().length()<1) LlenarTablaUsuarios();
+    }//GEN-LAST:event_txtBuscarPorKeyReleased
+
+    private void txtBuscarPorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPorKeyPressed
+        if(txtBuscarPor.getText().length()>0){
+            switch (buscar) {
+                case 1:
+                    BuscarPorCedula();
+                    break;
+                case 2:
+                    BuscarPorNombreUsuario();
+                    break;
+                case 3:
+                    BuscarPorApellidoUsuario();
+                    break;
+                case 4:
+                    BuscarPorTipoUsuario();
+                    break;
+                case 5:
+                    BuscarPorEstadoUsuario();
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(this,"Debe seleccionar un tipo de búsqueda");
+                    break;
+            }       
+        }
+    }//GEN-LAST:event_txtBuscarPorKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -1858,12 +2206,17 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.ButtonGroup btgSeleccion;
     private javax.swing.JLabel btnActualizar;
     private javax.swing.JLabel btnBuscarUsuarios;
+    private javax.swing.JButton btnEditarMuseo;
     private javax.swing.JLabel btnEliminar;
     private javax.swing.JLabel btnGestionArticulos;
     private javax.swing.JLabel btnGestionCategoria;
     private javax.swing.JLabel btnNuevoUsuario;
-    private javax.swing.JLabel imgMuseo1;
-    private javax.swing.JLabel imgMuseo2;
+    public javax.swing.JLabel imgMuseo1;
+    public javax.swing.JLabel imgMuseo2;
+    public javax.swing.JLabel imgMuseo3;
+    public javax.swing.JLabel imgMuseo4;
+    public javax.swing.JLabel imgMuseo5;
+    private javax.swing.JLabel imgQrMuseo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1875,7 +2228,6 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -1886,7 +2238,6 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
@@ -1897,12 +2248,13 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -1916,6 +2268,7 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JComboBox<String> jcbBuscarPor;
     public javax.swing.JDesktopPane jdeskAcercade;
     public javax.swing.JDesktopPane jdeskContactanos;
@@ -1964,5 +2317,9 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbtnInactivo;
     private javax.swing.JTabbedPane tabMenu;
     private javax.swing.JTextField txtBuscarPor;
+    private javax.swing.JTextField txtFechaFundacionMuseo;
+    private javax.swing.JTextField txtFundadorMuseo;
+    private javax.swing.JTextArea txtHistoriaMuseo;
+    private javax.swing.JTextField txtNombreMuseo;
     // End of variables declaration//GEN-END:variables
 }
