@@ -141,11 +141,11 @@ public final class Principal extends javax.swing.JFrame {
         Mostrar_Visualizador(imgMuseo3, img);
         Mostrar_Visualizador(imgMuseo4,img);
         Mostrar_Visualizador(imgMuseo5, img);
-        if(!tempRutaActual[0].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[0]);
-        if(!tempRutaActual[1].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[1]);
-        if(!tempRutaActual[2].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[2]);
-        if(!tempRutaActual[3].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[3]);
-        if(!tempRutaActual[4].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[4]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[0])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[0]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[1])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[1]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[2])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[2]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[3])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[3]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[4])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[4]);
         String imgqr=getClass().getResource("/images/QR.png").getPath();
         Mostrar_Visualizador(imgQrMuseo, imgqr);
     }
