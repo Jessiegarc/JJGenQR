@@ -3,6 +3,7 @@ package generadorqr;
 import Modelos.ItemSeleccionado;
 import Modelos.UsuarioIngresado;
 import Modelos.ValoresConstantes;
+import com.mysql.jdbc.StringUtils;
 import db.mysql;
 import java.awt.Image;
 import java.io.File;
@@ -11,6 +12,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -19,9 +26,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.SpinnerDateModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FileUtils;
+import org.codehaus.groovy.tools.shell.util.SimpleCompletor;
+import org.codehaus.groovy.util.StringUtil;
 
 
 public final class Principal extends javax.swing.JFrame {
@@ -38,7 +50,7 @@ public final class Principal extends javax.swing.JFrame {
     String id = "", rol = "", estado = "";
     Integer buscar = 0, x = 0, y = 0;
     String imagenQR = "", codigoImagenQR = "";
-    String[] imagen = {"", "", "","",""}, tempImagen = {"", "", "","",""}, tempNombreArchivo = {"", "", "","",""},tempNombreMultimedia = {""},tempRutaActual = {"", "", "", "", ""};
+    String[] imagen = {"", "", "", "", ""}, tempImagen = {"", "", "", "", ""}, tempNombreArchivo = {"", "", "", "", ""}, tempRutaActual = {"", "", "", "", "", ""};
 
     
     public Principal() {
@@ -49,29 +61,27 @@ public final class Principal extends javax.swing.JFrame {
         btgSeleccion.add(rbtnInactivo);
         if(con == null) con = mysql.getConnect();
         lblNuevo.setVisible(false);
+        ((DefaultEditor) spnFecha.getEditor()).getTextField().setEditable(false);
         lblUsuarioyRolPrincipal.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRolUsuarios.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRolGaleria.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRolContactanos.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRolAcerca.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         
-        String img1=getClass().getResource("/images/imagen.jpg").getPath();
-        Mostrar_Visualizador(imgMuseo1, img1);
-        String img2=getClass().getResource("/images/imagen.jpg").getPath();
-        Mostrar_Visualizador(imgMuseo2, img2);
-        String img3=getClass().getResource("/images/imagen.jpg").getPath();
-        Mostrar_Visualizador(imgMuseo3, img3);
-        String img4=getClass().getResource("/images/imagen.jpg").getPath();
-        Mostrar_Visualizador(imgMuseo4,img4);       
-        String img5=getClass().getResource("/images/imagen.jpg").getPath();
-        Mostrar_Visualizador(imgMuseo5, img5);
-        String imgqr=getClass().getResource("/images/QR.png").getPath();
-        Mostrar_Visualizador(imgQrMuseo, imgqr);
-        lblLimiteNombreMuseo.setVisible(false);
-        lblLimiteFundadorMuseo.setVisible(false);
-        lblLimiteFundacionMuseo.setVisible(false);
-        lblLimiteHistoriaMuseo.setVisible(false);
-        
+        int cont;
+        try{
+            String SQL ="SELECT COUNT(*) AS Total FROM museo";
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            rs.next();
+            cont = rs.getInt("Total");
+            rs.close();
+            if(cont == 0){
+                String SQLA = "INSERT INTO museo(NOMBREMUSEO) VALUES('MUSEO ISIDRO AYORA')";
+                PreparedStatement ps = con.prepareStatement(SQLA);
+                ps.executeUpdate();
+            }
+        } catch (Exception e){}
         
         String Ruta=getClass().getResource("/images/Mas.png").getPath();
         Mostrar_Visualizador(btnNuevoUsuario, Ruta);
@@ -92,13 +102,8 @@ public final class Principal extends javax.swing.JFrame {
         String rutaAVA=getClass().getResource("/images/androidstudio.png").getPath();
         Mostrar_Visualizador(lblAcercaDeAppVersionandroid, rutaAVA);
         
-        
-        
         String rutaContactanosJJ=getClass().getResource("/images/contactanos.jpg").getPath();
         Mostrar_Visualizador(lblImgContactanosJJ, rutaContactanosJJ);
-        
-        
-        
         
         txtBuscarPor.setEnabled(false);
         rbtnActivo.setEnabled(false);
@@ -108,27 +113,41 @@ public final class Principal extends javax.swing.JFrame {
         
         lblTotalUsuarios.setText(contarTotalU());
            
-            try {
-            String SQLTM ="SELECT * FROM museo WHERE IDMUSEO ='MUSEO ISIDRO AYORA'"; 
-            sent = con.createStatement();
-            ResultSet rs = sent.executeQuery(SQLTM);
-            while(rs.next()){
-            txtNombreMuseo.setText(rs.getString("NOMBREMUSEO"));
-            txtFechaFundacionMuseo.setText(rs.getString("FECHAFUNDACIONMUSEO"));
-            txtFundadorMuseo.setText(rs.getString("FUNDADORMUSEO"));
-            txtHistoriaMuseo.setText(rs.getString("HISTORIAMUSEO"));
-            tempRutaActual[0] = rs.getString("IMAGENUNOMUSEO");
-            tempRutaActual[1] = rs.getString("IMAGENDOSMUSEO");
-            tempRutaActual[2] = rs.getString("IMAGENTRESMUSEO");
-            tempRutaActual[3] = rs.getString("IMAGECUATRORESMUSEO");
-            tempRutaActual[4] = rs.getString("IMAGENCINCOMUSEO");
-            }
-                rs.close();
-                
-            } catch (SQLException e) {
-            //JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
-            }
-            
+        try {
+        String SQLTM ="SELECT * FROM museo WHERE IDMUSEO = 1"; 
+        sent = con.createStatement();
+        ResultSet rs = sent.executeQuery(SQLTM);
+        rs.next();
+        txtNombreMuseo.setText(rs.getString("NOMBREMUSEO"));
+        String fe = rs.getString("FECHAFUNDACIONMUSEO");
+        if(!StringUtils.isNullOrEmpty(fe)) {
+            ((DefaultEditor) spnFecha.getEditor()).getTextField().setText(fe);
+        }
+        txtFundadorMuseo.setText(rs.getString("FUNDADORMUSEO"));
+        txtHistoriaMuseo.setText(rs.getString("HISTORIAMUSEO"));
+        tempRutaActual[0] = rs.getString("IMAGENUNOMUSEO");
+        tempRutaActual[1] = rs.getString("IMAGENDOSMUSEO");
+        tempRutaActual[2] = rs.getString("IMAGENTRESMUSEO");
+        tempRutaActual[3] = rs.getString("IMAGECUATRORESMUSEO");
+        tempRutaActual[4] = rs.getString("IMAGENCINCOMUSEO");
+        rs.close();
+        } catch (SQLException e) {
+        //JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
+        }   
+        
+        String img=getClass().getResource("/images/imagen.jpg").getPath();
+        Mostrar_Visualizador(imgMuseo1, img);
+        Mostrar_Visualizador(imgMuseo2, img);
+        Mostrar_Visualizador(imgMuseo3, img);
+        Mostrar_Visualizador(imgMuseo4,img);
+        Mostrar_Visualizador(imgMuseo5, img);
+        if(!tempRutaActual[0].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[0]);
+        if(!tempRutaActual[1].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[1]);
+        if(!tempRutaActual[2].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[2]);
+        if(!tempRutaActual[3].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[3]);
+        if(!tempRutaActual[4].isEmpty()) Mostrar_Visualizador(imgMuseo1, tempRutaActual[4]);
+        String imgqr=getClass().getResource("/images/QR.png").getPath();
+        Mostrar_Visualizador(imgQrMuseo, imgqr);
     }
     
     
@@ -173,34 +192,27 @@ public final class Principal extends javax.swing.JFrame {
         }
         return true;
     }
-
     
     void EditarQr(){
-        
         if(btnEditarMuseo.getText().contains("Editar")) {
-        btnEditarMuseo.setText("Guardar");
-        txtNombreMuseo.setEditable(true);
-        txtFechaFundacionMuseo.setEditable(true);
-        txtFundadorMuseo.setEditable(true);
-        txtHistoriaMuseo.setEditable(true);
-        imgMuseo1.setEnabled(true);
-        imgMuseo2.setEnabled(true);
-        imgMuseo3.setEnabled(true);
-        imgMuseo4.setEnabled(true);
-        imgMuseo5.setEnabled(true);
-        txtNombreMuseo.requestFocus();
-        }
-        
-        else {
-            
-        if (txtNombreMuseo.getText().trim().isEmpty() || txtFundadorMuseo.getText().trim().isEmpty()
-                || txtFechaFundacionMuseo.getText().trim().isEmpty()|| txtHistoriaMuseo.getText().trim().isEmpty())
-            JOptionPane.showMessageDialog(null, "Ingrese Los Campos Obligatorios");
-        else{  
-                              
-            try {       
-                //Actualizar usuario
-                    imagen[0] += "\\Imagenes";
+            btnEditarMuseo.setText("Guardar");
+            txtNombreMuseo.setEditable(true);
+            spnFecha.setEnabled(true);
+            txtFundadorMuseo.setEditable(true);
+            txtHistoriaMuseo.setEditable(true);
+            imgMuseo1.setEnabled(true);
+            imgMuseo2.setEnabled(true);
+            imgMuseo3.setEnabled(true);
+            imgMuseo4.setEnabled(true);
+            imgMuseo5.setEnabled(true);
+            txtNombreMuseo.requestFocus();
+        } else {
+            if (txtNombreMuseo.getText().trim().isEmpty() || txtFundadorMuseo.getText().trim().isEmpty()
+                    || txtHistoriaMuseo.getText().trim().isEmpty())
+                JOptionPane.showMessageDialog(null, "Ingrese Los Campos Obligatorios");
+            else{
+                try {       
+                    //Actualizar usuario
                     if(tempImagen[0].isEmpty()) imagen[0] = tempRutaActual[0];
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[0]);
@@ -226,53 +238,62 @@ public final class Principal extends javax.swing.JFrame {
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[3]);
                         borrarImagenAntigua.delete();
-                        if(CopiaArchivos(tempImagen[3], imagen[3], imagen, "Imagen4.jpg", 2)) imagen[3] += "\\Imagen4.jpg";
+                        if(CopiaArchivos(tempImagen[3], imagen[3], imagen, "Imagen4.jpg", 3)) imagen[3] += "\\Imagen4.jpg";
                         else return;
                     }
                     if(tempImagen[4].isEmpty()) imagen[4] = tempRutaActual[4];
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[4]);
                         borrarImagenAntigua.delete();
-                        if(CopiaArchivos(tempImagen[4], imagen[4], imagen, "Imagen5.jpg", 2)) imagen[4] += "\\Imagen5.jpg";
+                        if(CopiaArchivos(tempImagen[4], imagen[4], imagen, "Imagen5.jpg", 4)) imagen[4] += "\\Imagen5.jpg";
                         else return;
                     }
-                    
-                       String SQL = "UPDATE museo SET NOMBREMUSEO = ?, FECHAFUNDACIONMUSEO = ?, FUNDADORMUSEO = ?, HISTORIAMUSEO = ?, "
-                            + "IMAGENUNOMUSEO = ?, IMAGENDOSMUSEO = ?, IMAGENTRESMUSEO = ?, IMAGENCUATROMUSEO = ?,IMAGENCINCOMUSEO = ?, "
-                               + " WHERE IDMUSEO ='MUSEO ISIDRO AYORA'";
-                        PreparedStatement ps = con.prepareStatement(SQL);
-                        ps.setString(1, txtNombreMuseo.getText());
-                        ps.setString(2, txtFechaFundacionMuseo.getText());
-                        ps.setString(3, txtFundadorMuseo.getText());
-                        ps.setString(4, txtHistoriaMuseo.getText());
-                        ps.setString(5, imagen[0]);
-                        ps.setString(6, imagen[1]);
-                        ps.setString(7, imagen[2]);
-                        ps.setString(8, imagen[3]);
-                        ps.setString(9, imagen[4]);
-                        int n = ps.executeUpdate();
-                        if (n > 0) {
-                            JOptionPane.showMessageDialog(null, "Información actualizada Correctamente");
-                            btnEditarMuseo.setText("Editar");
-                            txtNombreMuseo.setEditable(false);
-                            txtFechaFundacionMuseo.setEditable(false);
-                            txtFundadorMuseo.setEditable(false);
-                            txtHistoriaMuseo.setEditable(false);
-                            imgMuseo1.setEnabled(false);
-                            imgMuseo2.setEnabled(false);
-                            imgMuseo3.setEnabled(false);
-                            imgMuseo4.setEnabled(false);
-                            imgMuseo5.setEnabled(false);
-                        }
-                        ps.close();
-                        
+                    String SQL = "UPDATE museo SET NOMBREMUSEO = ?, FECHAFUNDACIONMUSEO = ?, FUNDADORMUSEO = ?, HISTORIAMUSEO = ?, "
+                        + "IMAGENUNOMUSEO = ?, IMAGENDOSMUSEO = ?, IMAGENTRESMUSEO = ?, IMAGENCUATROMUSEO = ?, IMAGENCINCOMUSEO = ? "
+                           + " WHERE IDMUSEO = 1";
+                    PreparedStatement ps = con.prepareStatement(SQL);
+                    ps.setString(1, txtNombreMuseo.getText());
+                    Date fecha1 = (Date) spnFecha.getValue();
+                    java.sql.Date sqlFecha = new java.sql.Date(fecha1.getTime());
+                    ps.setDate(2, sqlFecha);
+                    ps.setString(3, txtFundadorMuseo.getText());
+                    ps.setString(4, txtHistoriaMuseo.getText());
+                    ps.setString(5, imagen[0]);
+                    ps.setString(6, imagen[1]);
+                    ps.setString(7, imagen[2]);
+                    ps.setString(8, imagen[3]);
+                    ps.setString(9, imagen[4]);
+                    int n = ps.executeUpdate();
+                    if (n > 0) {
+                        JOptionPane.showMessageDialog(null, "Información actualizada Correctamente");
+                        btnEditarMuseo.setText("Editar");
+                        txtNombreMuseo.setEditable(false);
+                        spnFecha.setEnabled(false);
+                        txtFundadorMuseo.setEditable(false);
+                        txtHistoriaMuseo.setEditable(false);
+                        imgMuseo1.setEnabled(false);
+                        imgMuseo2.setEnabled(false);
+                        imgMuseo3.setEnabled(false);
+                        imgMuseo4.setEnabled(false);
+                        imgMuseo5.setEnabled(false);
+                    }
+                    ps.close();
                 } catch (SQLException e) {
-                        JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
-                        }       
+                    JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
+                    File borrarImagenAntigua = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA\\Imagen1.jpg");
+                    if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
+                    borrarImagenAntigua = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA\\Imagen2.jpg");
+                    if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
+                    borrarImagenAntigua = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA\\Imagen3.jpg");
+                    if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
+                    borrarImagenAntigua = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA\\Imagen4.jpg");
+                    if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
+                    borrarImagenAntigua = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA\\Imagen5.jpg");
+                    if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
+                }       
             }
-        }
-            
-}
+        }    
+    }
 
     
     public static String contarTotalU(){
@@ -345,7 +366,7 @@ public final class Principal extends javax.swing.JFrame {
             String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
 
             //Consulta para la fecha de inicio a fecha de final
-            String SQL = "SELECT *FROM usuarios WHERE NOMBRESUSUARIO Like '"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            String SQL = "SELECT *FROM usuarios WHERE NOMBRESUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
 
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
@@ -371,7 +392,7 @@ public final class Principal extends javax.swing.JFrame {
         try{
             String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
             //Consulta para la fecha de inicio a fecha de final
-            String SQL = "SELECT *FROM usuarios WHERE APELLIDOSUSUARIO Like '"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            String SQL = "SELECT *FROM usuarios WHERE APELLIDOSUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
@@ -396,7 +417,7 @@ public final class Principal extends javax.swing.JFrame {
         try{
             String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
             //Consulta para la fecha de inicio a fecha de final
-            String SQL = "SELECT *FROM usuarios WHERE TIPOUSUARIO Like '"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            String SQL = "SELECT *FROM usuarios WHERE TIPOUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
@@ -422,7 +443,7 @@ public final class Principal extends javax.swing.JFrame {
         try{
             String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
             //Consulta para la fecha de inicio a fecha de final
-            String SQL = "SELECT *FROM usuarios WHERE CEDULAUSUARIO Like '"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            String SQL = "SELECT *FROM usuarios WHERE CEDULAUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
@@ -575,11 +596,9 @@ public final class Principal extends javax.swing.JFrame {
         txtFundadorMuseo = new javax.swing.JTextField();
         imgQrMuseo = new javax.swing.JLabel();
         btnEditarMuseo = new javax.swing.JButton();
-        lblLimiteNombreMuseo = new javax.swing.JLabel();
-        lblLimiteFundadorMuseo = new javax.swing.JLabel();
-        lblLimiteFundacionMuseo = new javax.swing.JLabel();
-        lblLimiteHistoriaMuseo = new javax.swing.JLabel();
-        txtFechaFundacionMuseo = new javax.swing.JFormattedTextField();
+        Date date = new Date();
+        SpinnerDateModel fecha = new SpinnerDateModel(date, null, null, Calendar.DATE);
+        spnFecha = new javax.swing.JSpinner(fecha);
         jPanel2 = new javax.swing.JPanel();
         jdeskusuarios = new javax.swing.JDesktopPane();
         jPanel9 = new javax.swing.JPanel();
@@ -774,15 +793,6 @@ public final class Principal extends javax.swing.JFrame {
         });
 
         txtNombreMuseo.setEditable(false);
-        txtNombreMuseo.setText("12345678911234567891123456789112345678911234567891");
-        txtNombreMuseo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtNombreMuseoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNombreMuseoKeyTyped(evt);
-            }
-        });
 
         jLabel43.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         jLabel43.setText("FUNDADOR : ");
@@ -797,14 +807,6 @@ public final class Principal extends javax.swing.JFrame {
         txtHistoriaMuseo.setColumns(20);
         txtHistoriaMuseo.setLineWrap(true);
         txtHistoriaMuseo.setRows(5);
-        txtHistoriaMuseo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtHistoriaMuseoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtHistoriaMuseoKeyTyped(evt);
-            }
-        });
         jScrollPane2.setViewportView(txtHistoriaMuseo);
 
         imgMuseo3.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
@@ -838,14 +840,6 @@ public final class Principal extends javax.swing.JFrame {
         });
 
         txtFundadorMuseo.setEditable(false);
-        txtFundadorMuseo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtFundadorMuseoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtFundadorMuseoKeyTyped(evt);
-            }
-        });
 
         imgQrMuseo.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
         imgQrMuseo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/QR.png"))); // NOI18N
@@ -860,23 +854,9 @@ public final class Principal extends javax.swing.JFrame {
             }
         });
 
-        lblLimiteNombreMuseo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        lblLimiteNombreMuseo.setForeground(new java.awt.Color(255, 51, 51));
-        lblLimiteNombreMuseo.setText("jLabel2");
-
-        lblLimiteFundadorMuseo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        lblLimiteFundadorMuseo.setForeground(new java.awt.Color(255, 51, 51));
-        lblLimiteFundadorMuseo.setText("jLabel2");
-
-        lblLimiteFundacionMuseo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        lblLimiteFundacionMuseo.setForeground(new java.awt.Color(255, 51, 51));
-        lblLimiteFundacionMuseo.setText("jLabel2");
-
-        lblLimiteHistoriaMuseo.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        lblLimiteHistoriaMuseo.setForeground(new java.awt.Color(255, 51, 51));
-        lblLimiteHistoriaMuseo.setText("jLabel2");
-
-        txtFechaFundacionMuseo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.LONG))));
+        JSpinner.DateEditor formato = new JSpinner.DateEditor(spnFecha, "yyyy-MM-dd");
+        spnFecha.setEditor(formato);
+        spnFecha.setEnabled(false);
 
         jdeskPrincipal.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -894,11 +874,7 @@ public final class Principal extends javax.swing.JFrame {
         jdeskPrincipal.setLayer(txtFundadorMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgQrMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(btnEditarMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(lblLimiteNombreMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(lblLimiteFundadorMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(lblLimiteFundacionMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(lblLimiteHistoriaMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(txtFechaFundacionMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(spnFecha, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskPrincipalLayout = new javax.swing.GroupLayout(jdeskPrincipal);
         jdeskPrincipal.setLayout(jdeskPrincipalLayout);
@@ -908,11 +884,29 @@ public final class Principal extends javax.swing.JFrame {
                 .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblCerrarSesion)
-                        .addGap(55, 55, 55))
+                        .addComponent(lblCerrarSesion))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jdeskPrincipalLayout.createSequentialGroup()
                         .addGap(68, 68, 68)
                         .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2)
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel44)
+                                            .addComponent(jLabel46))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(spnFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE))
+                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel43)
+                                            .addComponent(jLabel1))
+                                        .addGap(106, 106, 106)
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtFundadorMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                                            .addComponent(txtNombreMuseo))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(imgQrMuseo))
                             .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                                 .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(29, 29, 29)
@@ -929,78 +923,43 @@ public final class Principal extends javax.swing.JFrame {
                                         .addComponent(btnEditarMuseo))
                                     .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                                         .addComponent(jlGaleria)
-                                        .addGap(0, 0, Short.MAX_VALUE))))
-                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel44)
-                                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                                        .addComponent(jLabel46)
-                                                        .addGap(14, 14, 14)
-                                                        .addComponent(lblLimiteHistoriaMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(txtFechaFundacionMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel43)
-                                                    .addComponent(jLabel1))
-                                                .addGap(25, 25, 25)
-                                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(txtNombreMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
-                                                    .addComponent(txtFundadorMuseo))))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblLimiteNombreMuseo)
-                                            .addComponent(lblLimiteFundadorMuseo)
-                                            .addComponent(lblLimiteFundacionMuseo))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(imgQrMuseo))
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 937, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addGap(43, 43, 43))
+                                        .addGap(0, 0, Short.MAX_VALUE)))))))
+                .addGap(98, 98, 98))
         );
         jdeskPrincipalLayout.setVerticalGroup(
             jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                 .addComponent(lblCerrarSesion)
+                .addGap(34, 34, 34)
                 .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                        .addGap(34, 34, 34)
                         .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNombreMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblLimiteNombreMuseo))
+                            .addComponent(txtNombreMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtFundadorMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblLimiteFundadorMuseo))
+                            .addComponent(txtFundadorMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblLimiteFundacionMuseo)
-                            .addComponent(txtFechaFundacionMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(spnFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(11, 11, 11)
-                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblLimiteHistoriaMuseo)))
+                        .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(imgQrMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addComponent(btnEditarMuseo)
+                                .addGap(54, 54, 54))
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addComponent(jlGaleria)
+                                .addGap(126, 126, 126))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(imgQrMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-                .addGap(32, 32, 32)
-                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
-                        .addComponent(btnEditarMuseo)
-                        .addGap(54, 54, 54))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
-                        .addComponent(jlGaleria)
-                        .addGap(126, 126, 126))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
                         .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(imgMuseo3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(imgMuseo2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1018,10 +977,7 @@ public final class Principal extends javax.swing.JFrame {
         jpPrincipalLayout.setHorizontalGroup(
             jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpPrincipalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jdeskPrincipal)
-                .addContainerGap())
+            .addComponent(jdeskPrincipal)
         );
         jpPrincipalLayout.setVerticalGroup(
             jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1173,6 +1129,9 @@ public final class Principal extends javax.swing.JFrame {
         });
 
         txtBuscarPor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscarPorKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBuscarPorKeyReleased(evt);
             }
@@ -2021,7 +1980,7 @@ public final class Principal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 1322, Short.MAX_VALUE)
+            .addComponent(tabMenu)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2095,7 +2054,6 @@ public final class Principal extends javax.swing.JFrame {
         rbtnActivo.setSelected(false);
         rbtnInactivo.setSelected(false);
         LlenarTablaUsuarios();
-
     }//GEN-LAST:event_jcbBuscarPorItemStateChanged
 
     private void jcbBuscarPorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jcbBuscarPorMouseClicked
@@ -2190,7 +2148,6 @@ public final class Principal extends javax.swing.JFrame {
     private void btnGestionCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionCategoriaMouseClicked
         internalGestionCategoria = new jifrGestionCategoria();
         centrarVentanaGestionCA(internalGestionCategoria);
-
     }//GEN-LAST:event_btnGestionCategoriaMouseClicked
 
     private void btnGestionArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionArticulosMouseClicked
@@ -2204,34 +2161,36 @@ public final class Principal extends javax.swing.JFrame {
 
     private void imgMuseo1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo1MouseClicked
         CargarImagen(imgMuseo1, 0);
-        imagen[0] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
+        imagen[0] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA";
     }//GEN-LAST:event_imgMuseo1MouseClicked
 
     private void imgMuseo2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo2MouseClicked
-        CargarImagen(imgMuseo2, 0);
-        imagen[1] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
+        CargarImagen(imgMuseo2, 1);
+        imagen[1] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA";
        }//GEN-LAST:event_imgMuseo2MouseClicked
 
     private void imgMuseo3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo3MouseClicked
-        CargarImagen(imgMuseo3, 0);
-        imagen[2] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
-   
+        CargarImagen(imgMuseo3, 2);
+        imagen[2] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA";
     }//GEN-LAST:event_imgMuseo3MouseClicked
 
     private void imgMuseo4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo4MouseClicked
-         CargarImagen(imgMuseo4, 0);
-        imagen[3] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
-   
+        CargarImagen(imgMuseo4, 3);
+        imagen[3] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA";
     }//GEN-LAST:event_imgMuseo4MouseClicked
 
     private void imgMuseo5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imgMuseo5MouseClicked
-         CargarImagen(imgMuseo5, 0);
-        imagen[4] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreMuseo.getText().toString();
-   
+        CargarImagen(imgMuseo5, 4);
+        imagen[4] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA";
     }//GEN-LAST:event_imgMuseo5MouseClicked
 
     private void txtBuscarPorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPorKeyReleased
-        switch (buscar) {
+        if(txtBuscarPor.getText().length()<1) LlenarTablaUsuarios();
+    }//GEN-LAST:event_txtBuscarPorKeyReleased
+
+    private void txtBuscarPorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPorKeyPressed
+        if(txtBuscarPor.getText().length()>0){
+            switch (buscar) {
                 case 1:
                     BuscarPorCedula();
                     break;
@@ -2251,49 +2210,8 @@ public final class Principal extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this,"Debe seleccionar un tipo de búsqueda");
                     break;
             }       
-    }//GEN-LAST:event_txtBuscarPorKeyReleased
-
-    private void txtNombreMuseoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreMuseoKeyReleased
-        if (txtNombreMuseo.getText().length()>50){
-            lblLimiteNombreMuseo.setVisible(true);
-            lblLimiteNombreMuseo.setText("Límite Exedido");
         }
-        else lblLimiteNombreMuseo.setVisible(false);
-    }//GEN-LAST:event_txtNombreMuseoKeyReleased
-
-    private void txtNombreMuseoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreMuseoKeyTyped
-        char car=evt.getKeyChar();
-        int limite  = 50;
-        if (txtNombreMuseo.getText().length()==limite) evt.consume();      
-    }//GEN-LAST:event_txtNombreMuseoKeyTyped
-
-    private void txtFundadorMuseoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFundadorMuseoKeyReleased
-        if (txtFundadorMuseo.getText().length()>50){
-            lblLimiteFundadorMuseo.setVisible(true);
-            lblLimiteFundadorMuseo.setText("Límite Exedido");
-        }
-        else lblLimiteFundadorMuseo.setVisible(false);
-    }//GEN-LAST:event_txtFundadorMuseoKeyReleased
-
-    private void txtFundadorMuseoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFundadorMuseoKeyTyped
-        char car=evt.getKeyChar();
-        int limite  = 50;
-        if (txtFundadorMuseo.getText().length()==limite) evt.consume(); 
-    }//GEN-LAST:event_txtFundadorMuseoKeyTyped
-
-    private void txtHistoriaMuseoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHistoriaMuseoKeyReleased
-        if (txtHistoriaMuseo.getText().length()>2000){
-            lblLimiteHistoriaMuseo.setVisible(true);
-            lblLimiteHistoriaMuseo.setText("Límite Exedido");
-        }
-        else lblLimiteHistoriaMuseo.setVisible(false);
-    }//GEN-LAST:event_txtHistoriaMuseoKeyReleased
-
-    private void txtHistoriaMuseoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHistoriaMuseoKeyTyped
-        char car=evt.getKeyChar();
-        int limite  = 2000;
-        if (txtHistoriaMuseo.getText().length()==limite) evt.consume();
-    }//GEN-LAST:event_txtHistoriaMuseoKeyTyped
+    }//GEN-LAST:event_txtBuscarPorKeyPressed
 
     /**
      * @param args the command line arguments
@@ -2399,10 +2317,6 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel lblCerrarSesion3;
     private javax.swing.JLabel lblCerrarSesion4;
     private javax.swing.JLabel lblImgContactanosJJ;
-    private javax.swing.JLabel lblLimiteFundacionMuseo;
-    private javax.swing.JLabel lblLimiteFundadorMuseo;
-    private javax.swing.JLabel lblLimiteHistoriaMuseo;
-    private javax.swing.JLabel lblLimiteNombreMuseo;
     public javax.swing.JLabel lblNuevo;
     private javax.swing.JLabel lblPoliticasdePrivacidadContactanos;
     private javax.swing.JLabel lblPoliticasdePrivacidadGaleria;
@@ -2425,9 +2339,9 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel losQr3;
     private javax.swing.JRadioButton rbtnActivo;
     private javax.swing.JRadioButton rbtnInactivo;
+    private javax.swing.JSpinner spnFecha;
     private javax.swing.JTabbedPane tabMenu;
     private javax.swing.JTextField txtBuscarPor;
-    private javax.swing.JFormattedTextField txtFechaFundacionMuseo;
     private javax.swing.JTextField txtFundadorMuseo;
     private javax.swing.JTextArea txtHistoriaMuseo;
     private javax.swing.JTextField txtNombreMuseo;
