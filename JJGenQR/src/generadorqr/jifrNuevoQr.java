@@ -23,8 +23,11 @@ import java.util.Random;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Image;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -86,7 +89,6 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                 ResultSet rs = sent.executeQuery(SQLTU);
                 rs.next();
                 txtNombreQr.setText(rs.getString("NOMBREARTICULO"));
-                txtCantidad.setText(rs.getString("CANTIDADARTICULO"));
                 txtAreaDescripcionNuevoQr.setText(rs.getString("DESCRIPCIONARTICULO"));
                 tempRutaActual[0] = rs.getString("IMAGENUNOARTICULO");
                 tempRutaActual[1] = rs.getString("IMAGENDOSARTICULO");
@@ -185,21 +187,20 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                             ImageIO.write(bufferedImage, "png", guardarQR);
                         } catch (Exception e) {
                         }
-                        String SQLA = "INSERT INTO articulos(IDCATEGORIA,NOMBREARTICULO,CANTIDADARTICULO,DESCRIPCIONARTICULO,IMAGENUNOARTICULO,IMAGENDOSARTICULO,"
+                        String SQLA = "INSERT INTO articulos(IDCATEGORIA,NOMBREARTICULO,DESCRIPCIONARTICULO,IMAGENUNOARTICULO,IMAGENDOSARTICULO,"
                                 + "IMAGENTRESARTICULO,SONIDOARTICULO,VIDEOARTICULO,CODIGOQRARTICULO,IMAGENQRARTICULO)"
-                                      + " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                                      + " VALUES(?,?,?,?,?,?,?,?,?,?)";
                         PreparedStatement ps = conn.prepareStatement(SQLA);
                         ps.setInt(1, idCategoria);
                         ps.setString(2, txtNombreQr.getText());
-                        ps.setString(3, txtCantidad.getText());
-                        ps.setString(4, txtAreaDescripcionNuevoQr.getText());
-                        ps.setString(5, imagen[0]);
-                        ps.setString(6, imagen[1]);
-                        ps.setString(7, imagen[2]);
-                        ps.setString(8, audio);
-                        ps.setString(9, video);
-                        ps.setString(10, codigoImagenQR);
-                        ps.setString(11, imagenQR);
+                        ps.setString(3, txtAreaDescripcionNuevoQr.getText());
+                        ps.setString(4, imagen[0]);
+                        ps.setString(5, imagen[1]);
+                        ps.setString(6, imagen[2]);
+                        ps.setString(7, audio);
+                        ps.setString(8, video);
+                        ps.setString(9, codigoImagenQR);
+                        ps.setString(10, imagenQR);
                         int n = ps.executeUpdate();
                         if (n > 0) {
                             JOptionPane.showMessageDialog(null, "Nuevo Qr creado Correctamente");
@@ -254,19 +255,18 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                     if (txtNombreQr.getText().trim().isEmpty() || txtAreaDescripcionNuevoQr.getText().trim().isEmpty())
                         JOptionPane.showMessageDialog(null, "Ingrese Los Campos Obligatorios");
                     else{
-                        String SQL = "UPDATE articulos SET IDCATEGORIA = ?, NOMBREARTICULO = ?,CANTIDADARTICULO=?, DESCRIPCIONARTICULO = ?, IMAGENUNOARTICULO = ?, "
+                        String SQL = "UPDATE articulos SET IDCATEGORIA = ?, NOMBREARTICULO = ?, DESCRIPCIONARTICULO = ?, IMAGENUNOARTICULO = ?, "
                                 + "IMAGENDOSARTICULO = ?, IMAGENTRESARTICULO = ?, SONIDOARTICULO = ?, VIDEOARTICULO = ? "
                                 + "WHERE IDARTICULO = " + ItemSeleccionado.idArticulo;
                         PreparedStatement ps = conn.prepareStatement(SQL);
                         ps.setInt(1, idCategoria);
                         ps.setString(2, txtNombreQr.getText());
-                        ps.setString(3, txtCantidad.getText());
-                        ps.setString(4, txtAreaDescripcionNuevoQr.getText());
-                        ps.setString(5, imagen[0]);
-                        ps.setString(6, imagen[1]);
-                        ps.setString(7, imagen[2]);
-                        ps.setString(8, audio);
-                        ps.setString(9, video);
+                        ps.setString(3, txtAreaDescripcionNuevoQr.getText());
+                        ps.setString(4, imagen[0]);
+                        ps.setString(5, imagen[1]);
+                        ps.setString(6, imagen[2]);
+                        ps.setString(7, audio);
+                        ps.setString(8, video);
                         int n = ps.executeUpdate();
                         if (n > 0) {
                             JOptionPane.showMessageDialog(null, "Información del QR actualizada Correctamente");
@@ -278,7 +278,12 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                 }
             }catch (SQLException e) {
                 JOptionPane.showConfirmDialog(null, "Error: " + e.getMessage());
-                //System.out.println();
+                File borrarDirectorio = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreQr.getText());
+                if(borrarDirectorio.exists()) try {
+                    FileUtils.deleteDirectory(borrarDirectorio);
+                } catch (IOException ex) {
+                    Logger.getLogger(jifrNuevoQr.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
@@ -370,7 +375,6 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         as.setAccionBoton("");
         as.setIdArticulo("");
         as.setIdCategoria("");
-        
     }
 
     /**
@@ -402,9 +406,6 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         btnImagen1 = new javax.swing.JLabel();
         btnImagen3 = new javax.swing.JLabel();
         btnImagen2 = new javax.swing.JLabel();
-        jlCategoriaQr1 = new javax.swing.JLabel();
-        txtCantidad = new javax.swing.JTextField();
-        lblLimiteDescripcionNuevoQr = new javax.swing.JLabel();
         lblImagenQR = new javax.swing.JLabel();
         jlGenerarQr = new javax.swing.JLabel();
         btnGenerarNuevoQr = new javax.swing.JButton();
@@ -484,14 +485,6 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
 
         txtAreaDescripcionNuevoQr.setLineWrap(true);
         txtAreaDescripcionNuevoQr.setRows(5);
-        txtAreaDescripcionNuevoQr.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtAreaDescripcionNuevoQrKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtAreaDescripcionNuevoQrKeyTyped(evt);
-            }
-        });
         jScrollPane1.setViewportView(txtAreaDescripcionNuevoQr);
 
         btnImagen1.setForeground(new java.awt.Color(255, 255, 51));
@@ -530,16 +523,6 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
             }
         });
 
-        jlCategoriaQr1.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
-        jlCategoriaQr1.setForeground(new java.awt.Color(0, 153, 204));
-        jlCategoriaQr1.setText("Cantidad");
-
-        txtCantidad.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtCantidad.setText("1");
-
-        lblLimiteDescripcionNuevoQr.setForeground(new java.awt.Color(255, 0, 0));
-        lblLimiteDescripcionNuevoQr.setText("jLabel2");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -547,39 +530,29 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(47, 47, 47)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnVideoQr)
+                            .addComponent(jlVideoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jlNombreQr, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jlCategoriaQr))
                         .addGap(14, 14, 14)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jcbCategoriasQR, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jlCategoriaQr1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtNombreQr, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnVideoQr)
-                            .addComponent(jlVideoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(13, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jcbCategoriasQR, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtNombreQr, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lblLimiteDescripcionNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jlImagen1, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGap(87, 87, 87)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jlImagen2)
-                            .addComponent(btnImagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(btnImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlImagen1, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGap(87, 87, 87)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jlImagen2)
+                    .addComponent(btnImagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnImagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -589,15 +562,16 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 253, Short.MAX_VALUE))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(jlNombreQr6)
                             .addGap(143, 143, 143)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(btnAudioQr)
                                 .addComponent(jlAudioQr, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(0, 0, Short.MAX_VALUE)))
-                    .addContainerGap()))
+                            .addContainerGap(59, Short.MAX_VALUE)))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -605,9 +579,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlCategoriaQr)
-                    .addComponent(jcbCategoriasQR, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jlCategoriaQr1)
-                    .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcbCategoriasQR, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlNombreQr)
@@ -632,9 +604,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(56, 56, 56)
                         .addComponent(jlVideoQr)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblLimiteDescripcionNuevoQr)
-                .addGap(243, 243, 243))
+                .addGap(263, 263, 263))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addContainerGap(163, Short.MAX_VALUE)
@@ -689,17 +659,18 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                         .addGap(9, 9, 9)
                         .addComponent(lblIdQR)
                         .addGap(285, 285, 285)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 44, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblImagenQR, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGap(76, 76, 76)
                                 .addComponent(jlGenerarQr)
-                                .addGap(112, 112, 112)))))
-                .addContainerGap(22, Short.MAX_VALUE))
+                                .addGap(112, 112, 112)))
+                        .addContainerGap(22, Short.MAX_VALUE))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(207, 207, 207)
                 .addComponent(btnGenerarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -792,20 +763,6 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         imagen[1] = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\" + txtNombreQr.getText().toString() + "\\Imagenes";
     }//GEN-LAST:event_btnImagen2MouseClicked
 
-    private void txtAreaDescripcionNuevoQrKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAreaDescripcionNuevoQrKeyReleased
-        if (txtAreaDescripcionNuevoQr.getText().length()>2000){
-            lblLimiteDescripcionNuevoQr.setVisible(true);
-            lblLimiteDescripcionNuevoQr.setText("Límite Exedido");
-        }
-        else lblLimiteDescripcionNuevoQr.setVisible(false);
-    }//GEN-LAST:event_txtAreaDescripcionNuevoQrKeyReleased
-
-    private void txtAreaDescripcionNuevoQrKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAreaDescripcionNuevoQrKeyTyped
-        char car=evt.getKeyChar();
-        int limite  = 2000;
-        if (txtAreaDescripcionNuevoQr.getText().length()==limite) evt.consume();
-    }//GEN-LAST:event_txtAreaDescripcionNuevoQrKeyTyped
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAudioQr;
@@ -822,7 +779,6 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
     private javax.swing.JComboBox jcbCategoriasQR;
     public static javax.swing.JLabel jlAudioQr;
     private javax.swing.JLabel jlCategoriaQr;
-    private javax.swing.JLabel jlCategoriaQr1;
     private javax.swing.JLabel jlGenerarQr;
     private javax.swing.JLabel jlImagen1;
     private javax.swing.JLabel jlImagen2;
@@ -832,9 +788,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
     public static javax.swing.JLabel jlVideoQr;
     private javax.swing.JLabel lblIdQR;
     private javax.swing.JLabel lblImagenQR;
-    private javax.swing.JLabel lblLimiteDescripcionNuevoQr;
     private javax.swing.JTextArea txtAreaDescripcionNuevoQr;
-    private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtNombreQr;
     // End of variables declaration//GEN-END:variables
 }
