@@ -109,19 +109,7 @@ public final class Principal extends javax.swing.JFrame {
            
         Limpiar();
         
-        String img=getClass().getResource("/images/imagen.jpg").getPath();
-        Mostrar_Visualizador(imgMuseo1, img);
-        Mostrar_Visualizador(imgMuseo2, img);
-        Mostrar_Visualizador(imgMuseo3, img);
-        Mostrar_Visualizador(imgMuseo4,img);
-        Mostrar_Visualizador(imgMuseo5, img);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[0])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[0]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[1])) Mostrar_Visualizador(imgMuseo2, tempRutaActual[1]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[2])) Mostrar_Visualizador(imgMuseo3, tempRutaActual[2]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[3])) Mostrar_Visualizador(imgMuseo4, tempRutaActual[3]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[4])) Mostrar_Visualizador(imgMuseo5, tempRutaActual[4]);
-        String imgqr=getClass().getResource("/images/QR.png").getPath();
-        Mostrar_Visualizador(imgQrMuseo, imgqr);
+        
     }
     
     
@@ -167,18 +155,34 @@ public final class Principal extends javax.swing.JFrame {
         return true;
     }
     
+    void habilitar(){
+        txtNombreMuseo.setEditable(true);
+        spnFecha.setEnabled(true);
+        txtFundadorMuseo.setEditable(true);
+        txtHistoriaMuseo.setEditable(true);
+        imgMuseo1.setEnabled(true);
+        imgMuseo2.setEnabled(true);
+        imgMuseo3.setEnabled(true);
+        imgMuseo4.setEnabled(true);
+        imgMuseo5.setEnabled(true);
+    }
+    
+    void Deshabilitar(){
+        txtNombreMuseo.setEditable(false);
+        spnFecha.setEnabled(false);
+        txtFundadorMuseo.setEditable(false);
+        txtHistoriaMuseo.setEditable(false);
+        imgMuseo1.setEnabled(false);
+        imgMuseo2.setEnabled(false);
+        imgMuseo3.setEnabled(false);
+        imgMuseo4.setEnabled(false);
+        imgMuseo5.setEnabled(false);
+    }
+    
     void EditarQr(){
         if(btnEditarMuseo.getText().contains("Editar")) {
             btnEditarMuseo.setText("Guardar");
-            txtNombreMuseo.setEditable(true);
-            spnFecha.setEnabled(true);
-            txtFundadorMuseo.setEditable(true);
-            txtHistoriaMuseo.setEditable(true);
-            imgMuseo1.setEnabled(true);
-            imgMuseo2.setEnabled(true);
-            imgMuseo3.setEnabled(true);
-            imgMuseo4.setEnabled(true);
-            imgMuseo5.setEnabled(true);
+            habilitar();
             txtNombreMuseo.requestFocus();
             Limpiar();
         } else {
@@ -242,15 +246,7 @@ public final class Principal extends javax.swing.JFrame {
                     if (n > 0) {
                         JOptionPane.showMessageDialog(null, "Información actualizada Correctamente");
                         btnEditarMuseo.setText("Editar");
-                        txtNombreMuseo.setEditable(false);
-                        spnFecha.setEnabled(false);
-                        txtFundadorMuseo.setEditable(false);
-                        txtHistoriaMuseo.setEditable(false);
-                        imgMuseo1.setEnabled(false);
-                        imgMuseo2.setEnabled(false);
-                        imgMuseo3.setEnabled(false);
-                        imgMuseo4.setEnabled(false);
-                        imgMuseo5.setEnabled(false);
+                        Deshabilitar();
                     }
                     ps.close();
                 } catch (SQLException e) {
@@ -302,6 +298,20 @@ public final class Principal extends javax.swing.JFrame {
         } catch (SQLException e) {
         //JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
         }
+        String img=getClass().getResource("/images/imagen.jpg").getPath();
+        Mostrar_Visualizador(imgMuseo1, img);
+        Mostrar_Visualizador(imgMuseo2, img);
+        Mostrar_Visualizador(imgMuseo3, img);
+        Mostrar_Visualizador(imgMuseo4,img);
+        Mostrar_Visualizador(imgMuseo5, img);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[0])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[0]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[1])) Mostrar_Visualizador(imgMuseo2, tempRutaActual[1]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[2])) Mostrar_Visualizador(imgMuseo3, tempRutaActual[2]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[3])) Mostrar_Visualizador(imgMuseo4, tempRutaActual[3]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[4])) Mostrar_Visualizador(imgMuseo5, tempRutaActual[4]);
+        String imgqr=getClass().getResource("/images/QR.png").getPath();
+        Mostrar_Visualizador(imgQrMuseo, imgqr);
+        
     }
     
     public static String contarTotalU(){
@@ -607,6 +617,7 @@ public final class Principal extends javax.swing.JFrame {
         Date date = new Date();
         SpinnerDateModel fecha = new SpinnerDateModel(date, null, null, Calendar.DATE);
         spnFecha = new javax.swing.JSpinner(fecha);
+        btnCancelarMuseo = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jdeskusuarios = new javax.swing.JDesktopPane();
         jPanel9 = new javax.swing.JPanel();
@@ -866,6 +877,16 @@ public final class Principal extends javax.swing.JFrame {
         spnFecha.setEditor(formato);
         spnFecha.setEnabled(false);
 
+        btnCancelarMuseo.setBackground(new java.awt.Color(0, 0, 0));
+        btnCancelarMuseo.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        btnCancelarMuseo.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancelarMuseo.setText("Cancelar");
+        btnCancelarMuseo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarMuseoActionPerformed(evt);
+            }
+        });
+
         jdeskPrincipal.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo2, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -883,6 +904,7 @@ public final class Principal extends javax.swing.JFrame {
         jdeskPrincipal.setLayer(imgQrMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(btnEditarMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(spnFecha, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(btnCancelarMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskPrincipalLayout = new javax.swing.GroupLayout(jdeskPrincipal);
         jdeskPrincipal.setLayout(jdeskPrincipalLayout);
@@ -928,7 +950,9 @@ public final class Principal extends javax.swing.JFrame {
                                         .addGap(30, 30, 30)
                                         .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(btnEditarMuseo))
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(btnEditarMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnCancelarMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                     .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                                         .addComponent(jlGaleria)
                                         .addGap(0, 0, Short.MAX_VALUE)))))))
@@ -961,18 +985,20 @@ public final class Principal extends javax.swing.JFrame {
                         .addGap(32, 32, 32)
                         .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                .addComponent(btnEditarMuseo)
-                                .addGap(54, 54, 54))
+                                .addComponent(btnCancelarMuseo)
+                                .addGap(13, 13, 13))
                             .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                                 .addComponent(jlGaleria)
                                 .addGap(126, 126, 126))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(imgMuseo3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(imgMuseo2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(imgMuseo4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnEditarMuseo)
+                            .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(imgMuseo3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(imgMuseo2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(imgMuseo4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -2221,6 +2247,12 @@ public final class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtBuscarPorKeyPressed
 
+    private void btnCancelarMuseoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarMuseoActionPerformed
+        Limpiar();
+        Deshabilitar();
+        btnEditarMuseo.setText("Editar");
+    }//GEN-LAST:event_btnCancelarMuseoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2238,6 +2270,7 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.ButtonGroup btgSeleccion;
     private javax.swing.JLabel btnActualizar;
     private javax.swing.JLabel btnBuscarUsuarios;
+    private javax.swing.JButton btnCancelarMuseo;
     private javax.swing.JButton btnEditarMuseo;
     private javax.swing.JLabel btnEliminar;
     private javax.swing.JLabel btnGestionArticulos;
