@@ -107,32 +107,7 @@ public final class Principal extends javax.swing.JFrame {
         
         lblTotalUsuarios.setText(contarTotalU());
            
-        try {
-        String SQLTM ="SELECT * FROM museo WHERE IDMUSEO = 1"; 
-        sent = con.createStatement();
-        ResultSet rs = sent.executeQuery(SQLTM);
-        rs.next();
-        txtNombreMuseo.setText(rs.getString("NOMBREMUSEO"));
-        String fe = rs.getString("FECHAFUNDACIONMUSEO");
-        if(!StringUtils.isNullOrEmpty(fe)) {
-            ((DefaultEditor) spnFecha.getEditor()).getTextField().setText(fe);
-        }
-        txtFundadorMuseo.setText(rs.getString("FUNDADORMUSEO"));
-        txtHistoriaMuseo.setText(rs.getString("HISTORIAMUSEO"));
-        tempRutaActual[0] = rs.getString("IMAGENUNOMUSEO");
-        if(StringUtils.isNullOrEmpty(tempRutaActual[0])) tempRutaActual[0] = "";
-        tempRutaActual[1] = rs.getString("IMAGENDOSMUSEO");
-        if(StringUtils.isNullOrEmpty(tempRutaActual[1])) tempRutaActual[1] = "";
-        tempRutaActual[2] = rs.getString("IMAGENTRESMUSEO");
-        if(StringUtils.isNullOrEmpty(tempRutaActual[2])) tempRutaActual[2] = "";
-        tempRutaActual[3] = rs.getString("IMAGECUATRORESMUSEO");
-        if(StringUtils.isNullOrEmpty(tempRutaActual[3])) tempRutaActual[3] = "";
-        tempRutaActual[4] = rs.getString("IMAGENCINCOMUSEO");
-        if(StringUtils.isNullOrEmpty(tempRutaActual[4])) tempRutaActual[4] = "";
-        rs.close();
-        } catch (SQLException e) {
-        //JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
-        }   
+        Limpiar();
         
         String img=getClass().getResource("/images/imagen.jpg").getPath();
         Mostrar_Visualizador(imgMuseo1, img);
@@ -141,10 +116,10 @@ public final class Principal extends javax.swing.JFrame {
         Mostrar_Visualizador(imgMuseo4,img);
         Mostrar_Visualizador(imgMuseo5, img);
         if(!StringUtils.isNullOrEmpty(tempRutaActual[0])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[0]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[1])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[1]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[2])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[2]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[3])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[3]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[4])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[4]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[1])) Mostrar_Visualizador(imgMuseo2, tempRutaActual[1]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[2])) Mostrar_Visualizador(imgMuseo3, tempRutaActual[2]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[3])) Mostrar_Visualizador(imgMuseo4, tempRutaActual[3]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[4])) Mostrar_Visualizador(imgMuseo5, tempRutaActual[4]);
         String imgqr=getClass().getResource("/images/QR.png").getPath();
         Mostrar_Visualizador(imgQrMuseo, imgqr);
     }
@@ -205,6 +180,7 @@ public final class Principal extends javax.swing.JFrame {
             imgMuseo4.setEnabled(true);
             imgMuseo5.setEnabled(true);
             txtNombreMuseo.requestFocus();
+            Limpiar();
         } else {
             if (txtNombreMuseo.getText().trim().isEmpty() || txtFundadorMuseo.getText().trim().isEmpty()
                     || txtHistoriaMuseo.getText().trim().isEmpty())
@@ -294,6 +270,39 @@ public final class Principal extends javax.swing.JFrame {
         }    
     }
 
+    void Limpiar(){
+        for (int i = 0; i < 5; i++) {
+            imagen[i] = "";
+            tempImagen[i] = "";
+            tempNombreArchivo[i] = "";
+        }
+        try {
+            String SQLTM ="SELECT * FROM museo WHERE IDMUSEO = 1"; 
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTM);
+            rs.next();
+            txtNombreMuseo.setText(rs.getString("NOMBREMUSEO"));
+            String fe = rs.getString("FECHAFUNDACIONMUSEO");
+            if(!StringUtils.isNullOrEmpty(fe)) {
+                ((DefaultEditor) spnFecha.getEditor()).getTextField().setText(fe);
+            }
+            txtFundadorMuseo.setText(rs.getString("FUNDADORMUSEO"));
+            txtHistoriaMuseo.setText(rs.getString("HISTORIAMUSEO"));
+            tempRutaActual[0] = rs.getString("IMAGENUNOMUSEO");
+            if(StringUtils.isNullOrEmpty(tempRutaActual[0])) tempRutaActual[0] = "";
+            tempRutaActual[1] = rs.getString("IMAGENDOSMUSEO");
+            if(StringUtils.isNullOrEmpty(tempRutaActual[1])) tempRutaActual[1] = "";
+            tempRutaActual[2] = rs.getString("IMAGENTRESMUSEO");
+            if(StringUtils.isNullOrEmpty(tempRutaActual[2])) tempRutaActual[2] = "";
+            tempRutaActual[3] = rs.getString("IMAGENCUATROMUSEO");
+            if(StringUtils.isNullOrEmpty(tempRutaActual[3])) tempRutaActual[3] = "";
+            tempRutaActual[4] = rs.getString("IMAGENCINCOMUSEO");
+            if(StringUtils.isNullOrEmpty(tempRutaActual[4])) tempRutaActual[4] = "";
+            rs.close();
+        } catch (SQLException e) {
+        //JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
+        }
+    }
     
     public static String contarTotalU(){
         String cont;
