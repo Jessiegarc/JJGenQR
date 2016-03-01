@@ -12,12 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -32,8 +28,6 @@ import javax.swing.SpinnerDateModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FileUtils;
-import org.codehaus.groovy.tools.shell.util.SimpleCompletor;
-import org.codehaus.groovy.util.StringUtil;
 
 
 public final class Principal extends javax.swing.JFrame {
@@ -50,7 +44,7 @@ public final class Principal extends javax.swing.JFrame {
     String id = "", rol = "", estado = "";
     Integer buscar = 0, x = 0, y = 0;
     String imagenQR = "", codigoImagenQR = "";
-    String[] imagen = {"", "", "", "", ""}, tempImagen = {"", "", "", "", ""}, tempNombreArchivo = {"", "", "", "", ""}, tempRutaActual = {"", "", "", "", "", ""};
+    String[] imagen = {"", "", "", "", ""}, tempImagen = {"", "", "", "", ""}, tempNombreArchivo = {"", "", "", "", ""}, tempRutaActual = {"", "", "", "", ""};
 
     
     public Principal() {
@@ -126,10 +120,15 @@ public final class Principal extends javax.swing.JFrame {
         txtFundadorMuseo.setText(rs.getString("FUNDADORMUSEO"));
         txtHistoriaMuseo.setText(rs.getString("HISTORIAMUSEO"));
         tempRutaActual[0] = rs.getString("IMAGENUNOMUSEO");
+        if(StringUtils.isNullOrEmpty(tempRutaActual[0])) tempRutaActual[0] = "";
         tempRutaActual[1] = rs.getString("IMAGENDOSMUSEO");
+        if(StringUtils.isNullOrEmpty(tempRutaActual[1])) tempRutaActual[1] = "";
         tempRutaActual[2] = rs.getString("IMAGENTRESMUSEO");
+        if(StringUtils.isNullOrEmpty(tempRutaActual[2])) tempRutaActual[2] = "";
         tempRutaActual[3] = rs.getString("IMAGECUATRORESMUSEO");
+        if(StringUtils.isNullOrEmpty(tempRutaActual[3])) tempRutaActual[3] = "";
         tempRutaActual[4] = rs.getString("IMAGENCINCOMUSEO");
+        if(StringUtils.isNullOrEmpty(tempRutaActual[4])) tempRutaActual[4] = "";
         rs.close();
         } catch (SQLException e) {
         //JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
@@ -213,35 +212,35 @@ public final class Principal extends javax.swing.JFrame {
             else{
                 try {       
                     //Actualizar usuario
-                    if(tempImagen[0].isEmpty()) imagen[0] = tempRutaActual[0];
+                    if(StringUtils.isNullOrEmpty(tempImagen[0])) imagen[0] = tempRutaActual[0];
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[0]);
                         borrarImagenAntigua.delete();
                         if(CopiaArchivos(tempImagen[0], imagen[0], imagen, "Imagen1.jpg", 0)) imagen[0] += "\\Imagen1.jpg";
                         else return;
                     }
-                    if(tempImagen[1].isEmpty()) imagen[1] = tempRutaActual[1];
+                    if(StringUtils.isNullOrEmpty(tempImagen[1])) imagen[1] = tempRutaActual[1];
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[1]);
                         borrarImagenAntigua.delete();
                         if(CopiaArchivos(tempImagen[1], imagen[1], imagen, "Imagen2.jpg", 1)) imagen[1] += "\\Imagen2.jpg";
                         else return;
                     }
-                    if(tempImagen[2].isEmpty()) imagen[2] = tempRutaActual[2];
+                    if(StringUtils.isNullOrEmpty(tempImagen[2])) imagen[2] = tempRutaActual[2];
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[2]);
                         borrarImagenAntigua.delete();
                         if(CopiaArchivos(tempImagen[2], imagen[2], imagen, "Imagen3.jpg", 2)) imagen[2] += "\\Imagen3.jpg";
                         else return;
                     }
-                    if(tempImagen[3].isEmpty()) imagen[3] = tempRutaActual[3];
+                    if(StringUtils.isNullOrEmpty(tempImagen[3])) imagen[3] = tempRutaActual[3];
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[3]);
                         borrarImagenAntigua.delete();
                         if(CopiaArchivos(tempImagen[3], imagen[3], imagen, "Imagen4.jpg", 3)) imagen[3] += "\\Imagen4.jpg";
                         else return;
                     }
-                    if(tempImagen[4].isEmpty()) imagen[4] = tempRutaActual[4];
+                    if(StringUtils.isNullOrEmpty(tempImagen[4])) imagen[4] = tempRutaActual[4];
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[4]);
                         borrarImagenAntigua.delete();
