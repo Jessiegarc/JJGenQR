@@ -55,6 +55,10 @@ public final class Principal extends javax.swing.JFrame {
         btgSeleccion.add(rbtnInactivo);
         if(con == null) con = mysql.getConnect();
         lblNuevo.setVisible(false);
+        lblLimiteNombreMuseo.setVisible(false);
+        lblLimiteFundadorMuseo.setVisible(false);
+        lblLimiteHistoriaMuseo.setVisible(false);
+        
         ((DefaultEditor) spnFecha.getEditor()).getTextField().setEditable(false);
         lblUsuarioyRolPrincipal.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
         lblUsuarioyRolUsuarios.setText("Bienvenid@ " + UsuarioIngresado.parametroU + " tu rol es de " + UsuarioIngresado.parametroR);
@@ -597,27 +601,31 @@ public final class Principal extends javax.swing.JFrame {
         lblPoliticasdePrivacidadPrincipal = new javax.swing.JLabel();
         lblUsuarioyRolPrincipal = new javax.swing.JLabel();
         jdeskPrincipal = new javax.swing.JDesktopPane();
-        jLabel1 = new javax.swing.JLabel();
         imgMuseo1 = new javax.swing.JLabel();
         imgMuseo2 = new javax.swing.JLabel();
         jlGaleria = new javax.swing.JLabel();
         lblCerrarSesion = new javax.swing.JLabel();
-        txtNombreMuseo = new javax.swing.JTextField();
-        jLabel43 = new javax.swing.JLabel();
-        jLabel44 = new javax.swing.JLabel();
-        jLabel46 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtHistoriaMuseo = new javax.swing.JTextArea();
         imgMuseo3 = new javax.swing.JLabel();
         imgMuseo4 = new javax.swing.JLabel();
         imgMuseo5 = new javax.swing.JLabel();
-        txtFundadorMuseo = new javax.swing.JTextField();
         imgQrMuseo = new javax.swing.JLabel();
         btnEditarMuseo = new javax.swing.JButton();
+        btnCancelarMuseo = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        lblLimiteNombreMuseo = new javax.swing.JLabel();
+        lblNombreMuseo = new javax.swing.JLabel();
+        lblFundadorMuseo = new javax.swing.JLabel();
+        lblLimiteFundadorMuseo = new javax.swing.JLabel();
+        lblLimiteHistoriaMuseo = new javax.swing.JLabel();
+        txtFundadorMuseo = new javax.swing.JTextField();
+        jLabel46 = new javax.swing.JLabel();
+        txtNombreMuseo = new javax.swing.JTextField();
         Date date = new Date();
         SpinnerDateModel fecha = new SpinnerDateModel(date, null, null, Calendar.DATE);
         spnFecha = new javax.swing.JSpinner(fecha);
-        btnCancelarMuseo = new javax.swing.JButton();
+        jLabel44 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jdeskusuarios = new javax.swing.JDesktopPane();
         jPanel9 = new javax.swing.JPanel();
@@ -775,9 +783,6 @@ public final class Principal extends javax.swing.JFrame {
 
         jdeskPrincipal.setBackground(new java.awt.Color(204, 204, 255));
 
-        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        jLabel1.setText("NOMBRE : ");
-
         imgMuseo1.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
         imgMuseo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/museo2.jpg"))); // NOI18N
         imgMuseo1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -811,21 +816,15 @@ public final class Principal extends javax.swing.JFrame {
             }
         });
 
-        txtNombreMuseo.setEditable(false);
-
-        jLabel43.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        jLabel43.setText("FUNDADOR : ");
-
-        jLabel44.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        jLabel44.setText("FECHA DE FUNDACION : ");
-
-        jLabel46.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        jLabel46.setText("HISTORIA : ");
-
         txtHistoriaMuseo.setEditable(false);
         txtHistoriaMuseo.setColumns(20);
         txtHistoriaMuseo.setLineWrap(true);
         txtHistoriaMuseo.setRows(5);
+        txtHistoriaMuseo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtHistoriaMuseoKeyTyped(evt);
+            }
+        });
         jScrollPane2.setViewportView(txtHistoriaMuseo);
 
         imgMuseo3.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
@@ -858,8 +857,6 @@ public final class Principal extends javax.swing.JFrame {
             }
         });
 
-        txtFundadorMuseo.setEditable(false);
-
         imgQrMuseo.setFont(new java.awt.Font("Century Schoolbook", 0, 14)); // NOI18N
         imgQrMuseo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/QR.png"))); // NOI18N
 
@@ -873,10 +870,6 @@ public final class Principal extends javax.swing.JFrame {
             }
         });
 
-        JSpinner.DateEditor formato = new JSpinner.DateEditor(spnFecha, "yyyy-MM-dd");
-        spnFecha.setEditor(formato);
-        spnFecha.setEnabled(false);
-
         btnCancelarMuseo.setBackground(new java.awt.Color(0, 0, 0));
         btnCancelarMuseo.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
         btnCancelarMuseo.setForeground(new java.awt.Color(255, 255, 255));
@@ -887,24 +880,116 @@ public final class Principal extends javax.swing.JFrame {
             }
         });
 
-        jdeskPrincipal.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        lblLimiteNombreMuseo.setText("Limite Exedido");
+
+        lblNombreMuseo.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        lblNombreMuseo.setText("NOMBRE : ");
+
+        lblFundadorMuseo.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        lblFundadorMuseo.setText("FUNDADOR : ");
+
+        lblLimiteFundadorMuseo.setText("Limite Exedido");
+
+        lblLimiteHistoriaMuseo.setText("Limite Exedido");
+
+        txtFundadorMuseo.setEditable(false);
+        txtFundadorMuseo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFundadorMuseoKeyTyped(evt);
+            }
+        });
+
+        jLabel46.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jLabel46.setText("HISTORIA : ");
+
+        txtNombreMuseo.setEditable(false);
+        txtNombreMuseo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreMuseoKeyTyped(evt);
+            }
+        });
+
+        JSpinner.DateEditor formato = new JSpinner.DateEditor(spnFecha, "yyyy-MM-dd");
+        spnFecha.setEditor(formato);
+        spnFecha.setEnabled(false);
+
+        jLabel44.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jLabel44.setText("FECHA DE FUNDACION : ");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(143, 143, 143)
+                .addComponent(lblLimiteHistoriaMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(394, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblLimiteNombreMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblLimiteFundadorMuseo, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(53, 53, 53))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel44)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(spnFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblFundadorMuseo)
+                                .addComponent(lblNombreMuseo))
+                            .addGap(24, 24, 24)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtNombreMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+                                .addComponent(txtFundadorMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)))
+                        .addComponent(jLabel46))
+                    .addContainerGap(133, Short.MAX_VALUE)))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(lblLimiteNombreMuseo)
+                .addGap(34, 34, 34)
+                .addComponent(lblLimiteFundadorMuseo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
+                .addComponent(lblLimiteHistoriaMuseo)
+                .addGap(24, 24, 24))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblNombreMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNombreMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblFundadorMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFundadorMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(spnFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(11, 11, 11)
+                    .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+
         jdeskPrincipal.setLayer(imgMuseo1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(jlGaleria, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(lblCerrarSesion, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(txtNombreMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(jLabel43, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(jLabel44, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(jLabel46, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(jScrollPane2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo4, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo5, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(txtFundadorMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgQrMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(btnEditarMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskPrincipal.setLayer(spnFecha, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(btnCancelarMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskPrincipalLayout = new javax.swing.GroupLayout(jdeskPrincipal);
         jdeskPrincipal.setLayout(jdeskPrincipalLayout);
@@ -918,25 +1003,6 @@ public final class Principal extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jdeskPrincipalLayout.createSequentialGroup()
                         .addGap(68, 68, 68)
                         .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2)
-                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel44)
-                                            .addComponent(jLabel46))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(spnFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE))
-                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel43)
-                                            .addComponent(jLabel1))
-                                        .addGap(106, 106, 106)
-                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtFundadorMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
-                                            .addComponent(txtNombreMuseo))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(imgQrMuseo))
                             .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                                 .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(29, 29, 29)
@@ -944,66 +1010,60 @@ public final class Principal extends javax.swing.JFrame {
                                 .addGap(26, 26, 26)
                                 .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                        .addComponent(jlGaleria)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                                         .addComponent(imgMuseo3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(29, 29, 29)
                                         .addComponent(imgMuseo4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(30, 30, 30)
                                         .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(btnEditarMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(btnCancelarMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                        .addComponent(jlGaleria)
-                                        .addGap(0, 0, Short.MAX_VALUE)))))))
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnEditarMuseo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnCancelarMuseo, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                            .addComponent(jScrollPane2)
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(imgQrMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(24, 24, 24)))
                 .addGap(98, 98, 98))
         );
         jdeskPrincipalLayout.setVerticalGroup(
             jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jdeskPrincipalLayout.createSequentialGroup()
                 .addComponent(lblCerrarSesion)
-                .addGap(34, 34, 34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(imgQrMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNombreMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtFundadorMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(spnFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(11, 11, 11)
-                        .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(imgQrMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                .addComponent(btnCancelarMuseo)
-                                .addGap(13, 13, 13))
-                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                                .addComponent(jlGaleria)
-                                .addGap(126, 126, 126))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnEditarMuseo)
-                            .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(imgMuseo3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(imgMuseo2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(imgMuseo4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addGap(32, 32, 32)
+                                .addComponent(jlGaleria)
+                                .addGap(126, 126, 126))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
+                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                        .addComponent(btnEditarMuseo)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnCancelarMuseo))
+                                    .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(imgMuseo3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(imgMuseo2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(imgMuseo4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap())))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, Short.MAX_VALUE)
                         .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
         );
 
         javax.swing.GroupLayout jpPrincipalLayout = new javax.swing.GroupLayout(jpPrincipal);
@@ -2253,6 +2313,42 @@ public final class Principal extends javax.swing.JFrame {
         btnEditarMuseo.setText("Editar");
     }//GEN-LAST:event_btnCancelarMuseoActionPerformed
 
+    private void txtNombreMuseoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreMuseoKeyTyped
+        int limite  = 50;
+        if (txtNombreMuseo.getText().length()== limite){ 
+            evt.consume();
+            lblLimiteNombreMuseo.setVisible(true);
+            lblLimiteNombreMuseo.setText("Limite Exedido");
+        }
+        else{
+                lblLimiteNombreMuseo.setVisible(false);
+        }
+    }//GEN-LAST:event_txtNombreMuseoKeyTyped
+
+    private void txtHistoriaMuseoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHistoriaMuseoKeyTyped
+        int limite  = 2000;
+        if (txtHistoriaMuseo.getText().length()== limite){ 
+            evt.consume();
+            lblLimiteHistoriaMuseo.setVisible(true);
+            lblLimiteHistoriaMuseo.setText("Limite Exedido");
+        }
+        else{
+                lblLimiteHistoriaMuseo.setVisible(false);
+        }
+    }//GEN-LAST:event_txtHistoriaMuseoKeyTyped
+
+    private void txtFundadorMuseoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFundadorMuseoKeyTyped
+        int limite  = 50;
+        if (txtFundadorMuseo.getText().length()== limite){ 
+            evt.consume();
+            lblLimiteFundadorMuseo.setVisible(true);
+            lblLimiteFundadorMuseo.setText("Limite Exedido");
+        }
+        else{
+                lblLimiteFundadorMuseo.setVisible(false);
+        }
+    }//GEN-LAST:event_txtFundadorMuseoKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -2282,7 +2378,6 @@ public final class Principal extends javax.swing.JFrame {
     public javax.swing.JLabel imgMuseo4;
     public javax.swing.JLabel imgMuseo5;
     private javax.swing.JLabel imgQrMuseo;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -2316,13 +2411,13 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
-    private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -2357,7 +2452,12 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel lblCerrarSesion2;
     private javax.swing.JLabel lblCerrarSesion3;
     private javax.swing.JLabel lblCerrarSesion4;
+    private javax.swing.JLabel lblFundadorMuseo;
     private javax.swing.JLabel lblImgContactanosJJ;
+    private javax.swing.JLabel lblLimiteFundadorMuseo;
+    private javax.swing.JLabel lblLimiteHistoriaMuseo;
+    private javax.swing.JLabel lblLimiteNombreMuseo;
+    private javax.swing.JLabel lblNombreMuseo;
     public javax.swing.JLabel lblNuevo;
     private javax.swing.JLabel lblPoliticasdePrivacidadContactanos;
     private javax.swing.JLabel lblPoliticasdePrivacidadGaleria;
