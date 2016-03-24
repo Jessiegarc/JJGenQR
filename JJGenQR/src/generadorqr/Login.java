@@ -138,7 +138,7 @@ int cont=0;
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel3.setBackground(new java.awt.Color(0, 0, 102));
+        jPanel3.setBackground(new java.awt.Color(25, 14, 60));
 
         jPanel4.setBackground(new java.awt.Color(155, 80, 80));
         jPanel4.setMinimumSize(new java.awt.Dimension(400, 100));

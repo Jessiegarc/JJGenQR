@@ -277,6 +277,10 @@ jifrNuevoQr internalNuevoQr;
         btnImprimir = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         lblTotalArticulos = new javax.swing.JLabel();
+        lblNuevoArticulo = new javax.swing.JLabel();
+        lblActualizarA = new javax.swing.JLabel();
+        lblEliminarArticulo = new javax.swing.JLabel();
+        lblBuscarArticulo = new javax.swing.JLabel();
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -415,15 +419,27 @@ jifrNuevoQr internalNuevoQr;
         lblTotalArticulos.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblTotalArticulos.setText("0");
 
+        lblNuevoArticulo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblNuevoArticulo.setText("Nuevo");
+
+        lblActualizarA.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblActualizarA.setText("Actualizar");
+
+        lblEliminarArticulo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblEliminarArticulo.setText("Eliminar");
+
+        lblBuscarArticulo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblBuscarArticulo.setText("Buscar");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jlCategorias)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlCategorias))
                 .addGap(18, 18, 18))
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(218, 218, 218)
@@ -434,15 +450,26 @@ jifrNuevoQr internalNuevoQr;
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(btnNuevosArticulos)
-                        .addGap(47, 47, 47)
-                        .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
-                        .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addComponent(btnNuevosArticulos)
+                                .addGap(42, 42, 42)
+                                .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
+                                .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
+                                .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(63, 63, 63)
+                                .addComponent(lblNuevoArticulo)
+                                .addGap(80, 80, 80)
+                                .addComponent(lblActualizarA)
+                                .addGap(69, 69, 69)
+                                .addComponent(lblEliminarArticulo)
+                                .addGap(85, 85, 85)
+                                .addComponent(lblBuscarArticulo)))
+                        .addGap(35, 35, 35)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -469,7 +496,7 @@ jifrNuevoQr internalNuevoQr;
                         .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)
                         .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -480,7 +507,13 @@ jifrNuevoQr internalNuevoQr;
                         .addComponent(jlCategorias)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(25, 25, 25)
+                                .addGap(5, 5, 5)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblNuevoArticulo)
+                                    .addComponent(lblActualizarA)
+                                    .addComponent(lblEliminarArticulo)
+                                    .addComponent(lblBuscarArticulo))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -502,7 +535,7 @@ jifrNuevoQr internalNuevoQr;
                                     .addComponent(lblTotalArticulos))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                                 .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -626,8 +659,12 @@ jifrNuevoQr internalNuevoQr;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlCategorias;
     public static javax.swing.JTable jtContenidosArticulos;
+    private javax.swing.JLabel lblActualizarA;
+    private javax.swing.JLabel lblBuscarArticulo;
+    private javax.swing.JLabel lblEliminarArticulo;
     public javax.swing.JLabel lblEtiquetaPreviewImagenes;
     public javax.swing.JLabel lblEtiquetaPreviewQr;
+    private javax.swing.JLabel lblNuevoArticulo;
     private javax.swing.JLabel lblTotaEspecies;
     private javax.swing.JLabel lblTotalArticulos;
     private javax.swing.JLabel lblVistaPreviaImagen1;
