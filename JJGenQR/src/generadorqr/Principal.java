@@ -4,7 +4,13 @@ import Modelos.ItemSeleccionado;
 import Modelos.UsuarioIngresado;
 import Modelos.ValoresConstantes;
 import com.mysql.jdbc.StringUtils;
+import db.Anios;
+import db.AniosDispositivo;
+import db.ConexionBase;
 import db.mysql;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,13 +20,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
@@ -33,12 +36,27 @@ import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FileUtils;
+import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.table.TableColumnModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 
-public final class Principal extends javax.swing.JFrame {
+public final class Principal extends javax.swing.JFrame implements Printable{
     DefaultTableModel model;
     static Connection con;
     static Statement sent;
+    public String variable,variabled;
     File fichero;
     jifrTerminosyCondiciones internalTerminos;
     jifrPoliticasdePrivacidad internalPoliticas;
@@ -47,20 +65,37 @@ public final class Principal extends javax.swing.JFrame {
     jifrGestionArticulos internalGestionArticulo;
     jifrContactanos internalContactanos;
     ItemSeleccionado is=new ItemSeleccionado();
-    String id = "", rol = "", estado = "",fq;
-    Integer buscar = 0, x = 0, y = 0;
+    String id = "", rol = "", estado = "";
+    Integer buscar = 0, x = 0, y = 0,opimG=0;
     String imagenQR = "", codigoImagenQR = "";
-    String[] imagen = {"", "", "", "", ""}, tempImagen = {"", "", "", "", ""}, tempNombreArchivo = {"", "", "", "", ""}, tempRutaActual = {"", "", "", "", ""};
+    String[] imagen = {"", "", "", "", ""}, tempImagen = {"", "", "", "", "", "", ""}, tempNombreArchivo = {"", "", "", "", "", "", ""}, tempRutaActual = {"", "", "", "", "", "", ""};
     private Timer t;
     private ActionListener al;
-        
+    Integer a=0,m=0,d=0,idAnio = 0,idAnioDis = 0,a1=0,m1=0,d1=0,imprimirOpcion=0;
+    DefaultComboBoxModel mdlAGE,mdlAGEDis;
+    Vector<Anios> anios;
+    Vector<AniosDispositivo> aniosd;
+    ItemSeleccionado isV=new ItemSeleccionado();
+    ItemSeleccionado isVD=new ItemSeleccionado();
+    String idV = "",idVD = "";
+    String audio = "", tempAudio = "", video = "", tempVideo = "", fechaActual = "", accion = "", categoria = "";
+    String[] tempNombreMultimedia = {"", ""} ;
+    String fq="",ff="",cal="",cal1="",paraImpre1="",paraImpre2="",paraImpre3="",paraImpre4="";
     
     public Principal() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
+        btnGestionCategoria.setBackground(Color.black);
+        PrivilegiosUsuarios();
         btgSeleccion.add(rbtnActivo);
         btgSeleccion.add(rbtnInactivo);
+        btgBuscarHistorialPor.add(jrbFiltroVisitante);
+        btgBuscarHistorialPor.add(jrbFiltroDispositivo);
+        btgBuscarHistorialPor.add(jrbFiltroTodo);
+        jrbFiltroTodo.setSelected(true);
+        btgVerEstadisticas.add(jrbEstadisticasVisitantes);
+        btgVerEstadisticas.add(jrbEstadisticasDispositivos);
         if(con == null) con = mysql.getConnect();
         lblNuevo.setVisible(false);
         lblLimiteNombreMuseo.setVisible(false);
@@ -92,56 +127,112 @@ public final class Principal extends javax.swing.JFrame {
         String Ruta=getClass().getResource("/images/Mas.png").getPath();
         Mostrar_Visualizador(btnNuevoUsuario, Ruta);
         String Ruta1=getClass().getResource("/images/actualizar.png").getPath();
-        Mostrar_Visualizador(btnActualizar, Ruta1);
+        Mostrar_Visualizador(btnActualizarUsuario, Ruta1);
         String Ruta2=getClass().getResource("/images/Eliminar1.png").getPath();
-        Mostrar_Visualizador(btnEliminar, Ruta2);
+        Mostrar_Visualizador(btnEliminarUsuario, Ruta2);
         String Ruta3=getClass().getResource("/images/search.png").getPath();
         Mostrar_Visualizador(btnBuscarUsuarios, Ruta3);
         
         
-        String rutaAA=getClass().getResource("/images/acercade.jpg").getPath();
-        Mostrar_Visualizador(lblAcercaDeAnimalito, rutaAA);
-        String rutaAApp=getClass().getResource("/images/appjqr.png").getPath();
-        Mostrar_Visualizador(lblAcercaDeLaAplicacion, rutaAApp);
-        String rutaAVN=getClass().getResource("/images/netbeans.png").getPath();
-        Mostrar_Visualizador(lblAcercaDeAppVersionNetbeans, rutaAVN);
-        String rutaAVA=getClass().getResource("/images/androidstudio.png").getPath();
-        Mostrar_Visualizador(lblAcercaDeAppVersionandroid, rutaAVA);
+        //String rutaAA=getClass().getResource("/images/search.png").getPath();
+        //Mostrar_Visualizador(btnBuscarHistorialVisitaDispositivo, rutaAA);
+        String rutaAApp=getClass().getResource("/images/search.png").getPath();
+        Mostrar_Visualizador(btnVerEstadisticaAnualDispositivos, rutaAApp);
+        //String rutaAVN=getClass().getResource("/images/imprimir2.png").getPath();
+        //Mostrar_Visualizador(btnImprimirVisitantesDispositivo, rutaAVN);
+        String rutaAVA=getClass().getResource("/images/imprimir2.png").getPath();
+        Mostrar_Visualizador(btnImprimirEstadisticaDispositivos, rutaAVA);
         
-        String rutaContactanosJJ=getClass().getResource("/images/search.png").getPath();
-        Mostrar_Visualizador(lblBuscarHistorialVisita, rutaContactanosJJ);
-        String rutaHistorial=getClass().getResource("/images/Eliminar1.png").getPath();
-        Mostrar_Visualizador(lblEliminarHistorialVisita, rutaHistorial);
+        String rutaHistorial=getClass().getResource("/images/search.png").getPath();
+        Mostrar_Visualizador(lblBuscarHistorialVisita, rutaHistorial);
+        String rutaEstadistica=getClass().getResource("/images/search.png").getPath();
+        Mostrar_Visualizador(btnVerEstadisticaAnual, rutaEstadistica);
+        String rutaImprimirUsuarios=getClass().getResource("/images/imprimir2.png").getPath();
+        Mostrar_Visualizador(btnImprimirUsuarios, rutaImprimirUsuarios);
         
+        String RutaV=getClass().getResource("/images/Mas.png").getPath();
+        Mostrar_Visualizador(btnNuevoVisitante, RutaV);
+        String RutaIv=getClass().getResource("/images/imprimir2.png").getPath();
+        Mostrar_Visualizador(btnImprimirVisitantes, RutaIv);
+        String RutaIE=getClass().getResource("/images/imprimir2.png").getPath();
+        Mostrar_Visualizador(btnImprimirEstadistica, RutaIE);
+
+        jtHistorialVisita.setModel(LlenarTablaHistorialUnido()); 
+        //jtHistorialVisita.setModel(LlenarTablaHistorialBusquedaUnido()); 
+        //jtHistorialVisita.setModel(LlenarTablaHistorialVisita()); 
+        //jtHistorialVisitaDispositivo.setModel(LlenarTablaHistorialVisitaconDispositivo());
         
         txtBuscarPor.setEnabled(false);
         rbtnActivo.setEnabled(false);
         rbtnInactivo.setEnabled(false);
         jcbBuscarPor.setVisible(false);
-        jtUsuarios.setModel(LlenarTablaUsuarios());
-        jtHistorialVisita.setModel(LlenarTablaHistorialVisita());
-        al=new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                jtHistorialVisita.setModel(LlenarTablaHistorialVisita()); 
-                //if(t2=0){
-            }
-        };
-        t=new Timer(1000,al);
-        if(!t.isRunning()){
-        t.start();
+        if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+        jtUsuarios.setModel(LlenarTablaUsuariosAdmin());
+        TableColumnModel columnModel = jtUsuarios.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(10);
+        columnModel.getColumn(1).setPreferredWidth(100);
+        columnModel.getColumn(2).setPreferredWidth(100);
+        columnModel.getColumn(3).setPreferredWidth(100);
+        columnModel.getColumn(4).setPreferredWidth(100);
+        columnModel.getColumn(5).setPreferredWidth(100);
+        columnModel.getColumn(6).setPreferredWidth(200);
+        columnModel.getColumn(7).setPreferredWidth(100);
         }
+        else         jtUsuarios.setModel(LlenarTablaUsuarios());
+        //jtHistorialVisita.setModel(LlenarTablaHistorialVisita());
+        txtTotalVisitas.setText(String.valueOf((Integer.parseInt(contarTotalVisitas())+(Integer.parseInt(contarTotalVisitasDispositivos())))));
         lblTotalUsuarios.setText(contarTotalU());
-        txtTotalVisitas.setText(contarTotalVisitas());
         Limpiar();
         
+         
+        String SQLAGE="SELECT IDHISTORIALVISITA,SubString(FECHAHORAVISITA,7,4) FROM historialvisitas GROUP BY SubString(FECHAHORAVISITA,7,4)";
+        mdlAGE= new DefaultComboBoxModel(ConexionBase.leerDatosVector2(SQLAGE));
+        anios = ConexionBase.leerDatosVector2(SQLAGE);
+        this.jcbAñoGraficoEstadistico.setModel(mdlAGE);
+        variable=(jcbAñoGraficoEstadistico.getSelectedItem()).toString();
         
+        String SQLAGEDis="SELECT IDHISTORIALDISPOSITIVOS,SubString(FECHAVISITADISPOSITIVO,7,4) AS FECHAVISITADISPOSITIVO FROM historialdispositivos GROUP BY SubString(FECHAVISITADISPOSITIVO,7,4)";
+        mdlAGEDis= new DefaultComboBoxModel(ConexionBase.leerDatosVector3(SQLAGEDis));
+        aniosd = ConexionBase.leerDatosVector3(SQLAGEDis);
+        this.jcbAñoGraficoEstadisticoComparativo.setModel(mdlAGEDis);
+        variabled=(jcbAñoGraficoEstadisticoComparativo.getSelectedItem()).toString();
+        
+         /*TableColumnModel columnModelH = jtHistorialVisita.getColumnModel();
+        columnModelH.getColumn(0).setPreferredWidth(5);
+        columnModelH.getColumn(1).setPreferredWidth(50);
+        columnModelH.getColumn(2).setPreferredWidth(50);*/
     }
     
             
     
-
+    void PrivilegiosUsuarios(){
+        if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+        //jtUsuarios.setModel(LlenarTablaUsuarios());
+        return;
+        }
+        if(UsuarioIngresado.parametroR.contains("Secretario/a")) {
+            
+            
+            btnNuevoUsuario.setVisible(false);
+            lblNuevoUsuario.setVisible(false);
+            lblActualizarUsuario.setVisible(false);
+            btnActualizarUsuario.setVisible(false);
+            btnEliminarUsuario.setVisible(false);
+            lblEliminarUsuario.setVisible(false);
+            lblBuscarUsuario.setVisible(false);
+        }
+        if(UsuarioIngresado.parametroR.contains("Consultor/a")) {            
+            btnNuevoUsuario.setVisible(false);
+            lblNuevoUsuario.setVisible(false);
+            lblActualizarUsuario.setVisible(false);
+            btnActualizarUsuario.setVisible(false);
+            btnEliminarUsuario.setVisible(false);
+            lblEliminarUsuario.setVisible(false);
+            lblBuscarUsuario.setVisible(false);
+            
+        }
+        
+    }
     
     void CargarImagen(JLabel label, Integer identificador){
         int resultado;
@@ -169,7 +260,7 @@ public final class Principal extends javax.swing.JFrame {
         File origen = new File(home);
         File destino = new File(destiny);
         try {
-            //Localisa la carpeta de origen y ubica la carpeta d destino
+            //Localisa la carpeta de origen y ubica la carpeta d destino imagnes
             File rutaPrincipalImagenes = new File(multimedia[indice]);
             if(!rutaPrincipalImagenes.exists()) rutaPrincipalImagenes.mkdir();
             FileUtils.copyFileToDirectory(origen, destino, false);
@@ -195,6 +286,10 @@ public final class Principal extends javax.swing.JFrame {
         imgMuseo3.setEnabled(true);
         imgMuseo4.setEnabled(true);
         imgMuseo5.setEnabled(true);
+        btnVideoMuseo.setEnabled(true);
+        jlVideoMuseo.setEnabled(true);
+        btnAudioMuseo.setEnabled(true);
+        jlAudioMuseo.setEnabled(true);
     }
     
     void Deshabilitar(){
@@ -207,6 +302,10 @@ public final class Principal extends javax.swing.JFrame {
         imgMuseo3.setEnabled(false);
         imgMuseo4.setEnabled(false);
         imgMuseo5.setEnabled(false);
+        btnVideoMuseo.setEnabled(false);
+        jlVideoMuseo.setEnabled(false);
+        btnAudioMuseo.setEnabled(false);
+        jlAudioMuseo.setEnabled(false);
     }
     
     void EditarQr(){
@@ -221,7 +320,7 @@ public final class Principal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Ingrese Los Campos Obligatorios");
             else{
                 try {       
-                    //Actualizar usuario
+                    //Actualizar 
                     if(StringUtils.isNullOrEmpty(tempImagen[0])) imagen[0] = tempRutaActual[0];
                     else {
                         File borrarImagenAntigua = new File(tempRutaActual[0]);
@@ -257,9 +356,26 @@ public final class Principal extends javax.swing.JFrame {
                         if(CopiaArchivos(tempImagen[4], imagen[4], imagen, "Imagen5.jpg", 4)) imagen[4] += "\\Imagen5.jpg";
                         else return;
                     }
+                    if(StringUtils.isNullOrEmpty(tempAudio)) audio = tempRutaActual[5];
+                    else {
+                        //File borrarMultimediaAntigua = new File(tempRutaActual[5]);
+                        File borrarImagenAntigua = new File(tempRutaActual[5]);
+                        borrarImagenAntigua.delete();
+                        //if(CopiaArchivos(tempImagen[5], audio, "Audio.mp3", 5)) audio += "\\Audio.mp3";
+                        if(CopiaArchivos(tempAudio, audio, "Audio.mp3", 0)) audio += "\\Audio.mp3";
+                        else return;
+                    }
+                    if(StringUtils.isNullOrEmpty(tempVideo)) video = tempRutaActual[6];
+                    else {
+                        File borrarImagenAntigua = new File(tempRutaActual[6]);
+                        borrarImagenAntigua.delete();
+                        //if(CopiaArchivos(tempImagen[6], video, "Video.mp4", 6)) video += "\\Video.mp4";
+                        if(CopiaArchivos(tempVideo, video, "Video.mp4", 1)) video += "\\Video.mp4";
+                        else return;
+                    }
                     String SQL = "UPDATE museo SET NOMBREMUSEO = ?, FECHAFUNDACIONMUSEO = ?, FUNDADORMUSEO = ?, HISTORIAMUSEO = ?, "
-                        + "IMAGENUNOMUSEO = ?, IMAGENDOSMUSEO = ?, IMAGENTRESMUSEO = ?, IMAGENCUATROMUSEO = ?, IMAGENCINCOMUSEO = ? "
-                           + " WHERE IDMUSEO = 1";
+                        + "IMAGENUNOMUSEO = ?, IMAGENDOSMUSEO = ?, IMAGENTRESMUSEO = ?, IMAGENCUATROMUSEO = ?, IMAGENCINCOMUSEO = ?, "
+                            + "VIDEOMUSEO = ?, SONIDOMUSEO = ? WHERE IDMUSEO = 1";
                     PreparedStatement ps = con.prepareStatement(SQL);
                     ps.setString(1, txtNombreMuseo.getText());
                     Date fecha1 = (Date) spnFecha.getValue();
@@ -272,6 +388,8 @@ public final class Principal extends javax.swing.JFrame {
                     ps.setString(7, imagen[2]);
                     ps.setString(8, imagen[3]);
                     ps.setString(9, imagen[4]);
+                    ps.setString(10, video);
+                    ps.setString(11, audio);
                     int n = ps.executeUpdate();
                     if (n > 0) {
                         JOptionPane.showMessageDialog(null, "Información actualizada Correctamente");
@@ -291,11 +409,36 @@ public final class Principal extends javax.swing.JFrame {
                     if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
                     borrarImagenAntigua = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA\\Imagen5.jpg");
                     if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
+                    borrarImagenAntigua = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA\\Audio.mp3");
+                    if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
+                    borrarImagenAntigua = new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA\\Video.mp4");
+                    if(borrarImagenAntigua.exists()) borrarImagenAntigua.delete();
                 }       
             }
         }    
     }
 
+    Boolean CopiaArchivos(String home, String destiny, String nombre, Integer indice){
+        File origen = new File(home);
+        File destino = new File(destiny);
+        try {
+            //Localisa la carpeta de origen y ubica la carpeta d destino
+            File rutaPrincipalMultimedia = new File(destiny);
+            if(!rutaPrincipalMultimedia.exists()) rutaPrincipalMultimedia.mkdir();
+            FileUtils.copyFileToDirectory(origen, destino, false);
+            File nombreOriginal = new File(destiny + "\\" + tempNombreMultimedia[indice]);
+            File nombreModificado = new File(destiny + "\\" + nombre);
+            Boolean cambioNombre = nombreOriginal.renameTo(nombreModificado);
+            if(!cambioNombre){
+                JOptionPane.showMessageDialog(this, "El renombrado no se pudo realizar");
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("error");
+        }
+        return true;
+    }
+    
     void Limpiar(){
         for (int i = 0; i < 5; i++) {
             imagen[i] = "";
@@ -360,6 +503,23 @@ public final class Principal extends javax.swing.JFrame {
         return cont;
     }    
     
+    /*
+    public void actualizarVisitantes(){
+    al=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                jtHistorialVisita.setModel(LlenarTablaHistorialVisita()); 
+                //if(t2=0){
+            }
+        };
+        t=new Timer(1000,al);
+        if(!t.isRunning()){
+        t.start();
+        }
+}*/
+    
+    
     public static String contarTotalVisitas(){
         String cont;
         try {
@@ -374,12 +534,933 @@ public final class Principal extends javax.swing.JFrame {
             cont = "error";
         }
         return cont;
-    }    
+    }  
+    
+    public static String contarTotalVisitasDispositivos(){
+        String cont;
+        try {
+            String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos";
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            rs.next();
+            cont = rs.getString("Total");
+            rs.close();
+        
+        } catch (SQLException e) {
+            cont = "error";
+        }
+        return cont;
+    }
+    
+    
+     public static String contarTotalVisitasporFecha(){
+        String cont;
+        int a,d,m;
+        a = jdtHistDesde.getDate().getYear() + 1900;
+        m = jdtHistDesde.getDate().getMonth() + 1;
+        d = jdtHistDesde.getDate().getDate();
+            try {
+            String mm,dm,cal,fq;
+            if(m<10) mm="0"+m;
+            else mm=String.valueOf(m);
+            if(d<10) dm="0"+d;
+            else dm=String.valueOf(d);
+            fq=dm+"-"+mm+"-"+a;
+            cal=fq.toString();
+            String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,1,10) Like'%"+cal+"%'";
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            rs.next();
+            cont = rs.getString("Total");
+            rs.close();
+        
+        } catch (SQLException e) {
+            cont = "error";
+        }
+        return cont;
+    }
+     
+     public static String contarTotalVisitasporFechaHasta(){
+        String cont;
+        int a,d,m,a1,m1,d1;
+        a = jdtHistDesde.getDate().getYear() + 1900;
+        m = jdtHistDesde.getDate().getMonth() + 1;
+        d = jdtHistDesde.getDate().getDate();
+        a1 = jdtHistHasta.getDate().getYear() + 1900;
+        m1 = jdtHistHasta.getDate().getMonth() + 1;
+        d1 = jdtHistHasta.getDate().getDate();
+            try {
+            String mm,dm,cal,fq;
+            if(m<10) mm="0"+m;
+            else mm=String.valueOf(m);
+            if(d<10) dm="0"+d;
+            else dm=String.valueOf(d);
+            fq=dm+"-"+mm+"-"+a;
+            cal=fq.toString();
+            String mmh,dmh,cal1,ff;
+            if(m1<10) mmh = "0" + m1;
+            else mmh = String.valueOf(m1);
+            if(d1<10) dmh = "0" + d1;
+            else dmh = String.valueOf(d1);
+            ff = dmh + "-" + mmh + "-" + a1;
+            cal1=ff.toString();
+            if(cal.isEmpty() || cal1.isEmpty())    return cont="0";
+            else {
+            String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'";
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            rs.next();
+            cont = rs.getString("Total");
+            rs.close();}
+        
+        } catch (SQLException e) {
+            cont = "error";
+        }
+        return cont;
+    }
+    
+     public static String contarTotalUnidoporFechaHasta(){
+        String cont;
+        int a,d,m,a1,m1,d1;
+        a = jdtHistDesde.getDate().getYear() + 1900;
+        m = jdtHistDesde.getDate().getMonth() + 1;
+        d = jdtHistDesde.getDate().getDate();
+        a1 = jdtHistHasta.getDate().getYear() + 1900;
+        m1 = jdtHistHasta.getDate().getMonth() + 1;
+        d1 = jdtHistHasta.getDate().getDate();
+            try {
+            String mm,dm,cal,fq;
+            if(m<10) mm="0"+m;
+            else mm=String.valueOf(m);
+            if(d<10) dm="0"+d;
+            else dm=String.valueOf(d);
+            fq=dm+"-"+mm+"-"+a;
+            cal=fq.toString();
+            String mmh,dmh,cal1,ff;
+            if(m1<10) mmh = "0" + m1;
+            else mmh = String.valueOf(m1);
+            if(d1<10) dmh = "0" + d1;
+            else dmh = String.valueOf(d1);
+            ff = dmh + "-" + mmh + "-" + a1;
+            cal1=ff.toString();
+            if(cal.isEmpty() || cal1.isEmpty())    return cont="0";
+            else {
+              //  SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'UNION SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "' ORDER BY IDHISTORIALVISITA DESC"; 
+            //SELECT SUM(total) from ( SELECT COUNT(*) AS total FROM historialvisitas where substring(FECHAHORAVISITA,1,10) >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "' UNION SELECT COUNT(*) AS Total FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "')AS Total"; 
+              String SQL ="SELECT SUM(total) from ("
+                      + "SELECT COUNT(*) AS total FROM historialvisitas where substring(FECHAHORAVISITA,1,10) >=  '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'"
+                      + "UNION ALL SELECT COUNT(*) AS total FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <= '" + cal1 + "')"
+                      + "as total"; 
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            rs.next();
+            cont = rs.getString("SUM(total)");
+            rs.close();}
+        
+        } catch (SQLException e) {
+            cont = "error";
+        }
+        return cont;
+    }
+     
+     public static String contarTotalUnidoporFechaDesde(){
+        String cont;
+        int a,d,m;
+        a = jdtHistDesde.getDate().getYear() + 1900;
+        m = jdtHistDesde.getDate().getMonth() + 1;
+        d = jdtHistDesde.getDate().getDate();
+            try {
+            String mm,dm,cal,fq;
+            if(m<10) mm="0"+m;
+            else mm=String.valueOf(m);
+            if(d<10) dm="0"+d;
+            else dm=String.valueOf(d);
+            fq=dm+"-"+mm+"-"+a;
+            cal=fq.toString();
+            if(cal.isEmpty())    return cont="0";
+            else {
+             String SQL ="SELECT SUM(total) from ("
+                      + "SELECT COUNT(*) AS total FROM historialvisitas where substring(FECHAHORAVISITA,1,10) =  '" + cal + "' UNION SELECT COUNT(*) AS total FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) = '" + cal + "')"
+                      + "as total"; 
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            rs.next();
+            cont = rs.getString("SUM(total)");
+            rs.close();}
+        
+        } catch (SQLException e) {
+            cont = "error";
+        }
+        return cont;
+    }
+     
+     public static String contarTotalVisitasDispositivosporFechaHasta(){
+        String cont;
+        int a,d,m,a1,m1,d1;
+        a = jdtHistDesde.getDate().getYear() + 1900;
+        m = jdtHistDesde.getDate().getMonth() + 1;
+        d = jdtHistDesde.getDate().getDate();
+        a1 = jdtHistHasta.getDate().getYear() + 1900;
+        m1 = jdtHistHasta.getDate().getMonth() + 1;
+        d1 = jdtHistHasta.getDate().getDate();
+            try {
+            String mm,dm,cal,fq;
+            if(m<10) mm="0"+m;
+            else mm=String.valueOf(m);
+            if(d<10) dm="0"+d;
+            else dm=String.valueOf(d);
+            fq=dm+"-"+mm+"-"+a;
+            cal=fq.toString();
+            String mmh,dmh,cal1,ff;
+            if(m1<10) mmh = "0" + m1;
+            else mmh = String.valueOf(m1);
+            if(d1<10) dmh = "0" + d1;
+            else dmh = String.valueOf(d1);
+            ff = dmh + "-" + mmh + "-" + a1;
+            cal1=ff.toString();
+            if(cal.isEmpty() || cal1.isEmpty())    return cont="0";
+            else {
+            String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "'";
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            rs.next();
+            cont = rs.getString("Total");
+            rs.close();}
+        
+        } catch (SQLException e) {
+            cont = "error";
+        }
+        return cont;
+    }
+     
+    public static String contarTotalVisitasporFechadeDispositivo(){
+        String cont;
+        int adis,ddis,mdis;
+        adis = jdtHistDesde.getDate().getYear() + 1900;
+        mdis = jdtHistDesde.getDate().getMonth() + 1;
+        ddis = jdtHistDesde.getDate().getDate();
+            try {
+            String mmdis,dmdis,caldis,fqdis;
+            if(mdis<10) mmdis="0"+mdis;
+            else mmdis=String.valueOf(mdis);
+            if(ddis<10) dmdis="0"+ddis;
+            else dmdis=String.valueOf(ddis);
+            fqdis=dmdis+"-"+mmdis+"-"+adis;
+            caldis=fqdis.toString();
+            String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,1,10) Like'%"+caldis+"%'";
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            rs.next();
+            cont = rs.getString("Total");
+            rs.close();
+        
+        } catch (SQLException e) {
+            cont = "error";
+        }
+        return cont;
+    }
+    
+     
+    public static String visitantesE(){
+           String contEne;
+           String var="-"+jcbAñoGraficoEstadistico.getSelectedItem().toString();
+            try {
+               String SQLE ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '01-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQLE);
+               rs.next();
+               contEne = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               contEne = "error";
+           }
+           return contEne;
+            
+       }
+    
+     public static String visitantesF(){
+           String contF;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '02-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               contF = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               contF = "error";
+           }
+           return contF;
+       }
+      public static String visitantesM(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '03-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesA(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '04-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesMayo(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '05-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesJ(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '06-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesJul(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '07-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesAg(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '08-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesSep(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '09-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";           
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesOc(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '10-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesNov(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '11-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesDic(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '12-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    
+    
+    
+    //Contador de los dispositivos segun los meses
+    
+    public static String visitantesED(){
+           String contEneD;
+           String var="-"+jcbAñoGraficoEstadistico.getSelectedItem().toString();
+            try {
+               String SQLE ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '01-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQLE);
+               rs.next();
+               contEneD = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               contEneD = "error";
+           }
+           return contEneD;
+       }
+    
+     public static String visitantesFD(){
+           String contF;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '02-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               contF = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               contF = "error";
+           }
+           return contF;
+       }
+      public static String visitantesMD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '03-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesAD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '04-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesMayoD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '05-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesJD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '06-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesJulD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '07-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesAgD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '08-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesSepD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '09-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesOcD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '10-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesNovD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '11-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesDicD(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '12-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    
+    //Metodos de suma de registros por meses para el cuadro comparativo
+    public static String visitantesEneroComp(){
+           String contEne;
+           //String var="-"+jcbAñoGrafi.getSelectedItem().toString();
+            try {
+               String SQLE ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '01-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQLE);
+               rs.next();
+               contEne = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               contEne = "error";
+           }
+           return contEne;
+            
+       }
+    
+     public static String visitantesFebrComp(){
+           String contF;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '02-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               contF = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               contF = "error";
+           }
+           return contF;
+       }
+      public static String visitantesMarComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '03-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesAbrComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '04-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesMayoComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '05-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesJunComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '06-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesJulComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '07-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesAgosComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '08-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesSepComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '09-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";           
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesOctComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '10-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesNovComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '11-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesDicComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '12-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    
+    
+    
+    //Contador de los dispositivos segun los meses
+    
+    public static String visitantesEneDisComp(){
+           String contEneD;
+           //String var="-"+jcbAñoGraficoEstadistico.getSelectedItem().toString();
+            try {
+               String SQLE ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '01-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQLE);
+               rs.next();
+               contEneD = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               contEneD = "error";
+           }
+           return contEneD;
+       }
+    
+     public static String visitantesFebDisComp(){
+           String contF;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '02-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               contF = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               contF = "error";
+           }
+           return contF;
+       }
+      public static String visitantesMarDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '03-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesAbrDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '04-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesMayoDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '05-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+      public static String visitantesJunDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '06-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesJulDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '07-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesAgosDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '08-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesSepDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '09-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesOcDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '10-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesNovDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '11-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    public static String visitantesDicDisComp(){
+           String cont;
+               try {
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '12-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               sent = con.createStatement();            
+               ResultSet rs = sent.executeQuery(SQL);
+               rs.next();
+               cont = rs.getString("Total");         
+               rs.close();      
+           } catch (SQLException e) {
+               cont = "error";
+           }
+           return cont;
+       }
+    
     
     public static DefaultTableModel LlenarTablaUsuarios(){
         try{
             //Muestra los usuarios existentes en la base de datos
-            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO ELECTRONICO","ESTADO"};
             //String SQL ="SELECT * FROM ingresos where CodigoParaiso Like '%"+txtBuscar.getText().toString().trim()+"%'AND ORDER BY Movimiento,Id,Fecha ASC"; 
             String SQLTU ="SELECT * FROM usuarios ORDER BY IDUSUARIO ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
@@ -408,20 +1489,187 @@ public final class Principal extends javax.swing.JFrame {
         
     }
     
+    public static DefaultTableModel LlenarTablaUsuariosAdmin(){
+        try{
+            //Muestra los usuarios existentes en la base de datos
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CONTRASEÑA","CEDULA","CORREO ELECTRONICO","ESTADO"};
+            //String SQL ="SELECT * FROM ingresos where CodigoParaiso Like '%"+txtBuscar.getText().toString().trim()+"%'AND ORDER BY Movimiento,Id,Fecha ASC"; 
+            String SQLTU ="SELECT * FROM usuarios ORDER BY IDUSUARIO ASC"; 
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTU);
+            String[]fila=new String[8];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CONTRASENAUSUARIO");                
+                fila[5] = rs.getString("CEDULAUSUARIO");
+                fila[6] = rs.getString("CORREOUSUARIO");
+                fila[7] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+                
+            }
+            rs.close();
+            //jtUsuarios.removeAll();
+            return model;
+            //model.fireTableDataChanged();
+            
+        }catch(Exception e){
+            return null;
+        }
+        
+    }
+    
     public static DefaultTableModel LlenarTablaHistorialVisita(){
         try{
             //Muestra los usuarios existentes en la base de datos
-            String titulos[] = {"ID DE VISITA", "FECHA Y HORA DE LA VISITA","ID DEL DISPOSITIVO"};
-            //String SQL ="SELECT * FROM ingresos where CodigoParaiso Like '%"+txtBuscar.getText().toString().trim()+"%'AND ORDER BY Movimiento,Id,Fecha ASC"; 
-            String SQLTH ="SELECT * FROM historialvisitas ORDER BY FECHAHORAVISITA DESC"; 
+            String titulos[] = {"ID DE VISITA","VISITANTE", "FECHA Y HORA DE LA VISITA"};
+            String SQLTH ="SELECT * FROM historialvisitas ORDER BY IDHISTORIALVISITA DESC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQLTH);
             String[]fila=new String[3];
             while(rs.next()){
                 fila[0] = rs.getString("IDHISTORIALVISITA");
-                fila[1] = rs.getString("FECHAHORAVISITA");
-                fila[2] = rs.getString("IDDISPOSITIVO");
+                fila[1] = rs.getString("NOMBRESAPELLIDOSVISITANTE");
+                fila[2] = rs.getString("FECHAHORAVISITA");
+                model.addRow(fila);
+                }
+            rs.close();
+            //jtUsuarios.removeAll();
+            return model;
+            //model.fireTableDataChanged();
+            
+        }catch(Exception e){
+            return null;
+        }
+        
+    }
+    
+    public static DefaultTableModel LlenarTablaHistorialUnido(){
+        try{
+            //Muestra los usuarios existentes en la base de datos
+            String titulos[] = {"ID DE VISITA","VISITANTE", "FECHA Y HORA DE LA VISITA"};
+            String SQLTH ="SELECT * FROM historialvisitas UNION SELECT * FROM historialdispositivos ORDER BY FECHAHORAVISITA ASC"; 
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTH);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDHISTORIALVISITA");
+                fila[1] = rs.getString("NOMBRESAPELLIDOSVISITANTE");
+                fila[2] = rs.getString("FECHAHORAVISITA");
+                model.addRow(fila);
+                }
+            rs.close();
+            //jtUsuarios.removeAll();
+            return model;
+            //model.fireTableDataChanged();
+            
+        }catch(Exception e){
+            return null;
+        }
+        
+    }
+    
+    public static DefaultTableModel LlenarTablaHistorialBusquedaUnido(){
+        int a,m,d,a1,m1,d1;
+        try{
+            a = jdtHistDesde.getDate().getYear() + 1900;
+            m = jdtHistDesde.getDate().getMonth() + 1;
+            d = jdtHistDesde.getDate().getDate();
+            String mm,dm,mmh,dmh,fq,cal,ff,cal1;
+            if(m<10) mm = "0" + m;
+            else mm = String.valueOf(m);
+            if(d<10) dm = "0" + d;
+            else dm = String.valueOf(d);
+            fq = dm + "-" + mm + "-" + a;
+            cal=fq.toString();
+            a1 = jdtHistHasta.getDate().getYear() + 1900;
+            m1 = jdtHistHasta.getDate().getMonth() + 1;
+            d1 = jdtHistHasta.getDate().getDate();
+            if(m1<10) mmh = "0" + m1;
+            else mmh = String.valueOf(m1);
+            if(d1<10) dmh = "0" + d1;
+            else dmh = String.valueOf(d1);
+            ff = dmh + "-" + mmh + "-" + a1;
+            cal1=ff.toString();
+            //String SQL ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'ORDER BY IDHISTORIALVISITA DESC";
+            //Muestra los usuarios existentes en la base de datos
+            String titulos[] = {"ID","VISITANTE", "FECHA Y HORA DE LA VISITA"};
+            String SQLTH ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'UNION SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "' ORDER BY IDHISTORIALVISITA DESC"; 
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTH);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDHISTORIALVISITA");
+                fila[1] = rs.getString("NOMBRESAPELLIDOSVISITANTE");
+                fila[2] = rs.getString("FECHAHORAVISITA");
+                model.addRow(fila);
+                }
+            rs.close();
+            //jtUsuarios.removeAll();
+            return model;
+            //model.fireTableDataChanged();
+            
+        }catch(Exception e){
+            return null;
+        }
+        
+    }
+    
+    public static DefaultTableModel LlenarTablaHistorialBusquedaUnidoDesde(){
+        int a,m,d;
+        try{
+            a = jdtHistDesde.getDate().getYear() + 1900;
+            m = jdtHistDesde.getDate().getMonth() + 1;
+            d = jdtHistDesde.getDate().getDate();
+            String mm,dm,fq,cal;
+            if(m<10) mm = "0" + m;
+            else mm = String.valueOf(m);
+            if(d<10) dm = "0" + d;
+            else dm = String.valueOf(d);
+            fq = dm + "-" + mm + "-" + a;
+            cal=fq.toString();
+            String titulos[] = {"ID","VISITANTE", "FECHA Y HORA DE LA VISITA"};
+            String SQLTH ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  = '" + cal + "' UNION SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) = '" + cal + "' ORDER BY IDHISTORIALVISITA DESC"; 
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTH);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDHISTORIALVISITA");
+                fila[1] = rs.getString("NOMBRESAPELLIDOSVISITANTE");
+                fila[2] = rs.getString("FECHAHORAVISITA");
+                model.addRow(fila);
+                }
+            rs.close();
+            //jtUsuarios.removeAll();
+            return model;
+            //model.fireTableDataChanged();
+            
+        }catch(Exception e){
+            return null;
+        }
+        
+    }
+    
+    public static DefaultTableModel LlenarTablaHistorialVisitaconDispositivo(){
+        try{
+            //Muestra los visitantes existentes en la base de datos
+            String titulos[] = {"ID DE VISITA","IDDISPOSITVO", "FECHA Y HORA DE LA VISITA"};
+            String SQLTHD ="SELECT * FROM historialdispositivos ORDER BY IDHISTORIALDISPOSITIVOS DESC"; 
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTHD);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDHISTORIALDISPOSITIVOS");
+                fila[1] = rs.getString("IDDISPOSITIVO");
+                fila[2] = rs.getString("FECHAVISITADISPOSITIVO");
                 model.addRow(fila);
                 }
             rs.close();
@@ -454,8 +1702,35 @@ public final class Principal extends javax.swing.JFrame {
     }
     
     void BuscarPorNombreUsuario (){
+        if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+            try{
+             String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CONTRASEÑA","CEDULA","CORREO ELECTRONICO","ESTADO"};
+
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM usuarios WHERE NOMBRESUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[8];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CONTRASENAUSUARIO");                
+                fila[5] = rs.getString("CEDULAUSUARIO");
+                fila[6] = rs.getString("CORREOUSUARIO");
+                fila[7] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
+        }else{
         try{
-            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO ELECTRONICO","ESTADO"};
 
             //Consulta para la fecha de inicio a fecha de final
             String SQL = "SELECT *FROM usuarios WHERE NOMBRESUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
@@ -478,11 +1753,37 @@ public final class Principal extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
         }
+        }
     }
     
     void BuscarPorApellidoUsuario (){
+        if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+try{
+             String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CONTRASEÑA","CEDULA","CORREO ELECTRONICO","ESTADO"};
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM usuarios WHERE APELLIDOSUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[8];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CONTRASENAUSUARIO");                
+                fila[5] = rs.getString("CEDULAUSUARIO");
+                fila[6] = rs.getString("CORREOUSUARIO");
+                fila[7] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
+        }else{
         try{
-            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO ELECTRONICO","ESTADO"};
             //Consulta para la fecha de inicio a fecha de final
             String SQL = "SELECT *FROM usuarios WHERE APELLIDOSUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
             model= new DefaultTableModel(null, titulos);
@@ -503,11 +1804,37 @@ public final class Principal extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
         }
+        }
     }
     
     void BuscarPorTipoUsuario (){
+        if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+try{
+             String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CONTRASEÑA","CEDULA","CORREO ELECTRONICO","ESTADO"};
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM usuarios WHERE TIPOUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[8];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CONTRASENAUSUARIO");                
+                fila[5] = rs.getString("CEDULAUSUARIO");
+                fila[6] = rs.getString("CORREOUSUARIO");
+                fila[7] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
+        }else{
         try{
-            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO ELECTRONICO","ESTADO"};
             //Consulta para la fecha de inicio a fecha de final
             String SQL = "SELECT *FROM usuarios WHERE TIPOUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
             model= new DefaultTableModel(null, titulos);
@@ -528,12 +1855,42 @@ public final class Principal extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
         }
+        }
     }
     
     void BuscarPorCedula (){
+        
         this.txtBuscarPor.setEnabled(true);
+        
+        if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+            
         try{
-            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CONTRASEÑA","CEDULA","CORREO ELECTRONICO","ESTADO"};
+            //Consulta para la fecha de inicio a fecha de final
+            String SQL = "SELECT *FROM usuarios WHERE CEDULAUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[8];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CONTRASENAUSUARIO");                
+                fila[5] = rs.getString("CEDULAUSUARIO");
+                fila[6] = rs.getString("CORREOUSUARIO");
+                fila[7] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+            jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
+        }
+        else{
+        try{
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO ELECTRONICO","ESTADO"};
             //Consulta para la fecha de inicio a fecha de final
             String SQL = "SELECT *FROM usuarios WHERE CEDULAUSUARIO Like '%"+txtBuscarPor.getText().toString().trim()+"%'ORDER BY NOMBRESUSUARIO ASC";
             model= new DefaultTableModel(null, titulos);
@@ -554,11 +1911,36 @@ public final class Principal extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
         }
+        }
     }
     
     void BuscarPorEstadoUsuario (){
+        if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+            try{
+             String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CONTRASEÑA","CEDULA","CORREO ELECTRONICO","ESTADO"};
+            String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 1 ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[8];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CONTRASENAUSUARIO");                
+                fila[5] = rs.getString("CEDULAUSUARIO");
+                fila[6] = rs.getString("CORREOUSUARIO");
+                fila[7] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+        jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
+        }else{
         try{
-            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO ELECTRONICO","ESTADO"};
             String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 1 ORDER BY NOMBRESUSUARIO ASC";
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
@@ -578,12 +1960,37 @@ public final class Principal extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
         }
+        }
     }
     
     
     void BuscarPorEstadoUsuarioInactivo (){
+    if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
         try{
-            String titulos[] = {"IDUSUARIO", "TIPO DE USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO DEL USUARIO","ESTADO DE USUARIO"};
+             String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CONTRASEÑA","CEDULA","CORREO ELECTRONICO","ESTADO"};
+            String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 0 ORDER BY NOMBRESUSUARIO ASC";
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[8];
+            while(rs.next()){
+                fila[0] = rs.getString("IDUSUARIO");
+                fila[1] = rs.getString("TIPOUSUARIO");
+                fila[2] = rs.getString("NOMBRESUSUARIO");
+                fila[3] = rs.getString("APELLIDOSUSUARIO");
+                fila[4] = rs.getString("CONTRASENAUSUARIO");                
+                fila[5] = rs.getString("CEDULAUSUARIO");
+                fila[6] = rs.getString("CORREOUSUARIO");
+                fila[7] = rs.getString("ESTADOUSUARIO");
+                model.addRow(fila);
+            }
+        jtUsuarios.setModel(model);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
+    }else{
+        try{
+            String titulos[] = {"ID", "TIPO USUARIO","NOMBRE","APELLIDO","CEDULA","CORREO ELECTRONICO","ESTADO"};
             String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 0 ORDER BY NOMBRESUSUARIO ASC";
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
@@ -603,30 +2010,34 @@ public final class Principal extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
         }
+                }
     }
+    
     
     
     void BuscarPorFechaVisita (){
         try{
-            String titulos[] = {"ID DE VISITA", "FECHA Y HORA DE LA VISITA","ID DEL DISPOSITIVO"};
-            int a = jdtHistDesde.getDate().getYear() + 1900;
-            int m = jdtHistDesde.getDate().getMonth() + 1;
-            int d = jdtHistDesde.getDate().getDate();
-            //String SQL ="SELECT * FROM ingresos where CodigoParaiso Like '%"+txtBuscar.getText().toString().trim()+"%'AND ORDER BY Movimiento,Id,Fecha ASC"; 
-            //String SQLTH ="SELECT * FROM historialvisitas WHERE FECHAHORA VISITA = "++"ORDER BY FECHAHORAVISITA ASC"; 
-            
-            //String SQL = "SELECT *FROM usuarios WHERE ESTADOUSUARIO = 0 ORDER BY NOMBRESUSUARIO ASC";
-            fq = d + "-" + m + "-" + a;
-            String SQL ="SELECT * FROM historialvisitas where FECHAHORAVISITA Like '%"+fq+"%'" ;
-            //System.out.println("Fecha en formato yyyy/MM/dd:  "+ new SimpleDateFormat("yyyy-MM-dd").format("FECHAHORAVISITA"));
+            String titulos[] = {"ID","VISITANTE","FECHA Y HORA DE LA VISITA"};
+            a = jdtHistDesde.getDate().getYear() + 1900;
+            m = jdtHistDesde.getDate().getMonth() + 1;
+            d = jdtHistDesde.getDate().getDate();
+            String mm,dm,cal;
+            if(m<10) mm = "0" + m;
+            else mm = String.valueOf(m);
+            if(d<10) dm = "0" + d;
+            else dm = String.valueOf(d);
+            fq = dm + "-" + mm + "-" + a;
+            cal=fq.toString();
+            String SQL ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10) Like'%" + cal + "%'ORDER BY IDHISTORIALVISITA DESC";
+            System.out.println(SQL);
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
             String[]fila=new String[3];
             while(rs.next()){
                 fila[0] = rs.getString("IDHISTORIALVISITA");
-                fila[1] = new SimpleDateFormat("yyyy-MM-dd").format(rs.getString("FECHAHORAVISITA"));
-                fila[2] = rs.getString("IDDISPOSITIVO");
+                fila[1] = rs.getString("NOMBRESAPELLIDOSVISITANTE");
+                fila[2] = rs.getString("FECHAHORAVISITA");
                 model.addRow(fila);
             }
         jtHistorialVisita.setModel(model);
@@ -635,23 +2046,118 @@ public final class Principal extends javax.swing.JFrame {
         }
     }
     
-    void EliminarVisita(){
-        int fila = jtHistorialVisita.getSelectedRow();
-        try {
-            String SQL = "DELETE FROM historialvisitas WHERE IDHISTORIALVISITA=" + jtHistorialVisita.getValueAt(fila, 0);
+    void BuscarPorFechaVisitaDesdeHasta (){
+        try{
+            String titulos[] = {"ID","VISITANTE","FECHA DE LA VISITA"};
+            a = jdtHistDesde.getDate().getYear() + 1900;
+            m = jdtHistDesde.getDate().getMonth() + 1;
+            d = jdtHistDesde.getDate().getDate();
+            String mm,dm,mmh,dmh;
+            if(m<10) mm = "0" + m;
+            else mm = String.valueOf(m);
+            if(d<10) dm = "0" + d;
+            else dm = String.valueOf(d);
+            fq = dm + "-" + mm + "-" + a;
+            cal=fq.toString();
+            a1 = jdtHistHasta.getDate().getYear() + 1900;
+            m1 = jdtHistHasta.getDate().getMonth() + 1;
+            d1 = jdtHistHasta.getDate().getDate();
+            if(m1<10) mmh = "0" + m1;
+            else mmh = String.valueOf(m1);
+            if(d1<10) dmh = "0" + d1;
+            else dmh = String.valueOf(d1);
+            ff = dmh + "-" + mmh + "-" + a1;
+            cal1=ff.toString();
+            String SQL ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'ORDER BY IDHISTORIALVISITA DESC";
+            System.out.println(SQL);
+            model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
-            int n = sent.executeUpdate(SQL);
-            if (n > 0){
-                //JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente ");
-                jtHistorialVisita.setModel(LlenarTablaHistorialVisita());
-                txtTotalVisitas.setText(contarTotalVisitas());
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDHISTORIALVISITA");
+                fila[1] = rs.getString("NOMBRESAPELLIDOSVISITANTE");
+                fila[2] = rs.getString("FECHAHORAVISITA");
+                model.addRow(fila);
             }
-            else JOptionPane.showMessageDialog(null, "Visita no eliminada ");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: Debe seleccionar un registro de visita");
+        jtHistorialVisita.setModel(model);
+        }catch(Exception e){
+            //JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
+    }
+        
+    void BuscarPorFechaVisitaDispositivoDesdeHasta (){
+        try{
+            String titulos[] = {"ID","VISITANTE","FECHA DE LA VISITA"};
+            a = jdtHistDesde.getDate().getYear() + 1900;
+            m = jdtHistDesde.getDate().getMonth() + 1;
+            d = jdtHistDesde.getDate().getDate();
+            String mm,dm,mmh,dmh;
+            if(m<10) mm = "0" + m;
+            else mm = String.valueOf(m);
+            if(d<10) dm = "0" + d;
+            else dm = String.valueOf(d);
+            fq = dm + "-" + mm + "-" + a;
+            cal=fq.toString();
+            a1 = jdtHistHasta.getDate().getYear() + 1900;
+            m1 = jdtHistHasta.getDate().getMonth() + 1;
+            d1 = jdtHistHasta.getDate().getDate();
+            if(m1<10) mmh = "0" + m1;
+            else mmh = String.valueOf(m1);
+            if(d1<10) dmh = "0" + d1;
+            else dmh = String.valueOf(d1);
+            ff = dmh + "-" + mmh + "-" + a1;
+            cal1=ff.toString();
+            String SQL ="SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "'";
+            //String SQL ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'ORDER BY IDHISTORIALVISITA DESC";
+            System.out.println(SQL);
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDHISTORIALDISPOSITIVOS");
+                fila[1] = rs.getString("IDDISPOSITIVO");
+                fila[2] = rs.getString("FECHAVISITADISPOSITIVO");
+                model.addRow(fila);
+            }
+        jtHistorialVisita.setModel(model);
+        }catch(Exception e){
+            //JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
         }
     }
     
+    void BuscarPorFechaVisitaDispositivo(){
+        try{
+            String titulos[] = {"ID","VISITANTE","FECHA Y HORA DE LA VISITA"};
+            int a = jdtHistDesde.getDate().getYear() + 1900;
+            int m = jdtHistDesde.getDate().getMonth() + 1;
+            int d = jdtHistDesde.getDate().getDate();
+            String mm,dm,cal,fq;
+            if(m<10) mm="0"+m;
+            else mm=String.valueOf(m);
+            if(d<10) dm="0"+d;
+            else dm=String.valueOf(d);
+            fq=dm+"-"+mm+"-"+a;
+            cal=fq.toString();
+            String SQL ="SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) Like'%"+cal+"%'ORDER BY IDHISTORIALDISPOSITIVOS DESC";
+            System.out.println(SQL);
+            model= new DefaultTableModel(null, titulos);
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+            String[]fila=new String[3];
+            while(rs.next()){
+                fila[0] = rs.getString("IDHISTORIALDISPOSITIVOS");
+                fila[1] = rs.getString("IDDISPOSITIVO");
+                fila[2] = rs.getString("FECHAVISITADISPOSITIVO");
+                model.addRow(fila);
+            }
+        jtHistorialVisita.setModel(model);
+        }catch(Exception e){
+            //JOptionPane.showMessageDialog(null,"Error de Consulta..... :(");
+        }
+    }
+            
     public void centrarVentanaInterna (JDesktopPane desktopPane, JInternalFrame internalFrame){
         x = (desktopPane.getWidth() / 2) - internalFrame.getWidth() / 2; 
         y = (desktopPane.getHeight() / 2) - internalFrame.getHeight() / 2;
@@ -705,11 +2211,285 @@ public final class Principal extends javax.swing.JFrame {
         }
     }
     
+    void GuardarVisitante(){
+        try {
+                        String SQL = "INSERT INTO historialvisitas(NOMBRESAPELLIDOSVISITANTE,FECHAHORAVISITA)"
+                                + " VALUES(?,?)";
+                        PreparedStatement ps = con.prepareStatement(SQL);
+                        java.util.Date date = new java.util.Date();
+                        java.text.DateFormat sdf=new java.text.SimpleDateFormat("dd-MM-yyyy hh:mm:ss a");
+                        String fecha = sdf.format(date);
+                        ps.setString(1, txtnombreVisitante.getText());
+                        ps.setString(2, fecha);
+                        int n = ps.executeUpdate();
+                        if (n > 0) {
+                            JOptionPane.showMessageDialog(this, "Registro exitoso");
+                            //actualizarVisitantes();
+                            jtHistorialVisita.setModel(LlenarTablaHistorialVisita());
+                            txtnombreVisitante.setText("");
+                            txtTotalVisitas.setText(String.valueOf((Integer.parseInt(contarTotalVisitas())+(Integer.parseInt(contarTotalVisitasDispositivos())))));
+                        } 
+                    } catch (SQLException e) {
+                        JOptionPane.showConfirmDialog(this, "Error: " + e.getMessage());
+                        System.out.println();
+                    }
+        
+    }
+    
+    void SeleccionarItemTablaVisitantes(java.awt.event.MouseEvent evt){
+        DefaultTableModel modelo=(DefaultTableModel) jtHistorialVisita.getModel();
+        idV=String.valueOf(modelo.getValueAt(jtHistorialVisita.getSelectedRow(),0));
+        //categoria=String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),1));
+        //imagenes = String.valueOf(modelo.getValueAt(jtContenidosArticulos.getSelectedRow(),5));
+        
+     }
+    
+    void SeleccionarItemTablaVisitantesDispositivo(java.awt.event.MouseEvent evt){
+        //DefaultTableModel modelo=(DefaultTableModel) jtHistorialVisitaDispositivo.getModel();
+       // idVD=String.valueOf(modelo.getValueAt(jtHistorialVisitaDispositivo.getSelectedRow(),0));
+        
+     }
+    
+    void CargarVideo(JLabel label, Integer identificador){
+        int resultado;
+        // ventana = new CargarFoto();
+        JFileChooser jfchCargarVideo= new JFileChooser();
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("MP4", "mp4");
+        jfchCargarVideo.setFileFilter(filtro);
+        resultado= jfchCargarVideo.showOpenDialog(null);
+        if (JFileChooser.APPROVE_OPTION == resultado){
+            fichero = jfchCargarVideo.getSelectedFile();
+            try{
+                tempVideo = fichero.getPath();
+                tempNombreMultimedia[identificador] = fichero.getName();
+                label.setText(tempNombreMultimedia[identificador]);
+                if(label.getText().length() > 10) label.setText(tempNombreMultimedia[identificador].substring(0, 10) + "...mp4");
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(null, "Error abriendo la imagen" + ex);
+            }
+        } 
+    }
+    
+    void CargarAudio(JLabel label, Integer identificador){
+        int resultado;
+        // ventana = new CargarFoto();
+        JFileChooser jfchCargarVideo= new JFileChooser();
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("MP3", "mp3");
+        jfchCargarVideo.setFileFilter(filtro);
+        resultado= jfchCargarVideo.showOpenDialog(null);
+        if (JFileChooser.APPROVE_OPTION == resultado){
+            fichero = jfchCargarVideo.getSelectedFile();
+            try{
+                tempAudio = fichero.getPath();
+                tempNombreMultimedia[identificador] = fichero.getName();
+                label.setText(tempNombreMultimedia[identificador]);
+                if(label.getText().length() > 10) label.setText(tempNombreMultimedia[identificador].substring(0, 10) + "...mp3");
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(null, "Error abriendo la imagen" + ex);
+            }
+        } 
+    }
+    
+    void EstadisticaComparativa(){
+        if(idAnioDis == 0){
+            JOptionPane.showMessageDialog(this, "Debe de seleccionar un año");
+            return;
+        }
+        else{
+        lblTortaDis.setText("");
+        JFreeChart barra;
+        DefaultCategoryDataset datos;
+        int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
+        int eneD=0,febD=0,marD=0,abrD=0,maD=0,junD=0,julD=0,agosD=0,sepD=0,octD=0,novD=0,dicD=0,totalD=0;
+        ene=(Integer.valueOf(visitantesEneroComp()));
+        eneD=(Integer.valueOf(visitantesEneDisComp()));
+        feb=(Integer.valueOf(visitantesFebrComp()));
+        febD=(Integer.valueOf(visitantesFebDisComp()));
+        mar=(Integer.valueOf(visitantesMarComp()));
+        marD=(Integer.valueOf(visitantesMarDisComp()));
+        abr=(Integer.valueOf(visitantesAbrComp()));
+        abrD=(Integer.valueOf(visitantesAbrDisComp()));
+        ma=(Integer.valueOf(visitantesMayoComp()));
+        maD=(Integer.valueOf(visitantesMayoDisComp()));
+        jun=(Integer.valueOf(visitantesJunComp()));
+        junD=(Integer.valueOf(visitantesJunDisComp()));
+        jul=(Integer.valueOf(visitantesJulComp()));
+        julD=(Integer.valueOf(visitantesJulDisComp()));
+        agos=(Integer.valueOf(visitantesAgosComp()));
+        agosD=(Integer.valueOf(visitantesAgosDisComp()));
+        sep=(Integer.valueOf(visitantesSepComp()));
+        sepD=(Integer.valueOf(visitantesSepDisComp()));
+        oct=(Integer.valueOf(visitantesOctComp()));
+        octD=(Integer.valueOf(visitantesOcDisComp()));
+        nov=(Integer.valueOf(visitantesNovComp()));
+        novD=(Integer.valueOf(visitantesNovDisComp()));
+        dic=(Integer.valueOf(visitantesDicComp()));
+        dicD=(Integer.valueOf(visitantesDicDisComp()));
+        total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
+        totalD=eneD+febD+marD+abrD+maD+junD+julD+sepD+agosD+octD+novD+dicD;
+        //datos = new DefaultPieDataset(); 
+        datos = new DefaultCategoryDataset(); 
+        //datos.setValue(marD,"Dipositivos","Mar:"+mar+"-"+marD);
+        //datos.setValue(mar,"Visitantes","Mar:"+mar+"-"+marD);
+        datos.setValue(eneD,"Dipositivos","Ene");
+        datos.setValue(ene,"Visitantes","Ene");
+        datos.setValue(febD,"Dipositivos","Feb");
+        datos.setValue(feb,"Visitantes","Feb");
+        datos.setValue(marD,"Dipositivos","Mar");
+        datos.setValue(mar,"Visitantes","Mar");
+        datos.setValue(abrD,"Dipositivos","Ab");
+        datos.setValue(abr,"Visitantes","Ab");
+        datos.setValue(ma,"Dipositivos","May");
+        datos.setValue(ma,"Visitantes","May");
+        datos.setValue(junD,"Dipositivos","Jun");
+        datos.setValue(jun,"Visitantes","Jun");
+        datos.setValue(jul,"Dipositivos","Jul");
+        datos.setValue(jul,"Visitantes","Jul");
+        datos.setValue(agos,"Dipositivos","Ago");
+        datos.setValue(agos,"Visitantes","Ago");
+        datos.setValue(sep,"Dipositivos","Sep");
+        datos.setValue(sep,"Visitantes","Sep");
+        datos.setValue(oct,"Dipositivos","Oct");
+        datos.setValue(oct,"Visitantes","Oct");
+        datos.setValue(nov,"Dipositivos","Nov");
+        datos.setValue(nov,"Visitantes","Nov");
+        datos.setValue(dic,"Dipositivos","Dic");
+        datos.setValue(dic,"Visitantes","Dic");
+
+        barra = ChartFactory.createBarChart("Visitantes vs Dispositivos del año "+jcbAñoGraficoEstadisticoComparativo.getSelectedItem(), "Tipo de Visitante","Visitantes",datos,PlotOrientation.VERTICAL,true,true,false);
+        barra.setBackgroundPaint(Color.cyan);
+        barra.getTitle().setPaint(Color.black); 
+        BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTortaDis.getWidth(), panelGraficoTortaDis.getHeight());
+        CategoryPlot p = barra.getCategoryPlot(); 
+        p.setRangeGridlinePaint(Color.red); 
+        //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
+        //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+        lblTortaDis.setSize(panelGraficoTortaDis.getSize());
+        //lblTorta.setIcon(new ImageIcon(graficoTorta));
+        lblTortaDis.setIcon(new ImageIcon(graficoBarra));
+        txtTotalVisitasVisitantesPorAñoComparativo.setText(String.valueOf(total));
+        txtTotalVisitasDispositivosPorAñoCompartivo.setText(String.valueOf(totalD));
+        panelGraficoTortaDis.updateUI();
+        //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
+                
+            }
+    }
+    
+    void EstadisticaVisitantes(){
+        if(idAnio == 0){
+            JOptionPane.showMessageDialog(this, "Debe de seleccionar un año");
+            return;
+        }
+        else{
+        lblTorta.setText("");
+        JFreeChart barra;
+        DefaultCategoryDataset datos;
+        int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
+        ene=(Integer.valueOf(visitantesE()));
+        feb=(Integer.valueOf(visitantesF()));
+        mar=(Integer.valueOf(visitantesM()));
+        abr=(Integer.valueOf(visitantesA()));
+        ma=(Integer.valueOf(visitantesMayo()));
+        jun=(Integer.valueOf(visitantesJ()));
+        jul=(Integer.valueOf(visitantesJul()));
+        agos=(Integer.valueOf(visitantesAg()));
+        sep=(Integer.valueOf(visitantesSep()));
+        oct=(Integer.valueOf(visitantesOc()));
+        nov=(Integer.valueOf(visitantesNov()));
+        dic=(Integer.valueOf(visitantesDic()));
+        total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
+        //datos = new DefaultPieDataset(); 
+        datos = new DefaultCategoryDataset(); 
+        datos.setValue(ene,"Enero: "+ene+" ","");
+        datos.setValue(feb,"Febrero : "+feb+" ","");
+        datos.setValue(mar,"Marzo : "+mar+" ","");
+        datos.setValue(abr,"Abril : "+abr+" ","");
+        datos.setValue(ma,"Mayo : "+ma+" ","");
+        datos.setValue(jun,"Junio : "+jun+" ","");
+        datos.setValue(jul,"Julio : "+ jul+" ","");
+        datos.setValue(agos,"Agosto : "+agos+" ","");
+        datos.setValue(sep,"Septiembre : "+ sep+" ","");
+        datos.setValue(oct,"Octubre : "+oct+" ","");
+        datos.setValue(nov,"Noviembre : "+nov+" ","");
+        datos.setValue(dic,"Diciembre : "+dic+" ","");
+
+        barra = ChartFactory.createBarChart3D("Visitantes del año "+jcbAñoGraficoEstadistico.getSelectedItem(), "Meses","Visitantes",datos,PlotOrientation.VERTICAL,true,true,true);
+        BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+        
+        //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
+        //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+        lblTorta.setSize(panelGraficoTorta.getSize());
+        //lblTorta.setIcon(new ImageIcon(graficoTorta));
+        lblTorta.setIcon(new ImageIcon(graficoBarra));
+        txtTotalVisitasPorAño.setText(String.valueOf(total));
+        panelGraficoTorta.updateUI();
+        //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
+                
+            }
+    }
+    
+    
+    void EstadisticasDispositivos(){
+        if(idAnio == 0){
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un año");
+            return;
+        }
+        else{
+        lblTorta.setText("");
+        JFreeChart barra;
+        DefaultCategoryDataset datos;
+        int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
+        ene=(Integer.valueOf(visitantesED()));
+        feb=(Integer.valueOf(visitantesFD()));
+        mar=(Integer.valueOf(visitantesMD()));
+        abr=(Integer.valueOf(visitantesAD()));
+        ma=(Integer.valueOf(visitantesMayoD()));
+        jun=(Integer.valueOf(visitantesJD()));
+        jul=(Integer.valueOf(visitantesJulD()));
+        agos=(Integer.valueOf(visitantesAgD()));
+        sep=(Integer.valueOf(visitantesSepD()));
+        oct=(Integer.valueOf(visitantesOcD()));
+        nov=(Integer.valueOf(visitantesNovD()));
+        dic=(Integer.valueOf(visitantesDicD()));
+        total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
+        datos = new DefaultCategoryDataset(); 
+        datos.setValue(ene,"Enero : "+ene+" ","");
+        datos.setValue(feb,"Febrero : "+feb+" ","");
+        datos.setValue(mar,"Marzo : "+mar+" ","");
+        datos.setValue(abr,"Abril : "+abr+" ","");
+        datos.setValue(ma,"Mayo : "+ma+" ","");
+        datos.setValue(jun,"Junio : "+jun+" ","");
+        datos.setValue(jul,"Julio : "+ jul+" ","");
+        datos.setValue(agos,"Agosto : "+agos+" ","");
+        datos.setValue(sep,"Septiembre : "+ sep+" ","");
+        datos.setValue(oct,"Octubre : "+oct+" ","");
+        datos.setValue(nov,"Noviembre : "+nov+" ","");
+        datos.setValue(dic,"Diciembre : "+dic+" ","");
+
+        barra = ChartFactory.createBarChart3D("Dispositivos conectados al año "+jcbAñoGraficoEstadistico.getSelectedItem(), "Meses","Visitantes",datos,PlotOrientation.VERTICAL,true,true,true);
+        BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+        
+        //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
+        //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+        lblTorta.setSize(panelGraficoTorta.getSize());
+        //lblTorta.setIcon(new ImageIcon(graficoTorta));
+        lblTorta.setIcon(new ImageIcon(graficoBarra));
+        txtTotalVisitasPorAño.setText(String.valueOf(total));
+        panelGraficoTorta.updateUI();
+        //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
+                
+            } 
+        
+    }
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         btgSeleccion = new javax.swing.ButtonGroup();
+        btgBuscarHistorialPor = new javax.swing.ButtonGroup();
+        btgVerEstadisticas = new javax.swing.ButtonGroup();
         tabMenu = new javax.swing.JTabbedPane();
         jpPrincipal = new javax.swing.JPanel();
         PanelDerechosMuseo = new javax.swing.JPanel();
@@ -742,17 +2522,25 @@ public final class Principal extends javax.swing.JFrame {
         SpinnerDateModel fecha = new SpinnerDateModel(date, null, null, Calendar.DATE);
         spnFecha = new javax.swing.JSpinner(fecha);
         jLabel44 = new javax.swing.JLabel();
+        btnVideoMuseo = new javax.swing.JLabel();
+        jlVideoMuseo = new javax.swing.JLabel();
+        btnAudioMuseo = new javax.swing.JLabel();
+        jlAudioMuseo = new javax.swing.JLabel();
         PanelRol = new javax.swing.JPanel();
         lblCerrarSesion5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jpUsuarios = new javax.swing.JPanel();
         jdeskusuarios = new javax.swing.JDesktopPane();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jtUsuarios = new javax.swing.JTable();
+        jtUsuarios = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false; //Disallow the editing of any cell
+            }
+        };
         btnNuevoUsuario = new javax.swing.JLabel();
         lblNuevo = new javax.swing.JLabel();
-        btnActualizar = new javax.swing.JLabel();
-        btnEliminar = new javax.swing.JLabel();
+        btnActualizarUsuario = new javax.swing.JLabel();
+        btnEliminarUsuario = new javax.swing.JLabel();
         btnBuscarUsuarios = new javax.swing.JLabel();
         jcbBuscarPor = new javax.swing.JComboBox<>();
         txtBuscarPor = new javax.swing.JTextField();
@@ -760,10 +2548,11 @@ public final class Principal extends javax.swing.JFrame {
         rbtnInactivo = new javax.swing.JRadioButton();
         jLabel39 = new javax.swing.JLabel();
         lblTotalUsuarios = new javax.swing.JLabel();
-        jLabel49 = new javax.swing.JLabel();
-        jLabel50 = new javax.swing.JLabel();
-        jLabel51 = new javax.swing.JLabel();
-        jLabel52 = new javax.swing.JLabel();
+        lblNuevoUsuario = new javax.swing.JLabel();
+        lblActualizarUsuario = new javax.swing.JLabel();
+        lblEliminarUsuario = new javax.swing.JLabel();
+        lblBuscarUsuario = new javax.swing.JLabel();
+        btnImprimirUsuarios = new javax.swing.JLabel();
         PanelRolUsuarios = new javax.swing.JPanel();
         lblCerrarSesion6 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -779,22 +2568,37 @@ public final class Principal extends javax.swing.JFrame {
         lblTerminosyCondicionesGaleria = new javax.swing.JLabel();
         lblPoliticasdePrivacidadGaleria = new javax.swing.JLabel();
         lblUsuarioyRolGaleria = new javax.swing.JLabel();
-        btnGestionCategoria = new javax.swing.JLabel();
-        btnGestionArticulos = new javax.swing.JLabel();
         PanelRolUsuarios1 = new javax.swing.JPanel();
         lblCerrarSesion7 = new javax.swing.JLabel();
         lblTituloGaleria = new javax.swing.JLabel();
+        btnGestionArticulos = new javax.swing.JButton();
+        btnGestionCategoria = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jdeskContactanos = new javax.swing.JDesktopPane();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jtHistorialVisita = new javax.swing.JTable();
-        lblBuscarHistorialVisita = new javax.swing.JLabel();
+        jtHistorialVisita = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false; //Disallow the editing of any cell
+            }
+        };
         jLabel3 = new javax.swing.JLabel();
         txtTotalVisitas = new javax.swing.JTextField();
-        jdtHistDesde = new com.toedter.calendar.JDateChooser();
-        lblEliminarHistorialVisita = new javax.swing.JLabel();
+        btnImprimirVisitantes = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel56 = new javax.swing.JLabel();
+        txtnombreVisitante = new javax.swing.JTextField();
+        btnNuevoVisitante = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel57 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        lblBuscarHistorialVisita = new javax.swing.JLabel();
+        jrbFiltroVisitante = new javax.swing.JRadioButton();
+        jLabel59 = new javax.swing.JLabel();
+        jdtHistHasta = new com.toedter.calendar.JDateChooser();
+        jrbFiltroDispositivo = new javax.swing.JRadioButton();
+        jdtHistDesde = new com.toedter.calendar.JDateChooser();
+        jrbFiltroTodo = new javax.swing.JRadioButton();
         jPanel7 = new javax.swing.JPanel();
         jlJJ2016Historial = new javax.swing.JLabel();
         lblTerminosyCondicionesContactanos = new javax.swing.JLabel();
@@ -805,41 +2609,42 @@ public final class Principal extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jdeskAcercade = new javax.swing.JDesktopPane();
+        jPanelEstadisticaVisitaImprimir = new javax.swing.JPanel();
+        jcbAñoGraficoEstadistico = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
+        btnVerEstadisticaAnual = new javax.swing.JLabel();
+        panelGraficoTorta = new javax.swing.JPanel();
+        lblTorta = new javax.swing.JLabel();
+        lblTotalPastel = new javax.swing.JLabel();
+        txtTotalVisitasPorAño = new javax.swing.JTextField();
+        btnImprimirEstadistica = new javax.swing.JLabel();
+        jrbEstadisticasVisitantes = new javax.swing.JRadioButton();
+        jrbEstadisticasDispositivos = new javax.swing.JRadioButton();
+        jPanelEstadisticaDispositivoImprimir = new javax.swing.JPanel();
+        btnImprimirEstadisticaDispositivos = new javax.swing.JLabel();
+        lblTotalPastelDispositivos = new javax.swing.JLabel();
+        txtTotalVisitasVisitantesPorAñoComparativo = new javax.swing.JTextField();
+        jcbAñoGraficoEstadisticoComparativo = new javax.swing.JComboBox<>();
+        btnVerEstadisticaAnualDispositivos = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        panelGraficoTortaDis = new javax.swing.JPanel();
+        lblTortaDis = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        txtTotalVisitasDispositivosPorAñoCompartivo = new javax.swing.JTextField();
+        PanelRolUsuarios8 = new javax.swing.JPanel();
+        lblCerrarSesionAcerca = new javax.swing.JLabel();
+        jLabel48 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jlJJ2016Acercade = new javax.swing.JLabel();
         lblTerminosyCondicionesAcerca = new javax.swing.JLabel();
         lblPoliticasdePrivacidadacerca = new javax.swing.JLabel();
         lblUsuarioyRolAcerca = new javax.swing.JLabel();
-        losQr = new javax.swing.JLabel();
-        lblAcercaDeAnimalito = new javax.swing.JLabel();
-        jLabel27 = new javax.swing.JLabel();
-        jLabel28 = new javax.swing.JLabel();
-        jLabel29 = new javax.swing.JLabel();
-        jLabel30 = new javax.swing.JLabel();
-        jLabel31 = new javax.swing.JLabel();
-        jLabel32 = new javax.swing.JLabel();
-        lblAcercaDeLaAplicacion = new javax.swing.JLabel();
-        jLabel33 = new javax.swing.JLabel();
-        jLabel34 = new javax.swing.JLabel();
-        jLabel35 = new javax.swing.JLabel();
-        jLabel36 = new javax.swing.JLabel();
-        jLabel37 = new javax.swing.JLabel();
-        jLabel38 = new javax.swing.JLabel();
-        losQr3 = new javax.swing.JLabel();
-        losQr2 = new javax.swing.JLabel();
-        lblAcercaDeAppVersionNetbeans = new javax.swing.JLabel();
-        jLabel41 = new javax.swing.JLabel();
-        jLabel42 = new javax.swing.JLabel();
-        jLabel45 = new javax.swing.JLabel();
-        lblAcercaDeAppVersionandroid = new javax.swing.JLabel();
-        PanelRolUsuarios8 = new javax.swing.JPanel();
-        lblCerrarSesionAcerca = new javax.swing.JLabel();
-        jLabel48 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setUndecorated(true);
 
-        tabMenu.setBackground(new java.awt.Color(0, 0, 0));
+        tabMenu.setBackground(new java.awt.Color(0, 102, 153));
         tabMenu.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         tabMenu.setTabPlacement(javax.swing.JTabbedPane.LEFT);
 
@@ -1094,6 +2899,32 @@ public final class Principal extends javax.swing.JFrame {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
+        btnVideoMuseo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/video.png"))); // NOI18N
+        btnVideoMuseo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVideoMuseo.setEnabled(false);
+        btnVideoMuseo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnVideoMuseoMouseClicked(evt);
+            }
+        });
+
+        jlVideoMuseo.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jlVideoMuseo.setText("               Video");
+        jlVideoMuseo.setEnabled(false);
+
+        btnAudioMuseo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/audio.png"))); // NOI18N
+        btnAudioMuseo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAudioMuseo.setEnabled(false);
+        btnAudioMuseo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAudioMuseoMouseClicked(evt);
+            }
+        });
+
+        jlAudioMuseo.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jlAudioMuseo.setText("               Audio");
+        jlAudioMuseo.setEnabled(false);
+
         jdeskPrincipal.setLayer(imgMuseo1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(imgMuseo2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(jlGaleria, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -1105,6 +2936,10 @@ public final class Principal extends javax.swing.JFrame {
         jdeskPrincipal.setLayer(btnEditarMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(btnCancelarMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskPrincipal.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(btnVideoMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(jlVideoMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(btnAudioMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskPrincipal.setLayer(jlAudioMuseo, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskPrincipalLayout = new javax.swing.GroupLayout(jdeskPrincipal);
         jdeskPrincipal.setLayout(jdeskPrincipalLayout);
@@ -1130,13 +2965,30 @@ public final class Principal extends javax.swing.JFrame {
                                         .addComponent(imgMuseo4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(29, 29, 29)
                                         .addComponent(imgMuseo5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnEditarMuseo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnCancelarMuseo, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jlVideoMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                                        .addGap(34, 34, 34)
+                                                        .addComponent(btnVideoMuseo)))
+                                                .addGap(31, 31, 31)
+                                                .addComponent(btnEditarMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                                .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                                        .addGap(10, 10, 10)
+                                                        .addComponent(jlAudioMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addGap(31, 31, 31))
+                                                    .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                                        .addGap(46, 46, 46)
+                                                        .addComponent(btnAudioMuseo)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                .addComponent(btnCancelarMuseo))))))
                             .addComponent(jScrollPane2)))
                     .addGroup(jdeskPrincipalLayout.createSequentialGroup()
-                        .addGap(0, 61, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(imgQrMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1170,8 +3022,20 @@ public final class Principal extends javax.swing.JFrame {
                             .addContainerGap()))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskPrincipalLayout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                        .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jdeskPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addGap(0, 25, Short.MAX_VALUE)
+                                .addComponent(imgMuseo1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jdeskPrincipalLayout.createSequentialGroup()
+                                .addComponent(btnVideoMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlVideoMuseo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAudioMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jlAudioMuseo)
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())))
         );
 
@@ -1266,25 +3130,25 @@ public final class Principal extends javax.swing.JFrame {
 
         lblNuevo.setText("Nuevo");
 
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizar.png"))); // NOI18N
-        btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnActualizar.setMaximumSize(new java.awt.Dimension(84, 81));
-        btnActualizar.setMinimumSize(new java.awt.Dimension(84, 81));
-        btnActualizar.setPreferredSize(new java.awt.Dimension(84, 81));
-        btnActualizar.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnActualizarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizar.png"))); // NOI18N
+        btnActualizarUsuario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnActualizarUsuario.setMaximumSize(new java.awt.Dimension(84, 81));
+        btnActualizarUsuario.setMinimumSize(new java.awt.Dimension(84, 81));
+        btnActualizarUsuario.setPreferredSize(new java.awt.Dimension(84, 81));
+        btnActualizarUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnActualizarMouseClicked(evt);
+                btnActualizarUsuarioMouseClicked(evt);
             }
         });
 
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Eliminar1.png"))); // NOI18N
-        btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEliminar.setMaximumSize(new java.awt.Dimension(84, 81));
-        btnEliminar.setMinimumSize(new java.awt.Dimension(84, 81));
-        btnEliminar.setPreferredSize(new java.awt.Dimension(84, 81));
-        btnEliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnEliminarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Eliminar1.png"))); // NOI18N
+        btnEliminarUsuario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEliminarUsuario.setMaximumSize(new java.awt.Dimension(84, 81));
+        btnEliminarUsuario.setMinimumSize(new java.awt.Dimension(84, 81));
+        btnEliminarUsuario.setPreferredSize(new java.awt.Dimension(84, 81));
+        btnEliminarUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnEliminarMouseClicked(evt);
+                btnEliminarUsuarioMouseClicked(evt);
             }
         });
 
@@ -1341,23 +3205,34 @@ public final class Principal extends javax.swing.JFrame {
         lblTotalUsuarios.setText("0");
         lblTotalUsuarios.setName("lblTotalUsuarios"); // NOI18N
 
-        jLabel49.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel49.setText("Nuevo");
+        lblNuevoUsuario.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblNuevoUsuario.setText("Nuevo");
 
-        jLabel50.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel50.setText("Actualizar");
+        lblActualizarUsuario.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblActualizarUsuario.setText("Actualizar");
 
-        jLabel51.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel51.setText("Eliminar");
+        lblEliminarUsuario.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblEliminarUsuario.setText("Eliminar");
 
-        jLabel52.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel52.setText("Buscar");
+        lblBuscarUsuario.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblBuscarUsuario.setText("Buscar");
+
+        btnImprimirUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
+        btnImprimirUsuarios.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimirUsuarios.setMaximumSize(new java.awt.Dimension(84, 81));
+        btnImprimirUsuarios.setMinimumSize(new java.awt.Dimension(84, 81));
+        btnImprimirUsuarios.setPreferredSize(new java.awt.Dimension(84, 81));
+        btnImprimirUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnImprimirUsuariosMouseClicked(evt);
+            }
+        });
 
         jdeskusuarios.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(btnNuevoUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(lblNuevo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskusuarios.setLayer(btnActualizar, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskusuarios.setLayer(btnEliminar, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(btnActualizarUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(btnEliminarUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(btnBuscarUsuarios, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(jcbBuscarPor, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(txtBuscarPor, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -1365,10 +3240,11 @@ public final class Principal extends javax.swing.JFrame {
         jdeskusuarios.setLayer(rbtnInactivo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(jLabel39, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskusuarios.setLayer(lblTotalUsuarios, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskusuarios.setLayer(jLabel49, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskusuarios.setLayer(jLabel50, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskusuarios.setLayer(jLabel51, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskusuarios.setLayer(jLabel52, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(lblNuevoUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(lblActualizarUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(lblEliminarUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(lblBuscarUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskusuarios.setLayer(btnImprimirUsuarios, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskusuariosLayout = new javax.swing.GroupLayout(jdeskusuarios);
         jdeskusuarios.setLayout(jdeskusuariosLayout);
@@ -1392,9 +3268,9 @@ public final class Principal extends javax.swing.JFrame {
                                         .addGroup(jdeskusuariosLayout.createSequentialGroup()
                                             .addComponent(btnNuevoUsuario)
                                             .addGap(25, 25, 25)
-                                            .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnActualizarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(25, 25, 25)
-                                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnEliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(25, 25, 25)
                                             .addComponent(btnBuscarUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(25, 25, 25)
@@ -1405,16 +3281,17 @@ public final class Principal extends javax.swing.JFrame {
                                                     .addGap(18, 18, 18)
                                                     .addComponent(rbtnActivo)
                                                     .addGap(18, 18, 18)
-                                                    .addComponent(rbtnInactivo)))))))))
+                                                    .addComponent(rbtnInactivo)))))))
+                            .addComponent(btnImprimirUsuarios, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jdeskusuariosLayout.createSequentialGroup()
                         .addGap(63, 63, 63)
-                        .addComponent(jLabel49)
+                        .addComponent(lblNuevoUsuario)
                         .addGap(73, 73, 73)
-                        .addComponent(jLabel50)
+                        .addComponent(lblActualizarUsuario)
                         .addGap(57, 57, 57)
-                        .addComponent(jLabel51)
+                        .addComponent(lblEliminarUsuario)
                         .addGap(68, 68, 68)
-                        .addComponent(jLabel52)))
+                        .addComponent(lblBuscarUsuario)))
                 .addContainerGap(60, Short.MAX_VALUE))
         );
         jdeskusuariosLayout.setVerticalGroup(
@@ -1426,8 +3303,8 @@ public final class Principal extends javax.swing.JFrame {
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(btnNuevoUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnActualizar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnActualizarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEliminarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnBuscarUsuarios, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jdeskusuariosLayout.createSequentialGroup()
                         .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1439,17 +3316,19 @@ public final class Principal extends javax.swing.JFrame {
                         .addComponent(txtBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel49)
-                    .addComponent(jLabel50)
-                    .addComponent(jLabel51)
-                    .addComponent(jLabel52))
+                    .addComponent(lblNuevoUsuario)
+                    .addComponent(lblActualizarUsuario)
+                    .addComponent(lblEliminarUsuario)
+                    .addComponent(lblBuscarUsuario))
                 .addGap(4, 4, 4)
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel39)
                     .addComponent(lblTotalUsuarios))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(133, 133, 133))
+                .addGap(18, 18, 18)
+                .addComponent(btnImprimirUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34))
         );
 
         PanelRolUsuarios.setBackground(new java.awt.Color(0, 0, 0));
@@ -1572,7 +3451,7 @@ public final class Principal extends javax.swing.JFrame {
 
         tabMenu.addTab("         Usuarios      ", new javax.swing.ImageIcon(getClass().getResource("/images/usuarios.png")), jpUsuarios); // NOI18N
 
-        jPanel3.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel3.setBackground(new java.awt.Color(34, 81, 122));
 
         jdeskGaleria.setBackground(new java.awt.Color(204, 204, 255));
 
@@ -1580,11 +3459,11 @@ public final class Principal extends javax.swing.JFrame {
         jdeskGaleria.setLayout(jdeskGaleriaLayout);
         jdeskGaleriaLayout.setHorizontalGroup(
             jdeskGaleriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 836, Short.MAX_VALUE)
+            .addGap(0, 860, Short.MAX_VALUE)
         );
         jdeskGaleriaLayout.setVerticalGroup(
             jdeskGaleriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 563, Short.MAX_VALUE)
+            .addGap(0, 551, Short.MAX_VALUE)
         );
 
         jPanel10.setBackground(new java.awt.Color(0, 0, 0));
@@ -1638,7 +3517,7 @@ public final class Principal extends javax.swing.JFrame {
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
+                .addContainerGap(30, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblUsuarioyRolGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1647,28 +3526,6 @@ public final class Principal extends javax.swing.JFrame {
                         .addComponent(lblPoliticasdePrivacidadGaleria)))
                 .addGap(25, 25, 25))
         );
-
-        btnGestionCategoria.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        btnGestionCategoria.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionCategoria.setText("     Gestionar Categoría");
-        btnGestionCategoria.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnGestionCategoria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGestionCategoria.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnGestionCategoriaMouseClicked(evt);
-            }
-        });
-
-        btnGestionArticulos.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        btnGestionArticulos.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionArticulos.setText("     Gestionar Artículo");
-        btnGestionArticulos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnGestionArticulos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGestionArticulos.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnGestionArticulosMouseClicked(evt);
-            }
-        });
 
         PanelRolUsuarios1.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -1707,6 +3564,24 @@ public final class Principal extends javax.swing.JFrame {
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
+        btnGestionArticulos.setBackground(new java.awt.Color(0, 0, 0));
+        btnGestionArticulos.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionArticulos.setText("Gestionar Artículo");
+        btnGestionArticulos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionArticulosActionPerformed(evt);
+            }
+        });
+
+        btnGestionCategoria.setBackground(new java.awt.Color(0, 0, 0));
+        btnGestionCategoria.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionCategoria.setText("     Gestionar Categoría");
+        btnGestionCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionCategoriaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -1714,9 +3589,9 @@ public final class Principal extends javax.swing.JFrame {
             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnGestionCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGestionArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnGestionArticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionCategoria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jdeskGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -1726,14 +3601,14 @@ public final class Principal extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addComponent(PanelRolUsuarios1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnGestionCategoria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(9, 9, 9)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(btnGestionCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGestionArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnGestionArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jdeskGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1742,6 +3617,7 @@ public final class Principal extends javax.swing.JFrame {
         jPanel4.setBackground(new java.awt.Color(0, 0, 0));
 
         jdeskContactanos.setBackground(new java.awt.Color(204, 204, 255));
+        jdeskContactanos.setMaximumSize(new java.awt.Dimension(1063, 530));
 
         jtHistorialVisita.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1754,7 +3630,98 @@ public final class Principal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jtHistorialVisita.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtHistorialVisitaMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(jtHistorialVisita);
+
+        jLabel3.setText("Total Visitas");
+
+        txtTotalVisitas.setEditable(false);
+        txtTotalVisitas.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtTotalVisitas.setText("0");
+
+        btnImprimirVisitantes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
+        btnImprimirVisitantes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimirVisitantes.setMaximumSize(new java.awt.Dimension(84, 81));
+        btnImprimirVisitantes.setMinimumSize(new java.awt.Dimension(84, 81));
+        btnImprimirVisitantes.setPreferredSize(new java.awt.Dimension(84, 81));
+        btnImprimirVisitantes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnImprimirVisitantesMouseClicked(evt);
+            }
+        });
+
+        jPanel2.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jPanel2.setOpaque(false);
+
+        jLabel56.setText("Visitante");
+
+        txtnombreVisitante.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtnombreVisitanteKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtnombreVisitanteKeyTyped(evt);
+            }
+        });
+
+        btnNuevoVisitante.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/mas.jpg"))); // NOI18N
+        btnNuevoVisitante.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevoVisitante.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnNuevoVisitanteMouseClicked(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel10.setText("Registro de Visitante");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtnombreVisitante, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnNuevoVisitante, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(79, 79, 79))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnNuevoVisitante, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel56)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtnombreVisitante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(39, 39, 39))
+        );
+
+        jPanel6.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel6.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel6.setOpaque(false);
+
+        jLabel57.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel57.setText("Desde : ");
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel4.setText("Buscar por:");
 
         lblBuscarHistorialVisita.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
         lblBuscarHistorialVisita.setText("jLabel3");
@@ -1765,83 +3732,134 @@ public final class Principal extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setText("Total Visitas");
-
-        txtTotalVisitas.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtTotalVisitas.setText("0");
-
-        lblEliminarHistorialVisita.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Eliminar1.png"))); // NOI18N
-        lblEliminarHistorialVisita.setText("jLabel3");
-        lblEliminarHistorialVisita.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblEliminarHistorialVisita.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblEliminarHistorialVisitaMouseClicked(evt);
+        jrbFiltroVisitante.setText("Visitante");
+        jrbFiltroVisitante.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbFiltroVisitanteActionPerformed(evt);
             }
         });
 
-        jLabel4.setText("Buscar");
+        jLabel59.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel59.setText("Hasta :");
 
-        jLabel6.setText("Eliminar");
+        jrbFiltroDispositivo.setText("Dispositivo");
+        jrbFiltroDispositivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbFiltroDispositivoActionPerformed(evt);
+            }
+        });
+
+        jrbFiltroTodo.setText("Todo");
+        jrbFiltroTodo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbFiltroTodoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jrbFiltroVisitante)
+                            .addComponent(jrbFiltroDispositivo)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(82, 82, 82)
+                        .addComponent(jrbFiltroTodo)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel57, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel59, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jdtHistHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jdtHistDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(lblBuscarHistorialVisita, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(67, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jrbFiltroTodo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jrbFiltroVisitante)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jrbFiltroDispositivo))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel57))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jdtHistDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(11, 11, 11)
+                                .addComponent(jLabel59)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                                .addComponent(jdtHistHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(lblBuscarHistorialVisita, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addContainerGap(33, Short.MAX_VALUE))
+        );
 
         jdeskContactanos.setLayer(jScrollPane3, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskContactanos.setLayer(lblBuscarHistorialVisita, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskContactanos.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jdeskContactanos.setLayer(txtTotalVisitas, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskContactanos.setLayer(jdtHistDesde, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskContactanos.setLayer(lblEliminarHistorialVisita, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskContactanos.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskContactanos.setLayer(jLabel6, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskContactanos.setLayer(btnImprimirVisitantes, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskContactanos.setLayer(jPanel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskContactanos.setLayer(jPanel6, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jdeskContactanosLayout = new javax.swing.GroupLayout(jdeskContactanos);
         jdeskContactanos.setLayout(jdeskContactanosLayout);
         jdeskContactanosLayout.setHorizontalGroup(
             jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jdeskContactanosLayout.createSequentialGroup()
-                .addGap(60, 60, 60)
-                .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jdeskContactanosLayout.createSequentialGroup()
-                        .addComponent(jdtHistDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(25, 25, 25)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblBuscarHistorialVisita, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblEliminarHistorialVisita, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jdeskContactanosLayout.createSequentialGroup()
-                            .addGap(598, 598, 598)
-                            .addComponent(jLabel3)
-                            .addGap(54, 54, 54)
-                            .addComponent(txtTotalVisitas, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 944, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(66, 66, 66))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskContactanosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addGap(61, 61, 61)
-                .addComponent(jLabel6)
-                .addGap(79, 79, 79))
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jdeskContactanosLayout.createSequentialGroup()
+                        .addGap(488, 488, 488)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTotalVisitas, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(57, 57, 57)
+                        .addComponent(btnImprimirVisitantes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jdeskContactanosLayout.createSequentialGroup()
+                        .addGap(100, 100, 100)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(334, Short.MAX_VALUE))
         );
         jdeskContactanosLayout.setVerticalGroup(
             jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jdeskContactanosLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jdeskContactanosLayout.createSequentialGroup()
-                        .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel6))
-                        .addGap(1, 1, 1)
-                        .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblBuscarHistorialVisita, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jdtHistDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskContactanosLayout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(lblEliminarHistorialVisita, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtTotalVisitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(16, Short.MAX_VALUE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnImprimirVisitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtTotalVisitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)))
+                .addGap(33, 33, 33))
         );
 
         jPanel7.setBackground(new java.awt.Color(0, 0, 0));
@@ -1895,7 +3913,7 @@ public final class Principal extends javax.swing.JFrame {
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(19, 19, 19)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblUsuarioyRolContactanos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1957,9 +3975,9 @@ public final class Principal extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(PanelRolUsuarios3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
-                .addComponent(jdeskContactanos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jdeskContactanos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         tabMenu.addTab("        Historial de Visita", new javax.swing.ImageIcon(getClass().getResource("/images/visitas.png")), jPanel4); // NOI18N
@@ -1967,6 +3985,316 @@ public final class Principal extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(0, 0, 0));
 
         jdeskAcercade.setBackground(new java.awt.Color(204, 204, 255));
+
+        jPanelEstadisticaVisitaImprimir.setOpaque(false);
+
+        jcbAñoGraficoEstadistico.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2016", "2017" }));
+        jcbAñoGraficoEstadistico.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jcbAñoGraficoEstadisticoItemStateChanged(evt);
+            }
+        });
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel8.setText("Gráficos Estadísticos : ");
+
+        btnVerEstadisticaAnual.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
+        btnVerEstadisticaAnual.setText("jLabel3");
+        btnVerEstadisticaAnual.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVerEstadisticaAnual.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnVerEstadisticaAnualMouseClicked(evt);
+            }
+        });
+
+        panelGraficoTorta.setPreferredSize(new java.awt.Dimension(480, 308));
+
+        lblTorta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTorta.setText("Seleccione un año para ver la Estadistica");
+        lblTorta.setPreferredSize(new java.awt.Dimension(480, 308));
+
+        javax.swing.GroupLayout panelGraficoTortaLayout = new javax.swing.GroupLayout(panelGraficoTorta);
+        panelGraficoTorta.setLayout(panelGraficoTortaLayout);
+        panelGraficoTortaLayout.setHorizontalGroup(
+            panelGraficoTortaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblTorta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        panelGraficoTortaLayout.setVerticalGroup(
+            panelGraficoTortaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelGraficoTortaLayout.createSequentialGroup()
+                .addComponent(lblTorta, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        lblTotalPastel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTotalPastel.setText("Total Usuarios Anuales:");
+        lblTotalPastel.setFocusable(false);
+        lblTotalPastel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        txtTotalVisitasPorAño.setEditable(false);
+        txtTotalVisitasPorAño.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtTotalVisitasPorAño.setText("0");
+
+        btnImprimirEstadistica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
+        btnImprimirEstadistica.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimirEstadistica.setMaximumSize(new java.awt.Dimension(84, 81));
+        btnImprimirEstadistica.setMinimumSize(new java.awt.Dimension(84, 81));
+        btnImprimirEstadistica.setPreferredSize(new java.awt.Dimension(84, 81));
+        btnImprimirEstadistica.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnImprimirEstadisticaMouseClicked(evt);
+            }
+        });
+
+        jrbEstadisticasVisitantes.setText("Visitantes");
+
+        jrbEstadisticasDispositivos.setText("Dispositivo");
+
+        javax.swing.GroupLayout jPanelEstadisticaVisitaImprimirLayout = new javax.swing.GroupLayout(jPanelEstadisticaVisitaImprimir);
+        jPanelEstadisticaVisitaImprimir.setLayout(jPanelEstadisticaVisitaImprimirLayout);
+        jPanelEstadisticaVisitaImprimirLayout.setHorizontalGroup(
+            jPanelEstadisticaVisitaImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelEstadisticaVisitaImprimirLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelEstadisticaVisitaImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelEstadisticaVisitaImprimirLayout.createSequentialGroup()
+                        .addComponent(panelGraficoTorta, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanelEstadisticaVisitaImprimirLayout.createSequentialGroup()
+                        .addComponent(jrbEstadisticasVisitantes)
+                        .addGap(18, 18, 18)
+                        .addComponent(jrbEstadisticasDispositivos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jcbAñoGraficoEstadistico, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnVerEstadisticaAnual, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40))
+                    .addGroup(jPanelEstadisticaVisitaImprimirLayout.createSequentialGroup()
+                        .addGroup(jPanelEstadisticaVisitaImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelEstadisticaVisitaImprimirLayout.createSequentialGroup()
+                                .addGap(0, 97, Short.MAX_VALUE)
+                                .addComponent(lblTotalPastel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtTotalVisitasPorAño, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(39, 39, 39)
+                                .addComponent(btnImprimirEstadistica, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelEstadisticaVisitaImprimirLayout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
+        );
+        jPanelEstadisticaVisitaImprimirLayout.setVerticalGroup(
+            jPanelEstadisticaVisitaImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelEstadisticaVisitaImprimirLayout.createSequentialGroup()
+                .addGap(4, 4, 4)
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
+                .addGroup(jPanelEstadisticaVisitaImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnVerEstadisticaAnual, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jcbAñoGraficoEstadistico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jrbEstadisticasVisitantes)
+                    .addComponent(jrbEstadisticasDispositivos))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelGraficoTorta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanelEstadisticaVisitaImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelEstadisticaVisitaImprimirLayout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addGroup(jPanelEstadisticaVisitaImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtTotalVisitasPorAño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblTotalPastel)))
+                    .addComponent(btnImprimirEstadistica, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jPanelEstadisticaDispositivoImprimir.setOpaque(false);
+
+        btnImprimirEstadisticaDispositivos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
+        btnImprimirEstadisticaDispositivos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimirEstadisticaDispositivos.setMaximumSize(new java.awt.Dimension(84, 81));
+        btnImprimirEstadisticaDispositivos.setMinimumSize(new java.awt.Dimension(84, 81));
+        btnImprimirEstadisticaDispositivos.setPreferredSize(new java.awt.Dimension(84, 81));
+        btnImprimirEstadisticaDispositivos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnImprimirEstadisticaDispositivosMouseClicked(evt);
+            }
+        });
+
+        lblTotalPastelDispositivos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTotalPastelDispositivos.setText("Total Anual:");
+        lblTotalPastelDispositivos.setFocusable(false);
+        lblTotalPastelDispositivos.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        txtTotalVisitasVisitantesPorAñoComparativo.setEditable(false);
+        txtTotalVisitasVisitantesPorAñoComparativo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtTotalVisitasVisitantesPorAñoComparativo.setText("0");
+
+        jcbAñoGraficoEstadisticoComparativo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2016", "2017" }));
+        jcbAñoGraficoEstadisticoComparativo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jcbAñoGraficoEstadisticoComparativoItemStateChanged(evt);
+            }
+        });
+
+        btnVerEstadisticaAnualDispositivos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
+        btnVerEstadisticaAnualDispositivos.setText("jLabel3");
+        btnVerEstadisticaAnualDispositivos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVerEstadisticaAnualDispositivos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnVerEstadisticaAnualDispositivosMouseClicked(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel9.setText("Gráfico Estadístico Comparativo ");
+
+        lblTortaDis.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTortaDis.setText("Seleccione un año para ver la Estadistica de los Dispositivos que se han conectado");
+        lblTortaDis.setPreferredSize(new java.awt.Dimension(480, 308));
+
+        javax.swing.GroupLayout panelGraficoTortaDisLayout = new javax.swing.GroupLayout(panelGraficoTortaDis);
+        panelGraficoTortaDis.setLayout(panelGraficoTortaDisLayout);
+        panelGraficoTortaDisLayout.setHorizontalGroup(
+            panelGraficoTortaDisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblTortaDis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        panelGraficoTortaDisLayout.setVerticalGroup(
+            panelGraficoTortaDisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblTortaDis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jLabel11.setText("Visitantes ");
+
+        jLabel12.setText("Dispositivos");
+
+        txtTotalVisitasDispositivosPorAñoCompartivo.setEditable(false);
+        txtTotalVisitasDispositivosPorAñoCompartivo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtTotalVisitasDispositivosPorAñoCompartivo.setText("0");
+
+        javax.swing.GroupLayout jPanelEstadisticaDispositivoImprimirLayout = new javax.swing.GroupLayout(jPanelEstadisticaDispositivoImprimir);
+        jPanelEstadisticaDispositivoImprimir.setLayout(jPanelEstadisticaDispositivoImprimirLayout);
+        jPanelEstadisticaDispositivoImprimirLayout.setHorizontalGroup(
+            jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jcbAñoGraficoEstadisticoComparativo, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnVerEstadisticaAnualDispositivos, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29))
+                    .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(panelGraficoTortaDis, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                                .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                                        .addComponent(lblTotalPastelDispositivos, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtTotalVisitasVisitantesPorAñoComparativo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(txtTotalVisitasDispositivosPorAñoCompartivo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                                        .addGap(106, 106, 106)
+                                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(55, 55, 55)
+                                        .addComponent(jLabel12)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnImprimirEstadisticaDispositivos, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(10, 10, 10))
+            .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelEstadisticaDispositivoImprimirLayout.setVerticalGroup(
+            jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                        .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtTotalVisitasVisitantesPorAñoComparativo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblTotalPastelDispositivos)
+                            .addComponent(txtTotalVisitasDispositivosPorAñoCompartivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createSequentialGroup()
+                        .addGroup(jPanelEstadisticaDispositivoImprimirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnVerEstadisticaAnualDispositivos, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jcbAñoGraficoEstadisticoComparativo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panelGraficoTortaDis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnImprimirEstadisticaDispositivos, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
+        jdeskAcercade.setLayer(jPanelEstadisticaVisitaImprimir, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jdeskAcercade.setLayer(jPanelEstadisticaDispositivoImprimir, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout jdeskAcercadeLayout = new javax.swing.GroupLayout(jdeskAcercade);
+        jdeskAcercade.setLayout(jdeskAcercadeLayout);
+        jdeskAcercadeLayout.setHorizontalGroup(
+            jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jdeskAcercadeLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jPanelEstadisticaVisitaImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(jPanelEstadisticaDispositivoImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+        jdeskAcercadeLayout.setVerticalGroup(
+            jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jdeskAcercadeLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanelEstadisticaVisitaImprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelEstadisticaDispositivoImprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+
+        PanelRolUsuarios8.setBackground(new java.awt.Color(0, 0, 0));
+
+        lblCerrarSesionAcerca.setFont(new java.awt.Font("Sylfaen", 1, 14)); // NOI18N
+        lblCerrarSesionAcerca.setForeground(new java.awt.Color(255, 0, 0));
+        lblCerrarSesionAcerca.setText("[Cerrar Sesión]");
+        lblCerrarSesionAcerca.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblCerrarSesionAcerca.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCerrarSesionAcercaMouseClicked(evt);
+            }
+        });
+
+        jLabel48.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel48.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel48.setText("ACERCA DE");
+
+        javax.swing.GroupLayout PanelRolUsuarios8Layout = new javax.swing.GroupLayout(PanelRolUsuarios8);
+        PanelRolUsuarios8.setLayout(PanelRolUsuarios8Layout);
+        PanelRolUsuarios8Layout.setHorizontalGroup(
+            PanelRolUsuarios8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuarios8Layout.createSequentialGroup()
+                .addGap(421, 421, 421)
+                .addComponent(jLabel48)
+                .addGap(349, 349, 349)
+                .addComponent(lblCerrarSesionAcerca)
+                .addGap(87, 87, 87))
+        );
+        PanelRolUsuarios8Layout.setVerticalGroup(
+            PanelRolUsuarios8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelRolUsuarios8Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(PanelRolUsuarios8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel48, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCerrarSesionAcerca))
+                .addGap(25, 25, 25))
+        );
 
         jPanel8.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -2014,12 +4342,12 @@ public final class Principal extends javax.swing.JFrame {
                 .addComponent(lblPoliticasdePrivacidadacerca)
                 .addGap(132, 132, 132)
                 .addComponent(lblUsuarioyRolAcerca, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
+                .addGap(19, 19, 19)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblUsuarioyRolAcerca, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -2027,239 +4355,6 @@ public final class Principal extends javax.swing.JFrame {
                         .addComponent(lblTerminosyCondicionesAcerca)
                         .addComponent(lblPoliticasdePrivacidadacerca)))
                 .addGap(25, 25, 25))
-        );
-
-        losQr.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        losQr.setForeground(new java.awt.Color(204, 0, 0));
-        losQr.setText("Los Qr");
-
-        lblAcercaDeAnimalito.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/acercade.jpg"))); // NOI18N
-
-        jLabel27.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel27.setText("El  Museo de la Escuela Isidro Ayora ");
-
-        jLabel28.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel28.setText("existe  una  variedad en Galerías de ");
-
-        jLabel29.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel29.setText("arte,  los mismos  que gracias a los ");
-
-        jLabel30.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel30.setText("Qr estas piezas de arte contarán con");
-
-        jLabel31.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel31.setText("toda su infromacion la misma que ");
-
-        jLabel32.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel32.setText("estará accesible al público.");
-
-        lblAcercaDeLaAplicacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/appjqr.png"))); // NOI18N
-
-        jLabel33.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel33.setText("JJQR  y  el  LectorJJQR  se basan en");
-
-        jLabel34.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel34.setText("software libre desarrollado por Joss&");
-
-        jLabel35.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel35.setText("Jess, la misma a contado con la guía");
-
-        jLabel36.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel36.setText("del Ing.  F.  Viscaíno y el apoyo de la");
-
-        jLabel37.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel37.setText("Escuela \"Isidro Ayora\"  y  su  planta");
-
-        jLabel38.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel38.setText("docente como admiistradora.");
-
-        losQr3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        losQr3.setForeground(new java.awt.Color(204, 0, 0));
-        losQr3.setText("La Aplicacion");
-
-        losQr2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        losQr2.setForeground(new java.awt.Color(204, 0, 0));
-        losQr2.setText("JJQR 0.1");
-
-        lblAcercaDeAppVersionNetbeans.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/netbeans.png"))); // NOI18N
-
-        jLabel41.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel41.setForeground(new java.awt.Color(204, 0, 0));
-        jLabel41.setText("LectorJJQR");
-
-        jLabel42.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel42.setText("Product Version: Android Estudio 1.5.1 ");
-
-        jLabel45.setFont(new java.awt.Font("Arial Black", 0, 11)); // NOI18N
-        jLabel45.setText("Product Version: NetBeans 8.0.2 ");
-
-        lblAcercaDeAppVersionandroid.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/androidstudio.png"))); // NOI18N
-
-        jdeskAcercade.setLayer(jPanel8, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(losQr, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(lblAcercaDeAnimalito, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel27, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel28, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel29, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel30, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel31, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel32, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(lblAcercaDeLaAplicacion, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel33, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel34, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel35, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel36, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel37, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel38, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(losQr3, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(losQr2, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(lblAcercaDeAppVersionNetbeans, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel41, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel42, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(jLabel45, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jdeskAcercade.setLayer(lblAcercaDeAppVersionandroid, javax.swing.JLayeredPane.DEFAULT_LAYER);
-
-        javax.swing.GroupLayout jdeskAcercadeLayout = new javax.swing.GroupLayout(jdeskAcercade);
-        jdeskAcercade.setLayout(jdeskAcercadeLayout);
-        jdeskAcercadeLayout.setHorizontalGroup(
-            jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jdeskAcercadeLayout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jdeskAcercadeLayout.createSequentialGroup()
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(lblAcercaDeAnimalito, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel27))
-                            .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(78, 78, 78)
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel33, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblAcercaDeLaAplicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel34, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel36, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel45, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblAcercaDeAppVersionNetbeans, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel41, javax.swing.GroupLayout.Alignment.TRAILING)))
-                            .addComponent(jLabel42, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jdeskAcercadeLayout.createSequentialGroup()
-                        .addComponent(losQr)
-                        .addGap(292, 292, 292)
-                        .addComponent(losQr3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(losQr2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jdeskAcercadeLayout.createSequentialGroup()
-                        .addComponent(jLabel28)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jdeskAcercadeLayout.createSequentialGroup()
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel29)
-                            .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblAcercaDeAppVersionandroid, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(142, 142, 142))
-        );
-        jdeskAcercadeLayout.setVerticalGroup(
-            jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskAcercadeLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(losQr)
-                    .addComponent(losQr2)
-                    .addComponent(losQr3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jdeskAcercadeLayout.createSequentialGroup()
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAcercaDeAnimalito, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblAcercaDeLaAplicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(63, 63, 63)
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(8, 8, 8))
-                    .addGroup(jdeskAcercadeLayout.createSequentialGroup()
-                        .addComponent(lblAcercaDeAppVersionNetbeans, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel45, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(47, 47, 47)
-                        .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblAcercaDeAppVersionandroid, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jdeskAcercadeLayout.createSequentialGroup()
-                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jdeskAcercadeLayout.createSequentialGroup()
-                        .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jdeskAcercadeLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        PanelRolUsuarios8.setBackground(new java.awt.Color(0, 0, 0));
-
-        lblCerrarSesionAcerca.setFont(new java.awt.Font("Sylfaen", 1, 14)); // NOI18N
-        lblCerrarSesionAcerca.setForeground(new java.awt.Color(255, 0, 0));
-        lblCerrarSesionAcerca.setText("[Cerrar Sesión]");
-        lblCerrarSesionAcerca.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblCerrarSesionAcerca.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblCerrarSesionAcercaMouseClicked(evt);
-            }
-        });
-
-        jLabel48.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel48.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel48.setText("ACERCA DE");
-
-        javax.swing.GroupLayout PanelRolUsuarios8Layout = new javax.swing.GroupLayout(PanelRolUsuarios8);
-        PanelRolUsuarios8.setLayout(PanelRolUsuarios8Layout);
-        PanelRolUsuarios8Layout.setHorizontalGroup(
-            PanelRolUsuarios8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuarios8Layout.createSequentialGroup()
-                .addGap(421, 421, 421)
-                .addComponent(jLabel48)
-                .addGap(349, 349, 349)
-                .addComponent(lblCerrarSesionAcerca)
-                .addGap(87, 87, 87))
-        );
-        PanelRolUsuarios8Layout.setVerticalGroup(
-            PanelRolUsuarios8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelRolUsuarios8Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(PanelRolUsuarios8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel48, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblCerrarSesionAcerca))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -2270,16 +4365,19 @@ public final class Principal extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jdeskAcercade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addComponent(PanelRolUsuarios8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
-                .addComponent(jdeskAcercade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addComponent(jdeskAcercade)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        tabMenu.addTab("        Acerca de", new javax.swing.ImageIcon(getClass().getResource("/images/info.png")), jPanel5); // NOI18N
+        tabMenu.addTab("        Estadísticas", new javax.swing.ImageIcon(getClass().getResource("/images/estadisticas.png")), jPanel5); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -2402,7 +4500,7 @@ public final class Principal extends javax.swing.JFrame {
         centrarVentanaInterna(jdeskusuarios, internalNuevoUsuario);
     }//GEN-LAST:event_btnNuevoUsuarioMouseClicked
 
-    private void btnEliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseClicked
+    private void btnEliminarUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarUsuarioMouseClicked
         // TODO add your handling code here:
         Object [] opciones={"Aceptar","Cancelar"};
         if(!id.isEmpty()){
@@ -2411,9 +4509,9 @@ public final class Principal extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
             if(eleccion==JOptionPane.YES_OPTION) Eliminar();
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a eliminar");
-    }//GEN-LAST:event_btnEliminarMouseClicked
+    }//GEN-LAST:event_btnEliminarUsuarioMouseClicked
 
-    private void btnActualizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnActualizarMouseClicked
+    private void btnActualizarUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnActualizarUsuarioMouseClicked
         if(!id.isEmpty()){
             is.setAccionBoton("Actualizar ");
             is.setIdUsuario(id);
@@ -2424,7 +4522,7 @@ public final class Principal extends javax.swing.JFrame {
             internalNuevoUsuario = new jifrNuevoUsuario();
             centrarVentanaInterna(jdeskusuarios, internalNuevoUsuario);
         }else JOptionPane.showMessageDialog(this, "No ha seleccionado un registro a modificar");
-    }//GEN-LAST:event_btnActualizarMouseClicked
+    }//GEN-LAST:event_btnActualizarUsuarioMouseClicked
 
     private void btnBuscarUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarUsuariosMouseClicked
         // TODO add your handling code here:
@@ -2449,17 +4547,6 @@ public final class Principal extends javax.swing.JFrame {
         BuscarPorEstadoUsuarioInactivo();
         txtBuscarPor.setText("");
     }//GEN-LAST:event_rbtnInactivoActionPerformed
-
-    private void btnGestionCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionCategoriaMouseClicked
-        internalGestionCategoria = new jifrGestionCategoria();
-        centrarVentanaGestionCA(internalGestionCategoria);
-        //lblTituloGaleria.setText("Categorías");
-    }//GEN-LAST:event_btnGestionCategoriaMouseClicked
-
-    private void btnGestionArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGestionArticulosMouseClicked
-        internalGestionArticulo = new jifrGestionArticulos();
-        centrarVentanaGestionCA(internalGestionArticulo);
-    }//GEN-LAST:event_btnGestionArticulosMouseClicked
 
     private void btnEditarMuseoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarMuseoActionPerformed
         EditarQr();
@@ -2491,7 +4578,12 @@ public final class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_imgMuseo5MouseClicked
 
     private void txtBuscarPorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPorKeyReleased
-        if(txtBuscarPor.getText().length()<1) LlenarTablaUsuarios();
+        if(txtBuscarPor.getText().length()<1) 
+        {
+        if(UsuarioIngresado.parametroR.contains("Administrador/a"))LlenarTablaUsuariosAdmin();
+         
+        else LlenarTablaUsuarios();
+        }
     }//GEN-LAST:event_txtBuscarPorKeyReleased
 
     private void txtBuscarPorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPorKeyPressed
@@ -2517,6 +4609,14 @@ public final class Principal extends javax.swing.JFrame {
                     break;
             }       
         }
+        else{
+            if(txtBuscarPor.getText().length()<1) 
+        {
+        if(UsuarioIngresado.parametroR.contains("Administrador/a"))LlenarTablaUsuariosAdmin();
+         
+        else LlenarTablaUsuarios();
+        }
+        }
     }//GEN-LAST:event_txtBuscarPorKeyPressed
 
     private void btnCancelarMuseoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarMuseoActionPerformed
@@ -2538,7 +4638,7 @@ public final class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNombreMuseoKeyTyped
 
     private void txtHistoriaMuseoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHistoriaMuseoKeyTyped
-        int limite  = 2000;
+        int limite  = 4000;
         if (txtHistoriaMuseo.getText().length()== limite){ 
             evt.consume();
             lblLimiteHistoriaMuseo.setVisible(true);
@@ -2617,13 +4717,323 @@ public final class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jlJJ2016AcercadeMouseClicked
 
     private void lblBuscarHistorialVisitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBuscarHistorialVisitaMouseClicked
-    BuscarPorFechaVisita();
+    //t.stop();
     
+    //Cuando se selecciona el boton buscar y no hay fechas
+    if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() == null && jdtHistDesde.getDate() == null)
+    {
+        JOptionPane.showMessageDialog(null,"Escoja una fecha");
+        }
+    //Cuando se selecciona la opcion todo y no hay fecha final
+    else if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() == null) {
+        jtHistorialVisita.setModel(LlenarTablaHistorialBusquedaUnidoDesde());
+        txtTotalVisitas.setText(contarTotalUnidoporFechaDesde()); 
+    } 
+    //Cuando se selecciona la opcion todo y no hay fecha inicial
+    else if(jrbFiltroTodo.isSelected() && jdtHistDesde.getDate() == null){
+        JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");
+    }  
+    //Cuando selecciona la opcion todo y fecha de inicion y final
+    else if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null){
+        jtHistorialVisita.setModel(LlenarTablaHistorialBusquedaUnido());
+        txtTotalVisitas.setText(contarTotalUnidoporFechaHasta());
+    }
+    
+    //Cuando se selecciona la opcion de visitante y no hay fecha final
+    if(jrbFiltroVisitante.isSelected() && jdtHistHasta.getDate() == null) {
+        BuscarPorFechaVisita();
+        txtTotalVisitas.setText(contarTotalVisitasporFecha());
+    } 
+    //Cuando se selecciona la opcion visitante y no hay fecha inicial
+    else if(jrbFiltroVisitante.isSelected() && jdtHistDesde.getDate() == null) JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");  
+    //Cuando selecciona la opcion visitante y fecha de inicion y final
+    else if(jrbFiltroVisitante.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null){
+        BuscarPorFechaVisitaDesdeHasta();
+        txtTotalVisitas.setText(contarTotalVisitasporFechaHasta());
+    }
+    
+    //Cuando selecciona la opcion dispositivo y no hay fecha final
+    if(jrbFiltroDispositivo.isSelected() && jdtHistHasta.getDate() == null){
+        BuscarPorFechaVisitaDispositivo();
+        txtTotalVisitas.setText(contarTotalVisitasporFechadeDispositivo());
+    }
+    //Cuando se selecciona la opcion dispositivo y no hay fecha inicial
+    else if(jrbFiltroDispositivo.isSelected() && jdtHistDesde.getDate() == null) JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");  
+    //Cuando selecciona la opcion dipositivo y fecha de inicion y final
+    else if(jrbFiltroDispositivo.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null) {
+        BuscarPorFechaVisitaDispositivoDesdeHasta();
+        txtTotalVisitas.setText(contarTotalVisitasDispositivosporFechaHasta());
+    }
     }//GEN-LAST:event_lblBuscarHistorialVisitaMouseClicked
 
-    private void lblEliminarHistorialVisitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblEliminarHistorialVisitaMouseClicked
-    EliminarVisita();
-    }//GEN-LAST:event_lblEliminarHistorialVisitaMouseClicked
+    private void btnImprimirUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirUsuariosMouseClicked
+      if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+            String a;
+            try{
+            a=JOptionPane.showInputDialog("Ingrese la contraseña");
+            String SQL = "SELECT * FROM usuarios WHERE CONTRASENAUSUARIO ='"+a+"' AND TIPOUSUARIO = 'Administrador/a'"; 
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(SQL);
+                if(rs.next()){
+                    ItemSeleccionado.accionBoton="Administrador";
+                    ImprimirUsuarios impU=new ImprimirUsuarios();
+                    impU.setVisible(true);
+                }else
+                {
+                    JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
+                }
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
+                this.dispose();
+            }
+        }else{
+            ItemSeleccionado.accionBoton="Usuario";
+            ImprimirUsuarios impU=new ImprimirUsuarios();
+            impU.setVisible(true);
+        }
+            
+        
+        
+    }//GEN-LAST:event_btnImprimirUsuariosMouseClicked
+
+    private void btnNuevoVisitanteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoVisitanteMouseClicked
+        if (txtnombreVisitante.getText().isEmpty()) JOptionPane.showMessageDialog(this,"Ingrese datos del visitante");
+        else GuardarVisitante(); 
+        
+        
+    }//GEN-LAST:event_btnNuevoVisitanteMouseClicked
+
+    private void btnImprimirVisitantesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirVisitantesMouseClicked
+       
+        Object [] opciones={"Aceptar","Cancelar"};
+        int eleccion=JOptionPane.showOptionDialog(null,"Imprimir","Mensaje de Confirmación",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
+        if(eleccion==JOptionPane.YES_OPTION){
+            //Mensaje de impresion
+            //Cuando se selecciona el boton buscar y no hay fechas
+            if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() == null && jdtHistDesde.getDate() == null)
+            {
+                imprimirOpcion=1;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
+            }
+            //Cuando se selecciona la opcion todo y no hay fecha final
+            else if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() == null) {
+                
+                a = jdtHistDesde.getDate().getYear() + 1900;
+                m = jdtHistDesde.getDate().getMonth() + 1;
+                d = jdtHistDesde.getDate().getDate();
+                String mm,dm,fq,cal;
+                if(m<10) mm = "0" + m;
+                else mm = String.valueOf(m);
+                if(d<10) dm = "0" + d;
+                else dm = String.valueOf(d);
+                fq = dm + "-" + mm + "-" + a;
+                cal=fq.toString();
+                imprimirOpcion=2;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                isV.setFechaInicio(cal);
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
+                //jtHistorialVisita.setModel(LlenarTablaHistorialBusquedaUnidoDesde());
+                //txtTotalVisitas.setText(contarTotalUnidoporFechaDesde()); 
+                
+            } 
+            //Cuando se selecciona la opcion todo y no hay fecha inicial
+            else if(jrbFiltroTodo.isSelected() && jdtHistDesde.getDate() == null){
+                JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");
+                //imprimirOpcion=0;
+            }  
+            //Cuando selecciona la opcion todo y fecha de inicion y final
+            else if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null){
+                a = jdtHistDesde.getDate().getYear() + 1900;
+                m = jdtHistDesde.getDate().getMonth() + 1;
+                d = jdtHistDesde.getDate().getDate();
+                String mm,dm,fq,cal,mmh,dmh;
+                if(m<10) mm = "0" + m;
+                else mm = String.valueOf(m);
+                if(d<10) dm = "0" + d;
+                else dm = String.valueOf(d);
+                fq = dm + "-" + mm + "-" + a;
+                cal=fq.toString();
+                a1 = jdtHistHasta.getDate().getYear() + 1900;
+                m1 = jdtHistHasta.getDate().getMonth() + 1;
+                d1 = jdtHistHasta.getDate().getDate();
+                if(m1<10) mmh = "0" + m1;
+                else mmh = String.valueOf(m1);
+                if(d1<10) dmh = "0" + d1;
+                else dmh = String.valueOf(d1);
+                ff = dmh + "-" + mmh + "-" + a1;
+                cal1=ff.toString();
+                imprimirOpcion=3;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                isV.setFechaInicio(cal);
+                isV.setFechaFinal(cal1);
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
+                //jtHistorialVisita.setModel(LlenarTablaHistorialBusquedaUnido());
+                //txtTotalVisitas.setText(contarTotalUnidoporFechaHasta());
+            }
+            if(jrbFiltroVisitante.isSelected() && jdtHistHasta.getDate() == null && jdtHistDesde.getDate() == null)
+            {
+                imprimirOpcion=4;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
+            }
+            //Cuando se selecciona la opcion de visitante y no hay fecha final
+            if(jrbFiltroVisitante.isSelected() && jdtHistHasta.getDate() == null) {
+                imprimirOpcion=4;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
+                //BuscarPorFechaVisita();
+                //txtTotalVisitas.setText(contarTotalVisitasporFecha());
+            } 
+            //Cuando se selecciona la opcion visitante y no hay fecha inicial
+            else if(jrbFiltroVisitante.isSelected() && jdtHistDesde.getDate() == null) JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");  
+            //Cuando selecciona la opcion visitante y fecha de inicion y final
+            else if(jrbFiltroVisitante.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null){
+                BuscarPorFechaVisitaDesdeHasta();
+                txtTotalVisitas.setText(contarTotalVisitasporFechaHasta());
+            }
+
+            //Cuando selecciona la opcion dispositivo y no hay fecha final
+            if(jrbFiltroDispositivo.isSelected() && jdtHistHasta.getDate() == null){
+                BuscarPorFechaVisitaDispositivo();
+                txtTotalVisitas.setText(contarTotalVisitasporFechadeDispositivo());
+            }
+            //Cuando se selecciona la opcion dispositivo y no hay fecha inicial
+            else if(jrbFiltroDispositivo.isSelected() && jdtHistDesde.getDate() == null) JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");  
+            //Cuando selecciona la opcion dipositivo y fecha de inicion y final
+            else if(jrbFiltroDispositivo.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null) {
+                BuscarPorFechaVisitaDispositivoDesdeHasta();
+                txtTotalVisitas.setText(contarTotalVisitasDispositivosporFechaHasta());
+            }
+        }
+
+        
+        
+    }//GEN-LAST:event_btnImprimirVisitantesMouseClicked
+
+    private void jtHistorialVisitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtHistorialVisitaMouseClicked
+        SeleccionarItemTablaVisitantes(evt);
+         t.stop();        
+    }//GEN-LAST:event_jtHistorialVisitaMouseClicked
+
+    private void txtnombreVisitanteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombreVisitanteKeyPressed
+        LlenarTablaHistorialVisita();
+    }//GEN-LAST:event_txtnombreVisitanteKeyPressed
+
+    private void txtnombreVisitanteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombreVisitanteKeyTyped
+        int k = (int) evt.getKeyChar();
+        if (k > 47 && k < 58) {
+            evt.setKeyChar((char) evt.VK_CLEAR);
+        }
+    }//GEN-LAST:event_txtnombreVisitanteKeyTyped
+
+    private void btnGestionArticulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionArticulosActionPerformed
+        internalGestionArticulo = new jifrGestionArticulos();
+        centrarVentanaGestionCA(internalGestionArticulo);
+    }//GEN-LAST:event_btnGestionArticulosActionPerformed
+
+    private void btnGestionCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionCategoriaActionPerformed
+        internalGestionCategoria = new jifrGestionCategoria();
+        centrarVentanaGestionCA(internalGestionCategoria);
+    }//GEN-LAST:event_btnGestionCategoriaActionPerformed
+
+    private void jcbAñoGraficoEstadisticoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbAñoGraficoEstadisticoItemStateChanged
+     idAnio = anios.get(jcbAñoGraficoEstadistico.getSelectedIndex()).getIdHistorialVisita();
+
+    }//GEN-LAST:event_jcbAñoGraficoEstadisticoItemStateChanged
+
+    private void btnVerEstadisticaAnualMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVerEstadisticaAnualMouseClicked
+        if(jrbEstadisticasVisitantes.isSelected()) EstadisticaVisitantes();
+        if(jrbEstadisticasDispositivos.isSelected())  EstadisticasDispositivos();
+        if(!jrbEstadisticasDispositivos.isSelected() && !jrbEstadisticasVisitantes.isSelected()) JOptionPane.showMessageDialog(this,"Escoja un item de busqueda");
+    }//GEN-LAST:event_btnVerEstadisticaAnualMouseClicked
+
+    private void btnImprimirEstadisticaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirEstadisticaMouseClicked
+        opimG=0;
+        //btnImprimirEstadistica.setVisible(false);
+        //Crea y devuelve un printerjob que se asocia con la impresora predeterminada
+            //del sistema, si no hay, retorna NULL
+            PrinterJob printerJob = PrinterJob.getPrinterJob();
+            //Se pasa la instancia del JFrame al PrinterJob
+            printerJob.setPrintable(this);
+            //muestra ventana de dialogo para imprimir
+            if ( printerJob.printDialog())
+            {
+                try {
+                    printerJob.print();
+                    //btnImprimirEstadistica.setVisible(true);
+                } catch (PrinterException ex) {
+                System.out.println("Error:" + ex);
+                }
+            }       
+        
+    }//GEN-LAST:event_btnImprimirEstadisticaMouseClicked
+
+    private void btnImprimirEstadisticaDispositivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirEstadisticaDispositivosMouseClicked
+        opimG=1;
+        //btnImprimirEstadisticaDispositivos.setVisible(false);
+        //Crea y devuelve un printerjob que se asocia con la impresora predeterminada
+            //del sistema, si no hay, retorna NULL
+            PrinterJob printerJob = PrinterJob.getPrinterJob();
+            //Se pasa la instancia del JFrame al PrinterJob
+            printerJob.setPrintable(this);
+            //muestra ventana de dialogo para imprimir
+            if ( printerJob.printDialog())
+            {
+                try {
+                    printerJob.print();
+                    ///btnImprimirEstadisticaDispositivos.setVisible(true);
+                } catch (PrinterException ex) {
+                System.out.println("Error:" + ex);
+                }
+            } 
+
+                
+    }//GEN-LAST:event_btnImprimirEstadisticaDispositivosMouseClicked
+
+    private void btnVideoMuseoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVideoMuseoMouseClicked
+        CargarVideo(jlVideoMuseo, 1);
+        video = ValoresConstantes.DIRECTORIO_PRINCIPAL+ "\\MUSEO ISIDRO AYORA";
+    }//GEN-LAST:event_btnVideoMuseoMouseClicked
+
+    private void btnAudioMuseoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAudioMuseoMouseClicked
+        CargarAudio(jlAudioMuseo, 0);
+        audio = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\MUSEO ISIDRO AYORA";
+    }//GEN-LAST:event_btnAudioMuseoMouseClicked
+
+    private void jrbFiltroVisitanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbFiltroVisitanteActionPerformed
+        jrbFiltroDispositivo.setSelected(false);
+        jtHistorialVisita.setModel(LlenarTablaHistorialVisita());  
+        txtTotalVisitas.setText(contarTotalVisitas());      
+    }//GEN-LAST:event_jrbFiltroVisitanteActionPerformed
+
+    private void jrbFiltroDispositivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbFiltroDispositivoActionPerformed
+        jrbFiltroVisitante.setSelected(false);
+        jtHistorialVisita.setModel(LlenarTablaHistorialVisitaconDispositivo());
+        txtTotalVisitas.setText(contarTotalVisitasDispositivos());
+    }//GEN-LAST:event_jrbFiltroDispositivoActionPerformed
+
+    private void btnVerEstadisticaAnualDispositivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVerEstadisticaAnualDispositivosMouseClicked
+        EstadisticaComparativa();
+    }//GEN-LAST:event_btnVerEstadisticaAnualDispositivosMouseClicked
+
+    private void jcbAñoGraficoEstadisticoComparativoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbAñoGraficoEstadisticoComparativoItemStateChanged
+        idAnioDis = aniosd.get(jcbAñoGraficoEstadisticoComparativo.getSelectedIndex()).getIdhistorialvisitadispositivo();
+    }//GEN-LAST:event_jcbAñoGraficoEstadisticoComparativoItemStateChanged
+
+    private void jrbFiltroTodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbFiltroTodoActionPerformed
+        jrbFiltroDispositivo.setSelected(false);
+        jrbFiltroVisitante.setSelected(false);
+        jtHistorialVisita.setModel(LlenarTablaHistorialUnido());  
+        txtTotalVisitas.setText(String.valueOf((Integer.parseInt(contarTotalVisitas())+(Integer.parseInt(contarTotalVisitasDispositivos())))));
+    }//GEN-LAST:event_jrbFiltroTodoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -2645,15 +5055,26 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel PanelRolUsuarios1;
     private javax.swing.JPanel PanelRolUsuarios3;
     private javax.swing.JPanel PanelRolUsuarios8;
+    private javax.swing.ButtonGroup btgBuscarHistorialPor;
     private javax.swing.ButtonGroup btgSeleccion;
-    private javax.swing.JLabel btnActualizar;
+    private javax.swing.ButtonGroup btgVerEstadisticas;
+    private javax.swing.JLabel btnActualizarUsuario;
+    private javax.swing.JLabel btnAudioMuseo;
     private javax.swing.JLabel btnBuscarUsuarios;
     private javax.swing.JButton btnCancelarMuseo;
     private javax.swing.JButton btnEditarMuseo;
-    private javax.swing.JLabel btnEliminar;
-    private javax.swing.JLabel btnGestionArticulos;
-    private javax.swing.JLabel btnGestionCategoria;
+    private javax.swing.JLabel btnEliminarUsuario;
+    private javax.swing.JButton btnGestionArticulos;
+    private javax.swing.JButton btnGestionCategoria;
+    private javax.swing.JLabel btnImprimirEstadistica;
+    private javax.swing.JLabel btnImprimirEstadisticaDispositivos;
+    private javax.swing.JLabel btnImprimirUsuarios;
+    private javax.swing.JLabel btnImprimirVisitantes;
     private javax.swing.JLabel btnNuevoUsuario;
+    private javax.swing.JLabel btnNuevoVisitante;
+    private javax.swing.JLabel btnVerEstadisticaAnual;
+    private javax.swing.JLabel btnVerEstadisticaAnualDispositivos;
+    private javax.swing.JLabel btnVideoMuseo;
     public javax.swing.JLabel imgMuseo1;
     public javax.swing.JLabel imgMuseo2;
     public javax.swing.JLabel imgMuseo3;
@@ -2661,79 +5082,80 @@ public final class Principal extends javax.swing.JFrame {
     public javax.swing.JLabel imgMuseo5;
     private javax.swing.JLabel imgQrMuseo;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
-    private javax.swing.JLabel jLabel33;
-    private javax.swing.JLabel jLabel34;
-    private javax.swing.JLabel jLabel35;
-    private javax.swing.JLabel jLabel36;
-    private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel41;
-    private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel44;
-    private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel48;
-    private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel50;
-    private javax.swing.JLabel jLabel51;
-    private javax.swing.JLabel jLabel52;
-    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel56;
+    private javax.swing.JLabel jLabel57;
+    private javax.swing.JLabel jLabel59;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JPanel jPanelEstadisticaDispositivoImprimir;
+    private javax.swing.JPanel jPanelEstadisticaVisitaImprimir;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    public static javax.swing.JComboBox<String> jcbAñoGraficoEstadistico;
+    public static javax.swing.JComboBox<String> jcbAñoGraficoEstadisticoComparativo;
     private javax.swing.JComboBox<String> jcbBuscarPor;
     public javax.swing.JDesktopPane jdeskAcercade;
     public javax.swing.JDesktopPane jdeskContactanos;
     public static javax.swing.JDesktopPane jdeskGaleria;
     public javax.swing.JDesktopPane jdeskPrincipal;
     public javax.swing.JDesktopPane jdeskusuarios;
-    private com.toedter.calendar.JDateChooser jdtHistDesde;
+    public static com.toedter.calendar.JDateChooser jdtHistDesde;
+    public static com.toedter.calendar.JDateChooser jdtHistHasta;
+    public static javax.swing.JLabel jlAudioMuseo;
     private javax.swing.JLabel jlGaleria;
     private javax.swing.JLabel jlJJ2016Acercade;
     private javax.swing.JLabel jlJJ2016Galeria;
     private javax.swing.JLabel jlJJ2016Historial;
     private javax.swing.JLabel jlJJ2016Principal;
     private javax.swing.JLabel jlJJ2016Usuarios;
+    public static javax.swing.JLabel jlVideoMuseo;
     private javax.swing.JPanel jpPrincipal;
     private javax.swing.JPanel jpUsuarios;
+    private javax.swing.JRadioButton jrbEstadisticasDispositivos;
+    private javax.swing.JRadioButton jrbEstadisticasVisitantes;
+    public static javax.swing.JRadioButton jrbFiltroDispositivo;
+    private javax.swing.JRadioButton jrbFiltroTodo;
+    public static javax.swing.JRadioButton jrbFiltroVisitante;
     public static javax.swing.JTable jtHistorialVisita;
     public static javax.swing.JTable jtUsuarios;
-    private javax.swing.JLabel lblAcercaDeAnimalito;
-    private javax.swing.JLabel lblAcercaDeAppVersionNetbeans;
-    private javax.swing.JLabel lblAcercaDeAppVersionandroid;
-    private javax.swing.JLabel lblAcercaDeLaAplicacion;
+    private javax.swing.JLabel lblActualizarUsuario;
     private javax.swing.JLabel lblBuscarHistorialVisita;
+    private javax.swing.JLabel lblBuscarUsuario;
     private javax.swing.JLabel lblCerrarSesion5;
     private javax.swing.JLabel lblCerrarSesion6;
     private javax.swing.JLabel lblCerrarSesion7;
     private javax.swing.JLabel lblCerrarSesion9;
     private javax.swing.JLabel lblCerrarSesionAcerca;
-    private javax.swing.JLabel lblEliminarHistorialVisita;
+    private javax.swing.JLabel lblEliminarUsuario;
     private javax.swing.JLabel lblFundadorMuseo;
     private javax.swing.JLabel lblLimiteFundadorMuseo;
     private javax.swing.JLabel lblLimiteHistoriaMuseo;
     private javax.swing.JLabel lblLimiteNombreMuseo;
     private javax.swing.JLabel lblNombreMuseo;
     public javax.swing.JLabel lblNuevo;
+    private javax.swing.JLabel lblNuevoUsuario;
     private javax.swing.JLabel lblPoliticasdePrivacidadContactanos;
     private javax.swing.JLabel lblPoliticasdePrivacidadGaleria;
     private javax.swing.JLabel lblPoliticasdePrivacidadPrincipal;
@@ -2745,15 +5167,18 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel lblTerminosyCondicionesPrincipal;
     private javax.swing.JLabel lblTerminosyCondicionesUsuarios;
     private javax.swing.JLabel lblTituloGaleria;
+    public static javax.swing.JLabel lblTorta;
+    public static javax.swing.JLabel lblTortaDis;
+    public static javax.swing.JLabel lblTotalPastel;
+    public static javax.swing.JLabel lblTotalPastelDispositivos;
     public static javax.swing.JLabel lblTotalUsuarios;
     private javax.swing.JLabel lblUsuarioyRolAcerca;
-    private javax.swing.JLabel lblUsuarioyRolContactanos;
-    private javax.swing.JLabel lblUsuarioyRolGaleria;
-    private javax.swing.JLabel lblUsuarioyRolPrincipal;
-    private javax.swing.JLabel lblUsuarioyRolUsuarios;
-    private javax.swing.JLabel losQr;
-    private javax.swing.JLabel losQr2;
-    private javax.swing.JLabel losQr3;
+    public static javax.swing.JLabel lblUsuarioyRolContactanos;
+    public static javax.swing.JLabel lblUsuarioyRolGaleria;
+    public static javax.swing.JLabel lblUsuarioyRolPrincipal;
+    public static javax.swing.JLabel lblUsuarioyRolUsuarios;
+    public static javax.swing.JPanel panelGraficoTorta;
+    public static javax.swing.JPanel panelGraficoTortaDis;
     private javax.swing.JRadioButton rbtnActivo;
     private javax.swing.JRadioButton rbtnInactivo;
     private javax.swing.JSpinner spnFecha;
@@ -2762,6 +5187,41 @@ public final class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtFundadorMuseo;
     private javax.swing.JTextArea txtHistoriaMuseo;
     private javax.swing.JTextField txtNombreMuseo;
-    private javax.swing.JTextField txtTotalVisitas;
+    public javax.swing.JTextField txtTotalVisitas;
+    private javax.swing.JTextField txtTotalVisitasDispositivosPorAñoCompartivo;
+    private javax.swing.JTextField txtTotalVisitasPorAño;
+    private javax.swing.JTextField txtTotalVisitasVisitantesPorAñoComparativo;
+    private javax.swing.JTextField txtnombreVisitante;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException  {
+        if(opimG==0){
+        if (pageIndex == 0)
+        {
+            Graphics2D g2d = (Graphics2D) graphics;
+            g2d.translate(pageFormat.getImageableX()+50, pageFormat.getImageableY()+100);
+            //g2d.scale(0.50,0.50); //Reducción de la impresión al 50%
+            jPanelEstadisticaVisitaImprimir.printAll(graphics);
+            //this.printAll(graphics);
+            return PAGE_EXISTS;
+        }
+        else
+            return NO_SUCH_PAGE;        
+    }else{
+            if (pageIndex == 0)
+        {
+            Graphics2D g2d = (Graphics2D) graphics;
+            g2d.translate(pageFormat.getImageableX()+50, pageFormat.getImageableY()+100);
+            //g2d.scale(0.50,0.50); //Reducción de la impresión al 50%
+            jPanelEstadisticaDispositivoImprimir.printAll(graphics);
+            //this.printAll(graphics);
+            return PAGE_EXISTS;
+        }
+        else
+            return NO_SUCH_PAGE; 
+        }
+    
+    }
+    
 }

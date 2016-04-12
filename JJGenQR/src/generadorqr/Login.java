@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import java.awt.event.KeyEvent;
 import db.mysql;
+import static generadorqr.Principal.Mostrar_Visualizador;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -39,7 +40,8 @@ Validate val=new Validate();
         }
         conn = mysql.getConnect();
         txtUsuario.requestFocus();
-         
+         String Ruta=getClass().getResource("/images/home1.jpg").getPath();
+        Mostrar_Visualizador(lblImgLogin, Ruta);
   }
     
     
@@ -79,7 +81,7 @@ int cont=0;
             fr.setVisible(true);
             dispose();
             }catch(Exception e){
-                JOptionPane.showMessageDialog(null, "Usuario o Contraseña inválida");
+                JOptionPane.showMessageDialog(null, "Usuario o Contraseña inválida o pongase en contacto con el Administrador");
                 //txtUsuario.setText("");
                 txtPassword.setText("");
                 txtPassword.requestFocus();
@@ -102,14 +104,13 @@ int cont=0;
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jlMuseo = new javax.swing.JLabel();
-        jlImgLogin = new javax.swing.JLabel();
+        lblImgLogin = new javax.swing.JLabel();
         jlUsuarios = new javax.swing.JLabel();
         jlContraseña = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         btnIngresar = new javax.swing.JButton();
         txtUsuario = new javax.swing.JTextField();
         lblUserValidacion = new javax.swing.JLabel();
-        btnIngresar1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -151,7 +152,7 @@ int cont=0;
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 177, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jlMuseo.setFont(new java.awt.Font("Wide Latin", 0, 24)); // NOI18N
@@ -173,15 +174,15 @@ int cont=0;
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(49, Short.MAX_VALUE)
                 .addComponent(jlMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38))
         );
 
-        jlImgLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/museo2.jpg"))); // NOI18N
-        jlImgLogin.setMaximumSize(new java.awt.Dimension(800, 600));
-        jlImgLogin.setMinimumSize(new java.awt.Dimension(800, 600));
-        jlImgLogin.setPreferredSize(new java.awt.Dimension(800, 600));
+        lblImgLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/home1.jpg"))); // NOI18N
+        lblImgLogin.setMaximumSize(new java.awt.Dimension(800, 600));
+        lblImgLogin.setMinimumSize(new java.awt.Dimension(800, 600));
+        lblImgLogin.setPreferredSize(new java.awt.Dimension(800, 600));
 
         jlUsuarios.setFont(new java.awt.Font("Raavi", 1, 18)); // NOI18N
         jlUsuarios.setText("Usuario");
@@ -195,8 +196,9 @@ int cont=0;
             }
         });
 
-        btnIngresar.setBackground(new java.awt.Color(153, 51, 0));
-        btnIngresar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnIngresar.setBackground(new java.awt.Color(0, 0, 0));
+        btnIngresar.setFont(new java.awt.Font("Raavi", 1, 18)); // NOI18N
+        btnIngresar.setForeground(new java.awt.Color(255, 255, 255));
         btnIngresar.setText("Ingresar");
         btnIngresar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnIngresar.addActionListener(new java.awt.event.ActionListener() {
@@ -216,16 +218,6 @@ int cont=0;
 
         lblUserValidacion.setText("CI");
 
-        btnIngresar1.setBackground(new java.awt.Color(153, 51, 0));
-        btnIngresar1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btnIngresar1.setText("Anonimo");
-        btnIngresar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnIngresar1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnIngresar1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -233,7 +225,7 @@ int cont=0;
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(243, 243, 243)
-                .addComponent(jlImgLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblImgLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(60, 60, 60)
@@ -247,10 +239,8 @@ int cont=0;
                         .addGap(18, 18, 18)
                         .addComponent(lblUserValidacion, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(157, 157, 157)
-                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnIngresar1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(178, 178, 178)
+                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(154, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -259,8 +249,8 @@ int cont=0;
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jlImgLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(50, 50, 50)
+                        .addComponent(lblImgLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(154, 154, 154)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -273,10 +263,8 @@ int cont=0;
                             .addComponent(jlContraseña)
                             .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(69, 69, 69)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnIngresar1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(185, Short.MAX_VALUE))
+                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -289,9 +277,9 @@ int cont=0;
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(48, 48, 48)
+                .addGap(0, 0, 0)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -340,12 +328,6 @@ int cont=0;
         Acceder();
     }//GEN-LAST:event_btnIngresarActionPerformed
 
-    private void btnIngresar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresar1ActionPerformed
-        Principal fr=new Principal();
-        fr.setVisible(true);
-        dispose();
-    }//GEN-LAST:event_btnIngresar1ActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -383,16 +365,15 @@ int cont=0;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIngresar;
-    private javax.swing.JButton btnIngresar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel jlContraseña;
-    private javax.swing.JLabel jlImgLogin;
     private javax.swing.JLabel jlJJ2016;
     private javax.swing.JLabel jlMuseo;
     private javax.swing.JLabel jlUsuarios;
+    private javax.swing.JLabel lblImgLogin;
     private javax.swing.JLabel lblUserValidacion;
     public static javax.swing.JPasswordField txtPassword;
     public static javax.swing.JTextField txtUsuario;

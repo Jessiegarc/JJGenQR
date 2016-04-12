@@ -6,9 +6,11 @@
 package generadorqr;
 
 import Modelos.ItemSeleccionado;
+import Modelos.UsuarioIngresado;
 import Modelos.ValoresConstantes;
 import com.mysql.jdbc.StringUtils;
 import db.mysql;
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
@@ -52,12 +54,21 @@ jifrNuevoQr internalNuevoQr;
         MostrarVisualizador(btnEliminarArticulos, rutaArt);
         rutaArt = getClass().getResource("/images/search.png").getPath();
         MostrarVisualizador(btnBuscarArticulos, rutaArt);
-        rutaArt = getClass().getResource("/images/imprimir.png").getPath();
+        rutaArt = getClass().getResource("/images/imprimir2.png").getPath();
         MostrarVisualizador(btnImprimir, rutaArt);
         contarTotalE();
         sumarTotalA();
         lblEtiquetaPreviewImagenes.setVisible(false);
         lblEtiquetaPreviewQr.setVisible(false);
+        if(UsuarioIngresado.parametroR.contains("Consultor/a")) {
+            btnNuevosArticulos.setVisible(false);
+            lblNuevoArticulo.setVisible(false);
+            btnActualizarArticulos.setVisible(false);
+            lblActualizarA.setVisible(false);
+            btnEliminarArticulos.setVisible(false);
+            lblEliminarArticulo.setVisible(false);
+            lblBuscarArticulo.setVisible(false);
+        }
     }
     
     void contarTotalE(){
@@ -152,6 +163,8 @@ jifrNuevoQr internalNuevoQr;
         lblEtiquetaPreviewImagenes.setVisible(true);
         lblEtiquetaPreviewQr.setVisible(true);
     }
+    
+    
     
     void BuscarPorCategoriaArticulo (){
         try{
@@ -258,7 +271,11 @@ jifrNuevoQr internalNuevoQr;
         jPanel5 = new javax.swing.JPanel();
         jlCategorias = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jtContenidosArticulos = new javax.swing.JTable();
+        jtContenidosArticulos = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false; //Disallow the editing of any cell
+            }
+        };
         btnActualizarArticulos = new javax.swing.JLabel();
         btnEliminarArticulos = new javax.swing.JLabel();
         btnBuscarArticulos = new javax.swing.JLabel();
@@ -368,6 +385,11 @@ jifrNuevoQr internalNuevoQr;
 
         btnNuevosArticulos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Mas.png"))); // NOI18N
         btnNuevosArticulos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevosArticulos.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                btnNuevosArticulosMouseDragged(evt);
+            }
+        });
         btnNuevosArticulos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnNuevosArticulosMouseClicked(evt);
@@ -436,7 +458,7 @@ jifrNuevoQr internalNuevoQr;
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(36, 36, 36)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jlCategorias))
@@ -454,16 +476,16 @@ jifrNuevoQr internalNuevoQr;
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGap(36, 36, 36)
                                 .addComponent(btnNuevosArticulos)
-                                .addGap(42, 42, 42)
+                                .addGap(20, 20, 20)
                                 .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(42, 42, 42)
+                                .addGap(20, 20, 20)
                                 .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(42, 42, 42)
+                                .addGap(20, 20, 20)
                                 .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGap(63, 63, 63)
                                 .addComponent(lblNuevoArticulo)
-                                .addGap(80, 80, 80)
+                                .addGap(68, 68, 68)
                                 .addComponent(lblActualizarA)
                                 .addGap(69, 69, 69)
                                 .addComponent(lblEliminarArticulo)
@@ -496,57 +518,54 @@ jifrNuevoQr internalNuevoQr;
                         .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)
                         .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(21, 21, 21)
+                .addComponent(jlCategorias)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jlCategorias)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(lblNuevoArticulo)
-                                    .addComponent(lblActualizarA)
-                                    .addComponent(lblEliminarArticulo)
-                                    .addComponent(lblBuscarArticulo))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnNuevosArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(rbtnBuscarPorCategoria)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(rbtnBuscarPorNombre))
-                                    .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel3)
-                                    .addComponent(lblTotaEspecies)
-                                    .addComponent(jLabel4)
-                                    .addComponent(lblTotalArticulos))))
+                        .addGap(5, 5, 5)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblNuevoArticulo)
+                            .addComponent(lblActualizarA)
+                            .addComponent(lblEliminarArticulo)
+                            .addComponent(lblBuscarArticulo))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(31, 31, 31))
-                            .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnActualizarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnNuevosArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(rbtnBuscarPorCategoria)
+                                .addGap(18, 18, 18)
+                                .addComponent(rbtnBuscarPorNombre))
+                            .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(lblTotaEspecies)
+                            .addComponent(jLabel4)
+                            .addComponent(lblTotalArticulos))))
+                .addGap(21, 21, 21)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31))
+                    .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblEtiquetaPreviewImagenes)
                             .addComponent(lblEtiquetaPreviewQr))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(0, 0, 0)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblVistaPreviaImagen1, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                             .addComponent(lblVistaPreviaImagen2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -558,9 +577,7 @@ jifrNuevoQr internalNuevoQr;
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -594,6 +611,7 @@ jifrNuevoQr internalNuevoQr;
         isA.setAccionBoton("Guardar");
         internalNuevoQr = new jifrNuevoQr();
         centrarVentanaNuevoQr(internalNuevoQr);
+        btnNuevosArticulos.setBackground(Color.red);
     }//GEN-LAST:event_btnNuevosArticulosMouseClicked
 
     private void rbtnBuscarPorNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorNombreActionPerformed
@@ -645,14 +663,18 @@ jifrNuevoQr internalNuevoQr;
         else BuscarPorCategoriaArticulo();
     }//GEN-LAST:event_txtBuscarArticuloKeyReleased
 
+    private void btnNuevosArticulosMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevosArticulosMouseDragged
+        btnNuevosArticulos.setBackground(Color.red);
+    }//GEN-LAST:event_btnNuevosArticulosMouseDragged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btgSeleccion;
-    private javax.swing.JLabel btnActualizarArticulos;
+    public static javax.swing.JLabel btnActualizarArticulos;
     private javax.swing.JLabel btnBuscarArticulos;
-    private javax.swing.JLabel btnEliminarArticulos;
+    public static javax.swing.JLabel btnEliminarArticulos;
     private javax.swing.JLabel btnImprimir;
-    private javax.swing.JLabel btnNuevosArticulos;
+    public static javax.swing.JLabel btnNuevosArticulos;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel5;

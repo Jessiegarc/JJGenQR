@@ -44,59 +44,63 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="139" splitType="Stretch">
+		<band height="173" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="0" width="555" height="139" uuid="37bae859-25fd-47e5-9a98-26084ec3b08c"/>
+				<reportElement x="0" y="0" width="279" height="173" uuid="37bae859-25fd-47e5-9a98-26084ec3b08c"/>
 			</rectangle>
 			<frame>
-				<reportElement x="1" y="0" width="555" height="139" uuid="28dae7a5-a0c4-44e5-9d61-ffe664b98694"/>
+				<reportElement x="0" y="0" width="279" height="173" uuid="28dae7a5-a0c4-44e5-9d61-ffe664b98694"/>
 				<image>
-					<reportElement x="0" y="1" width="553" height="137" uuid="3915875b-9ce8-4d2e-8c24-06802bd9b8d3"/>
+					<reportElement x="0" y="74" width="278" height="73" uuid="ecba9a79-9ee2-4fc4-a000-93ca347090d5"/>
+					<imageExpression><![CDATA[$P{imagen}]]></imageExpression>
+				</image>
+				<image>
+					<reportElement x="0" y="1" width="278" height="73" uuid="3915875b-9ce8-4d2e-8c24-06802bd9b8d3"/>
 					<imageExpression><![CDATA[$P{imagen}]]></imageExpression>
 				</image>
 				<staticText>
-					<reportElement x="34" y="23" width="185" height="16" uuid="d02b17b8-e39b-4cf7-82e9-617b4a2eccbf"/>
+					<reportElement x="0" y="1" width="152" height="16" uuid="d02b17b8-e39b-4cf7-82e9-617b4a2eccbf"/>
 					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+						<font fontName="Times New Roman" size="10" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
 					</textElement>
 					<text><![CDATA[PARA MAYOR INFORMACIÓN]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="219" y="60" width="185" height="20" uuid="0fd0e65a-8c4c-4926-b99e-f2047f0396a9"/>
+					<reportElement x="113" y="17" width="165" height="20" uuid="0fd0e65a-8c4c-4926-b99e-f2047f0396a9"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+						<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nombreArticulo}]]></textFieldExpression>
 				</textField>
 				<image scaleImage="FillFrame">
-					<reportElement x="422" y="9" width="115" height="116" uuid="b32d3972-78fc-4bef-b44c-7ec62691eaab"/>
+					<reportElement x="80" y="37" width="115" height="116" uuid="b32d3972-78fc-4bef-b44c-7ec62691eaab"/>
 					<imageExpression><![CDATA[$F{imagenQRArticulo}]]></imageExpression>
 				</image>
 				<staticText>
-					<reportElement x="306" y="109" width="84" height="16" uuid="c64c4c18-fefc-4d81-80cd-6137787c01be"/>
+					<reportElement x="152" y="157" width="84" height="16" uuid="c64c4c18-fefc-4d81-80cd-6137787c01be"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Times New Roman" size="11" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="false"/>
 					</textElement>
 					<text><![CDATA[Powered By JJQR]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="219" y="23" width="185" height="16" uuid="b4fdabd1-a6a1-437d-aee6-392090079cf8"/>
+					<reportElement x="152" y="0" width="126" height="16" uuid="b4fdabd1-a6a1-437d-aee6-392090079cf8"/>
 					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" size="12" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="false"/>
+						<font fontName="Times New Roman" size="10" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="false"/>
 					</textElement>
 					<text><![CDATA[ESCANEA ESTE CÓDIGO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="34" y="63" width="185" height="16" uuid="75d43de7-a3d8-418f-9f1b-9acd522dc806"/>
+					<reportElement x="0" y="21" width="113" height="16" uuid="75d43de7-a3d8-418f-9f1b-9acd522dc806"/>
 					<textElement textAlignment="Right">
-						<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
+						<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="/fuentes/timesbd.ttf" isPdfEmbedded="true"/>
 					</textElement>
 					<text><![CDATA[Nombre del articulo: ]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="5" y="118" width="142" height="16" uuid="2d6008f1-2026-49fe-827e-8ce184526719"/>
+					<reportElement x="0" y="157" width="128" height="16" uuid="2d6008f1-2026-49fe-827e-8ce184526719"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
-						<font fontName="Times New Roman" size="11" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="true"/>
+						<font fontName="Times New Roman" size="10" isBold="false" pdfFontName="/fuentes/times.ttf" isPdfEmbedded="true"/>
 					</textElement>
 					<text><![CDATA[Museo Escuela "Isidro Ayora"]]></text>
 				</staticText>
@@ -107,7 +111,7 @@
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="32" splitType="Stretch">
+		<band height="63" splitType="Stretch">
 			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement x="370" y="12" width="120" height="20" uuid="a7fe5d8d-3dbc-41ef-9d14-cf2b714063ad"/>
 				<textElement textAlignment="Left" verticalAlignment="Bottom">

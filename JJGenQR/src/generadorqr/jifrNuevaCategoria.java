@@ -126,7 +126,7 @@ jifrGestionCategoria internalGestionCategoria;
         lblIdCategoria = new javax.swing.JLabel();
         lblLimiteDescripcionCategoria = new javax.swing.JLabel();
 
-        jPanel1.setBackground(new java.awt.Color(2, 32, 62));
+        jPanel1.setBackground(new java.awt.Color(34, 81, 122));
 
         lbllNuevaCategoria.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lbllNuevaCategoria.setForeground(new java.awt.Color(255, 255, 255));
@@ -153,11 +153,18 @@ jifrGestionCategoria internalGestionCategoria;
         });
         jScrollPane2.setViewportView(txtDescripcionCategoria);
 
+        txtNombreCategoria.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreCategoriaKeyTyped(evt);
+            }
+        });
+
         jlCamposObligatorios.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jlCamposObligatorios.setForeground(new java.awt.Color(204, 51, 0));
         jlCamposObligatorios.setText("Todos los campos son obligatorios ... !");
 
-        btnCancelar.setBackground(new java.awt.Color(153, 204, 255));
+        btnCancelar.setBackground(new java.awt.Color(0, 0, 0));
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,7 +172,8 @@ jifrGestionCategoria internalGestionCategoria;
             }
         });
 
-        btnAceptar.setBackground(new java.awt.Color(153, 204, 255));
+        btnAceptar.setBackground(new java.awt.Color(0, 0, 0));
+        btnAceptar.setForeground(new java.awt.Color(255, 255, 255));
         btnAceptar.setText("Guardar");
         btnAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -278,7 +286,7 @@ jifrGestionCategoria internalGestionCategoria;
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void txtDescripcionCategoriaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionCategoriaKeyReleased
-        if (txtDescripcionCategoria.getText().length()>2000){
+        if (txtDescripcionCategoria.getText().length()>4000){
             lblLimiteDescripcionCategoria.setVisible(true);
             lblLimiteDescripcionCategoria.setText("Límite Exedido");
         }
@@ -287,9 +295,14 @@ jifrGestionCategoria internalGestionCategoria;
 
     private void txtDescripcionCategoriaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionCategoriaKeyTyped
         char car=evt.getKeyChar();
-        int limite  = 2000;
+        int limite  = 4000;
         if (txtDescripcionCategoria.getText().length()==limite) evt.consume();
     }//GEN-LAST:event_txtDescripcionCategoriaKeyTyped
+
+    private void txtNombreCategoriaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreCategoriaKeyTyped
+        int limite  = 50;
+        if (txtNombreCategoria.getText().length()== limite) evt.consume();
+    }//GEN-LAST:event_txtNombreCategoriaKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;

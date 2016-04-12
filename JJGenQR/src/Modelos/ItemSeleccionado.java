@@ -16,6 +16,10 @@ public class ItemSeleccionado {
     public static String accionBoton;
     public static String idCategoria;
     public static String idArticulo;
+    public static String idVisitante;
+    public static String idVisitanteDispositivo;
+    public static String fechaInicio;
+    public static String fechaFinal;
 
      //Seleccionar el Id de los usuarios en el jtable 
     public String getIdUsuario(){
@@ -71,4 +75,41 @@ public class ItemSeleccionado {
      public void setIdArticulo(String idArticulo){
         this.idArticulo=idArticulo;
     }
+
+    public static String getIdVisitante() {
+        return idVisitante;
+    }
+
+    public static void setIdVisitante(String idVisitante) {
+        ItemSeleccionado.idVisitante = idVisitante;
+    }
+     
+     //Seleccionar los Dispositivos conectados
+
+    public static String getIdVisitanteDispositivo() {
+        return idVisitanteDispositivo;
+    }
+
+    public static void setIdVisitanteDispositivo(String idVisitanteDispositivo) {
+        ItemSeleccionado.idVisitanteDispositivo = idVisitanteDispositivo;
+    }
+
+    public static String getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public static void setFechaInicio(String fechaInicio) {
+        ItemSeleccionado.fechaInicio = fechaInicio;
+    }
+
+    public static String getFechaFinal() {
+        return fechaFinal;
+    }
+
+    public static void setFechaFinal(String fechaFinal) {
+        ItemSeleccionado.fechaFinal = fechaFinal;
+    }
+    
+    
+    
 }

@@ -81,5 +81,63 @@ static Statement sent;
         return categorias;
     }
     
-   } 
+    public static Vector<Anios> leerDatosVector2(String consulta2){
+        Vector<Anios> anios= new Vector<Anios>();
+        Anios ani=null;
+        if(con==null) con = mysql.getConnect();
+        ani=new Anios();
+        ani.setIdHistorialVisita(0);
+        ani.setfechaHoraVisita("--Escoja un año--");
+        //ani.setidDispositivo("");
+        anios.add(ani);
+        try {
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(consulta2);
+            while(rs.next()){
+                ani=new Anios();
+                ani.setIdHistorialVisita(rs.getInt(1));
+                ani.setfechaHoraVisita(rs.getString(2));
+                //ani.setidDispositivo(rs.getString(3));
+                anios.add(ani); 
+            }
+            sent.close();
+            rs.close();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+        return anios;
+    }
+    
+    
+    public static Vector<AniosDispositivo> leerDatosVector3(String consulta3){
+        Vector<AniosDispositivo> aniosd= new Vector<AniosDispositivo>();
+        AniosDispositivo anid=null;
+        if(con==null) con = mysql.getConnect();
+        anid=new AniosDispositivo();
+        anid.setIdhistorialvisitadispositivo(0);
+        anid.setFechahoravisitadispositivo("--Escoja un año--");
+        //ani.setidDispositivo("");
+        aniosd.add(anid);
+        try {
+            sent = con.createStatement();
+            ResultSet rs = sent.executeQuery(consulta3);
+            while(rs.next()){
+                anid=new AniosDispositivo();
+                anid.setIdhistorialvisitadispositivo(rs.getInt(1));
+                anid.setFechahoravisitadispositivo(rs.getString(2));
+                aniosd.add(anid); 
+            }
+            sent.close();
+            rs.close();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+        return aniosd;
+    
+    
+    }
+}
+
     
