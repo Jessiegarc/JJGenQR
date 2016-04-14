@@ -8,9 +8,11 @@
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="Arial" fontSize="12"/>
 	<parameter name="imagen" class="java.lang.String"/>
+	<parameter name="contador" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
+	<field name="IDUsuario" class="java.lang.String"/>
 	<field name="tipoUsuario" class="java.lang.String"/>
 	<field name="nombreUsuario" class="java.lang.String"/>
 	<field name="apellidoUsuario" class="java.lang.String"/>
@@ -24,7 +26,7 @@
 	<title>
 		<band height="71" splitType="Stretch">
 			<image>
-				<reportElement x="418" y="0" width="95" height="70" uuid="10ca68e5-b019-4568-a6d8-ac98fa3cd892"/>
+				<reportElement x="460" y="1" width="95" height="70" uuid="10ca68e5-b019-4568-a6d8-ac98fa3cd892"/>
 				<imageExpression><![CDATA[$P{imagen}]]></imageExpression>
 			</image>
 			<staticText>
@@ -50,54 +52,68 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement style="Column header" x="0" y="21" width="36" height="13" uuid="66b90b72-63cd-4b4a-8ea4-45faf9daf37d"/>
+				<reportElement style="Column header" x="24" y="21" width="18" height="13" uuid="66b90b72-63cd-4b4a-8ea4-45faf9daf37d"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="36" y="21" width="71" height="13" uuid="f8bf0941-8e40-4bb2-b883-f090e299c561"/>
+				<reportElement style="Column header" x="42" y="21" width="71" height="13" uuid="f8bf0941-8e40-4bb2-b883-f090e299c561"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NOMBRES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="107" y="21" width="76" height="15" uuid="0fbf4c51-5f2b-4a4b-b0a2-48c5fc1b3c2e"/>
+				<reportElement style="Column header" x="113" y="21" width="76" height="15" uuid="0fbf4c51-5f2b-4a4b-b0a2-48c5fc1b3c2e"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[APELLIDOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="336" y="21" width="163" height="13" uuid="72839139-c3b1-4d02-93f4-1e1182a7a5f8"/>
+				<reportElement style="Column header" x="342" y="21" width="163" height="13" uuid="72839139-c3b1-4d02-93f4-1e1182a7a5f8"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CORREO ELECTRÓNICO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="499" y="21" width="56" height="13" uuid="6bedc3ce-3e1c-48d9-b5bb-7a49cbda0803"/>
+				<reportElement style="Column header" x="505" y="21" width="50" height="13" uuid="6bedc3ce-3e1c-48d9-b5bb-7a49cbda0803"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ESTADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="183" y="21" width="82" height="15" uuid="6757386e-48fb-4edc-9b52-12259b199652"/>
+				<reportElement style="Column header" x="189" y="21" width="82" height="15" uuid="6757386e-48fb-4edc-9b52-12259b199652"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CONTRASEÑA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="265" y="21" width="71" height="15" uuid="e02ff338-836e-4993-9841-397f509ff254"/>
+				<reportElement style="Column header" x="271" y="21" width="71" height="15" uuid="e02ff338-836e-4993-9841-397f509ff254"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CÉDULA]]></text>
 			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="0" y="21" width="24" height="13" uuid="223b23ad-b48f-421d-8951-0369bbe30955"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="Detail" x="433" y="0" width="120" height="15" uuid="1394f60b-59b5-4183-84a5-100c77877865"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["N° Usuarios: " + $P{contador}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -109,53 +125,60 @@
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement style="Detail" x="0" y="0" width="36" height="15" uuid="c48dd043-d689-442d-a20b-a881f5007b2a"/>
+				<reportElement style="Detail" x="24" y="0" width="18" height="15" uuid="c48dd043-d689-442d-a20b-a881f5007b2a"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tipoUsuario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="36" y="0" width="71" height="15" uuid="15902b31-045e-40ba-a0cf-19475d53e90b"/>
+				<reportElement style="Detail" x="42" y="0" width="71" height="15" uuid="15902b31-045e-40ba-a0cf-19475d53e90b"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombreUsuario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="107" y="0" width="76" height="15" uuid="22126e38-7aa0-4720-9f77-a94ecfabd462"/>
+				<reportElement style="Detail" x="113" y="0" width="76" height="15" uuid="22126e38-7aa0-4720-9f77-a94ecfabd462"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{apellidoUsuario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="336" y="0" width="163" height="15" uuid="547a3bb9-b62d-476d-b738-821057e18a9a"/>
+				<reportElement style="Detail" x="342" y="0" width="163" height="15" uuid="547a3bb9-b62d-476d-b738-821057e18a9a"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{correoUsuario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="499" y="0" width="56" height="15" uuid="86dab245-f023-4c91-9fcb-4162389577a7"/>
+				<reportElement style="Detail" x="505" y="0" width="50" height="15" uuid="86dab245-f023-4c91-9fcb-4162389577a7"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{estadoUsuario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="183" y="1" width="82" height="15" uuid="16d2f9c0-168e-4631-aacd-8b4ecb01b143"/>
+				<reportElement style="Detail" x="189" y="1" width="82" height="15" uuid="16d2f9c0-168e-4631-aacd-8b4ecb01b143"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{contrasenaUsuario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="265" y="1" width="71" height="15" uuid="316bd7a2-a3f7-4ab9-aeca-99b0aae3acf2"/>
+				<reportElement style="Detail" x="271" y="1" width="71" height="15" uuid="316bd7a2-a3f7-4ab9-aeca-99b0aae3acf2"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cedulaUsuario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="24" height="15" uuid="4634bbdf-7a83-4a87-955b-3db7793d02f0"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IDUsuario}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -8,18 +8,20 @@
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="Arial" fontSize="12"/>
 	<parameter name="imagen" class="java.lang.String"/>
+	<parameter name="contador" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
 	<field name="nombresapellidosVisitante" class="java.lang.String"/>
 	<field name="fechahoraVisita" class="java.lang.String"/>
+	<field name="IDVisitante" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="70" splitType="Stretch">
 			<image>
-				<reportElement x="405" y="0" width="108" height="68" uuid="10ca68e5-b019-4568-a6d8-ac98fa3cd892"/>
+				<reportElement x="445" y="0" width="108" height="68" uuid="10ca68e5-b019-4568-a6d8-ac98fa3cd892"/>
 				<imageExpression><![CDATA[$P{imagen}]]></imageExpression>
 			</image>
 			<staticText>
@@ -45,19 +47,27 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement style="Column header" x="0" y="19" width="295" height="15" uuid="66b90b72-63cd-4b4a-8ea4-45faf9daf37d"/>
-				<text><![CDATA[NOMBRE]]></text>
+				<reportElement style="Column header" x="54" y="19" width="241" height="15" uuid="66b90b72-63cd-4b4a-8ea4-45faf9daf37d"/>
+				<text><![CDATA[NOMBRE O DISPOSITIVO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="295" y="20" width="258" height="15" uuid="f8bf0941-8e40-4bb2-b883-f090e299c561"/>
 				<text><![CDATA[FECHA Y HORA DE VISITA]]></text>
 			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="12" y="19" width="42" height="15" uuid="8f56c294-bc2f-445e-a28b-e0ae24f3e20f"/>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="Detail" x="453" y="0" width="100" height="17" uuid="6d43e50c-707c-49ff-b786-dcd3546106f1"/>
+				<textFieldExpression><![CDATA["N° Visitantes" + $P{contador}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="17" splitType="Stretch">
 			<textField>
-				<reportElement style="Detail" x="0" y="0" width="295" height="17" uuid="c48dd043-d689-442d-a20b-a881f5007b2a"/>
+				<reportElement style="Detail" x="54" y="0" width="241" height="17" uuid="c48dd043-d689-442d-a20b-a881f5007b2a"/>
 				<textFieldExpression><![CDATA[$F{nombresapellidosVisitante}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -66,6 +76,10 @@
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fechahoraVisita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="12" y="0" width="42" height="17" uuid="3c6d88db-3429-4747-8ebc-7a0afe64285c"/>
+				<textFieldExpression><![CDATA[$F{IDVisitante}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

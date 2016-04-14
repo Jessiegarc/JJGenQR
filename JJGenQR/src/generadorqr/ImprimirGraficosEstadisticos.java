@@ -1,11 +1,14 @@
 
 package generadorqr;
 
+import Modelos.InformacionImprimirGrafico;
 import Modelos.InformacionImprimirVisitante;
-import Modelos.InformacionImprimirVisitanteDispositivos;
+import Modelos.ItemSeleccionado;
 import Modelos.ValoresConstantes;
+import db.mysql;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -25,23 +28,33 @@ import org.icepdf.ri.common.MyAnnotationCallback;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
 
-public class ImprimirVisitanteDispositivo extends javax.swing.JFrame {
+public class ImprimirGraficosEstadisticos extends javax.swing.JFrame {
     private static final String RUTA_TEMPORAL = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\temporalVisitanteDispositivos.pdf";
     SwingController controlador;
-    InformacionImprimirVisitanteDispositivos iiV = new InformacionImprimirVisitanteDispositivos();
+    InformacionImprimirGrafico iIG = new InformacionImprimirGrafico();
     
-    public ImprimirVisitanteDispositivo() {
+    public ImprimirGraficosEstadisticos() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
         LinkedList info;
-        info = iiV.getInformacion();
+        info = iIG.getInformacion();
         try 
         { 
             JasperReport reporteC;
-            reporteC = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirVisitantesDispositivos/imprimirVisitantesDispositivos.jasper").getPath()));
+            reporteC = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirGraficosEstadisticos/imprimirGraficosEstadisticos.jasper").getPath()));
             Map parametros = new HashMap();
             parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
+            if(ItemSeleccionado.accionBoton.contains("E")){
+                parametros.put("grafico", ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoE.jpg");
+                parametros.put("titulo", "GRÁFICO ESTADISTICO");
+                if(ItemSeleccionado.rol.contains("Vis")) parametros.put("descripcion", "Gráfico Estadistico relacionado con los Visitantes");
+                else parametros.put("descripcion", "Gráfico Estadistico relacionado con los dispositivos");
+            } else if(ItemSeleccionado.accionBoton.contains("EC")) {
+                parametros.put("grafico", ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoEC.jpg");
+                parametros.put("titulo", "GRÁFICO ESTADISTICO COMPARATIVO");
+                parametros.put("descripcion", "Gráfico Estadistico Comparativos entre Visitantes y Dispositivos");
+            }
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporteC, parametros, new JRBeanCollectionDataSource(info));
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
@@ -149,14 +162,18 @@ public class ImprimirVisitanteDispositivo extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ImprimirVisitanteDispositivo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ImprimirGraficosEstadisticos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ImprimirVisitanteDispositivo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ImprimirGraficosEstadisticos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ImprimirVisitanteDispositivo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ImprimirGraficosEstadisticos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ImprimirVisitanteDispositivo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ImprimirGraficosEstadisticos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -165,7 +182,7 @@ public class ImprimirVisitanteDispositivo extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ImprimirVisitanteDispositivo().setVisible(true);
+                new ImprimirGraficosEstadisticos().setVisible(true);
             }
         });
     }

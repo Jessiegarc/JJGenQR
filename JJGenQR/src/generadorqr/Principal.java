@@ -41,11 +41,17 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.table.TableColumnModel;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -185,13 +191,13 @@ public final class Principal extends javax.swing.JFrame implements Printable{
         Limpiar();
         
          
-        String SQLAGE="SELECT IDHISTORIALVISITA,SubString(FECHAHORAVISITA,7,4) FROM historialvisitas GROUP BY SubString(FECHAHORAVISITA,7,4)";
+        String SQLAGE="SELECT IDHISTORIALVISITA, YEAR(FECHAHORAVISITA) AS FECHAHORAVISITA FROM historialvisitas GROUP BY YEAR(FECHAHORAVISITA)";
         mdlAGE= new DefaultComboBoxModel(ConexionBase.leerDatosVector2(SQLAGE));
         anios = ConexionBase.leerDatosVector2(SQLAGE);
         this.jcbAñoGraficoEstadistico.setModel(mdlAGE);
         variable=(jcbAñoGraficoEstadistico.getSelectedItem()).toString();
         
-        String SQLAGEDis="SELECT IDHISTORIALDISPOSITIVOS,SubString(FECHAVISITADISPOSITIVO,7,4) AS FECHAVISITADISPOSITIVO FROM historialdispositivos GROUP BY SubString(FECHAVISITADISPOSITIVO,7,4)";
+        String SQLAGEDis="SELECT IDHISTORIALDISPOSITIVOS, YEAR(FECHAVISITADISPOSITIVO) AS FECHAVISITADISPOSITIVO FROM historialdispositivos GROUP BY YEAR(FECHAVISITADISPOSITIVO)";
         mdlAGEDis= new DefaultComboBoxModel(ConexionBase.leerDatosVector3(SQLAGEDis));
         aniosd = ConexionBase.leerDatosVector3(SQLAGEDis);
         this.jcbAñoGraficoEstadisticoComparativo.setModel(mdlAGEDis);
@@ -565,13 +571,13 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             else mm=String.valueOf(m);
             if(d<10) dm="0"+d;
             else dm=String.valueOf(d);
-            fq=dm+"-"+mm+"-"+a;
+            fq=a+"-"+mm+"-"+dm;
             cal=fq.toString();
-            String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,1,10) Like'%"+cal+"%'";
+            String SQL ="SELECT COUNT(*) AS total FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + cal + "' AND '" + cal + "'";
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
             rs.next();
-            cont = rs.getString("Total");
+            cont = rs.getString("total");
             rs.close();
         
         } catch (SQLException e) {
@@ -595,22 +601,22 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             else mm=String.valueOf(m);
             if(d<10) dm="0"+d;
             else dm=String.valueOf(d);
-            fq=dm+"-"+mm+"-"+a;
-            cal=fq.toString();
+            fq=a+"-"+mm+"-"+dm;
+            cal=fq;
             String mmh,dmh,cal1,ff;
             if(m1<10) mmh = "0" + m1;
             else mmh = String.valueOf(m1);
             if(d1<10) dmh = "0" + d1;
             else dmh = String.valueOf(d1);
-            ff = dmh + "-" + mmh + "-" + a1;
-            cal1=ff.toString();
+            ff = a1 + "-" + mmh + "-" + dmh;
+            cal1=ff;
             if(cal.isEmpty() || cal1.isEmpty())    return cont="0";
             else {
-            String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'";
+            String SQL ="SELECT COUNT(*) AS total FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + cal + "' AND '" + cal1 + "'";
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
             rs.next();
-            cont = rs.getString("Total");
+            cont = rs.getString("total");
             rs.close();}
         
         } catch (SQLException e) {
@@ -634,22 +640,21 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             else mm=String.valueOf(m);
             if(d<10) dm="0"+d;
             else dm=String.valueOf(d);
-            fq=dm+"-"+mm+"-"+a;
-            cal=fq.toString();
+            fq=a+"-"+mm+"-"+dm;
+            cal=fq;
             String mmh,dmh,cal1,ff;
             if(m1<10) mmh = "0" + m1;
             else mmh = String.valueOf(m1);
             if(d1<10) dmh = "0" + d1;
             else dmh = String.valueOf(d1);
-            ff = dmh + "-" + mmh + "-" + a1;
-            cal1=ff.toString();
+            ff = a1 + "-" + mmh + "-" + dmh;
+            cal1=ff;
             if(cal.isEmpty() || cal1.isEmpty())    return cont="0";
             else {
               //  SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'UNION SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "' ORDER BY IDHISTORIALVISITA DESC"; 
             //SELECT SUM(total) from ( SELECT COUNT(*) AS total FROM historialvisitas where substring(FECHAHORAVISITA,1,10) >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "' UNION SELECT COUNT(*) AS Total FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "')AS Total"; 
               String SQL ="SELECT SUM(total) from ("
-                      + "SELECT COUNT(*) AS total FROM historialvisitas where substring(FECHAHORAVISITA,1,10) >=  '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'"
-                      + "UNION ALL SELECT COUNT(*) AS total FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <= '" + cal1 + "')"
+                      + "SELECT COUNT(*) AS total FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + cal + "' AND '" + cal1 + "' UNION SELECT COUNT(*) AS total FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + cal + "' AND '" + cal1 + "')"
                       + "as total"; 
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
@@ -669,18 +674,18 @@ public final class Principal extends javax.swing.JFrame implements Printable{
         a = jdtHistDesde.getDate().getYear() + 1900;
         m = jdtHistDesde.getDate().getMonth() + 1;
         d = jdtHistDesde.getDate().getDate();
-            try {
+        try {
             String mm,dm,cal,fq;
             if(m<10) mm="0"+m;
             else mm=String.valueOf(m);
             if(d<10) dm="0"+d;
             else dm=String.valueOf(d);
-            fq=dm+"-"+mm+"-"+a;
+            fq=a+"-"+mm+"-"+dm;
             cal=fq.toString();
-            if(cal.isEmpty())    return cont="0";
+            if(cal.isEmpty()) return cont="0";
             else {
              String SQL ="SELECT SUM(total) from ("
-                      + "SELECT COUNT(*) AS total FROM historialvisitas where substring(FECHAHORAVISITA,1,10) =  '" + cal + "' UNION SELECT COUNT(*) AS total FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) = '" + cal + "')"
+                      + "SELECT COUNT(*) AS total FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + cal + "' AND '" + cal + "' UNION SELECT COUNT(*) AS total FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + cal + "' AND '" + cal + "')"
                       + "as total"; 
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
@@ -709,22 +714,22 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             else mm=String.valueOf(m);
             if(d<10) dm="0"+d;
             else dm=String.valueOf(d);
-            fq=dm+"-"+mm+"-"+a;
-            cal=fq.toString();
+            fq=a+"-"+mm+"-"+dm;
+            cal=fq;
             String mmh,dmh,cal1,ff;
             if(m1<10) mmh = "0" + m1;
             else mmh = String.valueOf(m1);
             if(d1<10) dmh = "0" + d1;
             else dmh = String.valueOf(d1);
-            ff = dmh + "-" + mmh + "-" + a1;
-            cal1=ff.toString();
+            ff = a1 + "-" + mmh + "-" + dmh;
+            cal1=ff;
             if(cal.isEmpty() || cal1.isEmpty())    return cont="0";
             else {
-            String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "'";
+            String SQL ="SELECT COUNT(*) AS total FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + cal + "' AND '" + cal1 + "'";
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
             rs.next();
-            cont = rs.getString("Total");
+            cont = rs.getString("total");
             rs.close();}
         
         } catch (SQLException e) {
@@ -745,13 +750,13 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             else mmdis=String.valueOf(mdis);
             if(ddis<10) dmdis="0"+ddis;
             else dmdis=String.valueOf(ddis);
-            fqdis=dmdis+"-"+mmdis+"-"+adis;
+            fqdis=adis+"-"+mmdis+"-"+dmdis;
             caldis=fqdis.toString();
-            String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,1,10) Like'%"+caldis+"%'";
+            String SQL ="SELECT COUNT(*) AS total FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + caldis + "' AND '" + caldis + "'";
             sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
             rs.next();
-            cont = rs.getString("Total");
+            cont = rs.getString("total");
             rs.close();
         
         } catch (SQLException e) {
@@ -765,7 +770,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
            String contEne;
            String var="-"+jcbAñoGraficoEstadistico.getSelectedItem().toString();
             try {
-               String SQLE ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '01-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQLE ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '01' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQLE);
                rs.next();
@@ -781,7 +786,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
      public static String visitantesF(){
            String contF;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '02-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '02' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -795,7 +800,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesM(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '03-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '03' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -809,7 +814,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesA(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '04-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '04' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -823,7 +828,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesMayo(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '05-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '05' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -837,7 +842,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesJ(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '06-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '06' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -851,7 +856,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesJul(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '07-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '07' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -865,7 +870,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesAg(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '08-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '08' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -879,7 +884,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesSep(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '09-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";           
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '09' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";           
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -893,7 +898,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesOc(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '10-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '10' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -907,7 +912,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesNov(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '11-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '11' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -921,7 +926,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesDic(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '12-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '12' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -941,7 +946,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
            String contEneD;
            String var="-"+jcbAñoGraficoEstadistico.getSelectedItem().toString();
             try {
-               String SQLE ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '01-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQLE ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '01' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQLE);
                rs.next();
@@ -956,7 +961,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
      public static String visitantesFD(){
            String contF;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '02-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '02' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -970,7 +975,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesMD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '03-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '03' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -984,7 +989,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesAD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '04-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '04' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -998,7 +1003,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesMayoD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '05-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '05' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1012,7 +1017,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesJD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '06-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '06' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1026,7 +1031,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesJulD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '07-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '07' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1040,7 +1045,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesAgD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '08-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '08' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1054,7 +1059,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesSepD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '09-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '09' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1068,7 +1073,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesOcD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '10-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '10' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1082,7 +1087,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesNovD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '11-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '11' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1096,7 +1101,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesDicD(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '12-%"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '12' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadistico.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1113,7 +1118,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
            String contEne;
            //String var="-"+jcbAñoGrafi.getSelectedItem().toString();
             try {
-               String SQLE ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '01-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQLE ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '01' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQLE);
                rs.next();
@@ -1129,7 +1134,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
      public static String visitantesFebrComp(){
            String contF;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '02-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '02' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1143,7 +1148,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesMarComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '03-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '03' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1157,7 +1162,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesAbrComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '04-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '04' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1171,7 +1176,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesMayoComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '05-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '05' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1185,7 +1190,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesJunComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '06-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '06' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1199,7 +1204,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesJulComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '07-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '07' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1213,7 +1218,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesAgosComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '08-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '08' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1227,7 +1232,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesSepComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '09-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";           
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '09' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";           
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1241,7 +1246,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesOctComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '10-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '10' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1255,7 +1260,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesNovComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '11-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '11' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1269,7 +1274,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesDicComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas where  substring(FECHAHORAVISITA,4,7) Like '12-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialvisitas WHERE MONTH(FECHAHORAVISITA) = '12' AND YEAR(FECHAHORAVISITA) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1289,7 +1294,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
            String contEneD;
            //String var="-"+jcbAñoGraficoEstadistico.getSelectedItem().toString();
             try {
-               String SQLE ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '01-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQLE ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '01' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQLE);
                rs.next();
@@ -1304,7 +1309,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
      public static String visitantesFebDisComp(){
            String contF;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '02-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '02' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1318,7 +1323,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesMarDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '03-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '03' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1332,7 +1337,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesAbrDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '04-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '04' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1346,7 +1351,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesMayoDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '05-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '05' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1360,7 +1365,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
       public static String visitantesJunDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '06-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '06' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1374,7 +1379,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesJulDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '07-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '07' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1388,7 +1393,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesAgosDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '08-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '08' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1402,7 +1407,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesSepDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '09-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '09' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1416,7 +1421,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesOcDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '10-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '10' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1430,7 +1435,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesNovDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '11-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '10' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1444,7 +1449,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     public static String visitantesDicDisComp(){
            String cont;
                try {
-               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos where  substring(FECHAVISITADISPOSITIVO,4,7) Like '12-%"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"%'";          
+               String SQL ="SELECT COUNT(*) AS Total FROM historialdispositivos WHERE MONTH(FECHAVISITADISPOSITIVO) = '12' AND YEAR(FECHAVISITADISPOSITIVO) = '"+jcbAñoGraficoEstadisticoComparativo.getSelectedItem().toString()+"'";          
                sent = con.createStatement();            
                ResultSet rs = sent.executeQuery(SQL);
                rs.next();
@@ -1526,7 +1531,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
         try{
             //Muestra los usuarios existentes en la base de datos
             String titulos[] = {"ID DE VISITA","VISITANTE", "FECHA Y HORA DE LA VISITA"};
-            String SQLTH ="SELECT * FROM historialvisitas ORDER BY IDHISTORIALVISITA DESC"; 
+            String SQLTH ="SELECT * FROM historialvisitas ORDER BY IDHISTORIALVISITA ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQLTH);
@@ -1585,7 +1590,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             else mm = String.valueOf(m);
             if(d<10) dm = "0" + d;
             else dm = String.valueOf(d);
-            fq = dm + "-" + mm + "-" + a;
+            fq = a + "-" + mm + "-" + dm;
             cal=fq.toString();
             a1 = jdtHistHasta.getDate().getYear() + 1900;
             m1 = jdtHistHasta.getDate().getMonth() + 1;
@@ -1594,12 +1599,12 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             else mmh = String.valueOf(m1);
             if(d1<10) dmh = "0" + d1;
             else dmh = String.valueOf(d1);
-            ff = dmh + "-" + mmh + "-" + a1;
-            cal1=ff.toString();
+            ff = a1 + "-" + mmh + "-" + dmh;
+            cal1=ff;
             //String SQL ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'ORDER BY IDHISTORIALVISITA DESC";
             //Muestra los usuarios existentes en la base de datos
             String titulos[] = {"ID","VISITANTE", "FECHA Y HORA DE LA VISITA"};
-            String SQLTH ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'UNION SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "' ORDER BY IDHISTORIALVISITA DESC"; 
+            String SQLTH ="SELECT * FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + cal + "' AND '" + cal1 + "' UNION SELECT * FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + cal + "' AND '" + cal1 + "' ORDER BY FECHAHORAVISITA ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQLTH);
@@ -1632,10 +1637,10 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             else mm = String.valueOf(m);
             if(d<10) dm = "0" + d;
             else dm = String.valueOf(d);
-            fq = dm + "-" + mm + "-" + a;
-            cal=fq.toString();
+            fq = a + "-" + mm + "-" + dm;
+            cal=fq;
             String titulos[] = {"ID","VISITANTE", "FECHA Y HORA DE LA VISITA"};
-            String SQLTH ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  = '" + cal + "' UNION SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) = '" + cal + "' ORDER BY IDHISTORIALVISITA DESC"; 
+            String SQLTH ="SELECT * FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + cal + "' AND '" + cal + "' UNION SELECT * FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + cal + "' AND '" + cal + "' ORDER BY FECHAHORAVISITA ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = con.createStatement();
             ResultSet rs = sent.executeQuery(SQLTH);
@@ -2026,9 +2031,9 @@ try{
             else mm = String.valueOf(m);
             if(d<10) dm = "0" + d;
             else dm = String.valueOf(d);
-            fq = dm + "-" + mm + "-" + a;
-            cal=fq.toString();
-            String SQL ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10) Like'%" + cal + "%'ORDER BY IDHISTORIALVISITA DESC";
+            fq = a + "-" + mm + "-" + dm;
+            cal=fq;
+            String SQL ="SELECT * FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + cal + "' AND '" + cal + "' ORDER BY IDHISTORIALVISITA ASC";
             System.out.println(SQL);
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
@@ -2057,7 +2062,7 @@ try{
             else mm = String.valueOf(m);
             if(d<10) dm = "0" + d;
             else dm = String.valueOf(d);
-            fq = dm + "-" + mm + "-" + a;
+            fq = a + "-" + mm + "-" + dm;
             cal=fq.toString();
             a1 = jdtHistHasta.getDate().getYear() + 1900;
             m1 = jdtHistHasta.getDate().getMonth() + 1;
@@ -2066,9 +2071,9 @@ try{
             else mmh = String.valueOf(m1);
             if(d1<10) dmh = "0" + d1;
             else dmh = String.valueOf(d1);
-            ff = dmh + "-" + mmh + "-" + a1;
+            ff = a1 + "-" + mmh + "-" + dmh;
             cal1=ff.toString();
-            String SQL ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'ORDER BY IDHISTORIALVISITA DESC";
+            String SQL ="SELECT * FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + cal + "' AND '" + cal1 + "' ORDER BY IDHISTORIALVISITA DESC";
             System.out.println(SQL);
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
@@ -2097,8 +2102,8 @@ try{
             else mm = String.valueOf(m);
             if(d<10) dm = "0" + d;
             else dm = String.valueOf(d);
-            fq = dm + "-" + mm + "-" + a;
-            cal=fq.toString();
+            fq = a + "-" + mm + "-" + dm;
+            cal=fq;
             a1 = jdtHistHasta.getDate().getYear() + 1900;
             m1 = jdtHistHasta.getDate().getMonth() + 1;
             d1 = jdtHistHasta.getDate().getDate();
@@ -2106,9 +2111,9 @@ try{
             else mmh = String.valueOf(m1);
             if(d1<10) dmh = "0" + d1;
             else dmh = String.valueOf(d1);
-            ff = dmh + "-" + mmh + "-" + a1;
-            cal1=ff.toString();
-            String SQL ="SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) >= '" + cal + "' AND substring(FECHAVISITADISPOSITIVO,1,10) <='" + cal1 + "'";
+            ff = a1 + "-" + mmh + "-" + dmh;
+            cal1=ff;
+            String SQL ="SELECT * FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + cal + "' AND '" + cal1 + "' ORDER BY FECHAVISITADISPOSITIVO ASC";
             //String SQL ="SELECT * FROM historialvisitas where substring(FECHAHORAVISITA,1,10)  >= '" + cal + "' AND substring(FECHAHORAVISITA,1,10) <='" + cal1 + "'ORDER BY IDHISTORIALVISITA DESC";
             System.out.println(SQL);
             model= new DefaultTableModel(null, titulos);
@@ -2138,9 +2143,9 @@ try{
             else mm=String.valueOf(m);
             if(d<10) dm="0"+d;
             else dm=String.valueOf(d);
-            fq=dm+"-"+mm+"-"+a;
-            cal=fq.toString();
-            String SQL ="SELECT * FROM historialdispositivos where substring(FECHAVISITADISPOSITIVO,1,10) Like'%"+cal+"%'ORDER BY IDHISTORIALDISPOSITIVOS DESC";
+            fq=a+"-"+mm+"-"+dm;
+            cal=fq;
+            String SQL ="SELECT * FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + cal + "' AND '" + cal + "' ORDER BY IDHISTORIALDISPOSITIVOS ASC";
             System.out.println(SQL);
             model= new DefaultTableModel(null, titulos);
             sent = con.createStatement();
@@ -2213,27 +2218,26 @@ try{
     
     void GuardarVisitante(){
         try {
-                        String SQL = "INSERT INTO historialvisitas(NOMBRESAPELLIDOSVISITANTE,FECHAHORAVISITA)"
-                                + " VALUES(?,?)";
-                        PreparedStatement ps = con.prepareStatement(SQL);
-                        java.util.Date date = new java.util.Date();
-                        java.text.DateFormat sdf=new java.text.SimpleDateFormat("dd-MM-yyyy hh:mm:ss a");
-                        String fecha = sdf.format(date);
-                        ps.setString(1, txtnombreVisitante.getText());
-                        ps.setString(2, fecha);
-                        int n = ps.executeUpdate();
-                        if (n > 0) {
-                            JOptionPane.showMessageDialog(this, "Registro exitoso");
-                            //actualizarVisitantes();
-                            jtHistorialVisita.setModel(LlenarTablaHistorialVisita());
-                            txtnombreVisitante.setText("");
-                            txtTotalVisitas.setText(String.valueOf((Integer.parseInt(contarTotalVisitas())+(Integer.parseInt(contarTotalVisitasDispositivos())))));
-                        } 
-                    } catch (SQLException e) {
-                        JOptionPane.showConfirmDialog(this, "Error: " + e.getMessage());
-                        System.out.println();
-                    }
-        
+            String SQL = "INSERT INTO historialvisitas(NOMBRESAPELLIDOSVISITANTE,FECHAHORAVISITA)"
+                    + " VALUES(?,?)";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            Date date = new Date();
+            DateFormat sdf=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String fecha = sdf.format(date);
+            ps.setString(1, txtnombreVisitante.getText());
+            ps.setString(2, fecha);
+            int n = ps.executeUpdate();
+            if (n > 0) {
+                JOptionPane.showMessageDialog(this, "Registro exitoso");
+                //actualizarVisitantes();
+                jtHistorialVisita.setModel(LlenarTablaHistorialVisita());
+                txtnombreVisitante.setText("");
+                txtTotalVisitas.setText(String.valueOf((Integer.parseInt(contarTotalVisitas())+(Integer.parseInt(contarTotalVisitasDispositivos())))));
+            } 
+        } catch (SQLException e) {
+            JOptionPane.showConfirmDialog(this, "Error: " + e.getMessage());
+            System.out.println();
+        }
     }
     
     void SeleccionarItemTablaVisitantes(java.awt.event.MouseEvent evt){
@@ -2296,83 +2300,88 @@ try{
             return;
         }
         else{
-        lblTortaDis.setText("");
-        JFreeChart barra;
-        DefaultCategoryDataset datos;
-        int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
-        int eneD=0,febD=0,marD=0,abrD=0,maD=0,junD=0,julD=0,agosD=0,sepD=0,octD=0,novD=0,dicD=0,totalD=0;
-        ene=(Integer.valueOf(visitantesEneroComp()));
-        eneD=(Integer.valueOf(visitantesEneDisComp()));
-        feb=(Integer.valueOf(visitantesFebrComp()));
-        febD=(Integer.valueOf(visitantesFebDisComp()));
-        mar=(Integer.valueOf(visitantesMarComp()));
-        marD=(Integer.valueOf(visitantesMarDisComp()));
-        abr=(Integer.valueOf(visitantesAbrComp()));
-        abrD=(Integer.valueOf(visitantesAbrDisComp()));
-        ma=(Integer.valueOf(visitantesMayoComp()));
-        maD=(Integer.valueOf(visitantesMayoDisComp()));
-        jun=(Integer.valueOf(visitantesJunComp()));
-        junD=(Integer.valueOf(visitantesJunDisComp()));
-        jul=(Integer.valueOf(visitantesJulComp()));
-        julD=(Integer.valueOf(visitantesJulDisComp()));
-        agos=(Integer.valueOf(visitantesAgosComp()));
-        agosD=(Integer.valueOf(visitantesAgosDisComp()));
-        sep=(Integer.valueOf(visitantesSepComp()));
-        sepD=(Integer.valueOf(visitantesSepDisComp()));
-        oct=(Integer.valueOf(visitantesOctComp()));
-        octD=(Integer.valueOf(visitantesOcDisComp()));
-        nov=(Integer.valueOf(visitantesNovComp()));
-        novD=(Integer.valueOf(visitantesNovDisComp()));
-        dic=(Integer.valueOf(visitantesDicComp()));
-        dicD=(Integer.valueOf(visitantesDicDisComp()));
-        total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
-        totalD=eneD+febD+marD+abrD+maD+junD+julD+sepD+agosD+octD+novD+dicD;
-        //datos = new DefaultPieDataset(); 
-        datos = new DefaultCategoryDataset(); 
-        //datos.setValue(marD,"Dipositivos","Mar:"+mar+"-"+marD);
-        //datos.setValue(mar,"Visitantes","Mar:"+mar+"-"+marD);
-        datos.setValue(eneD,"Dipositivos","Ene");
-        datos.setValue(ene,"Visitantes","Ene");
-        datos.setValue(febD,"Dipositivos","Feb");
-        datos.setValue(feb,"Visitantes","Feb");
-        datos.setValue(marD,"Dipositivos","Mar");
-        datos.setValue(mar,"Visitantes","Mar");
-        datos.setValue(abrD,"Dipositivos","Ab");
-        datos.setValue(abr,"Visitantes","Ab");
-        datos.setValue(ma,"Dipositivos","May");
-        datos.setValue(ma,"Visitantes","May");
-        datos.setValue(junD,"Dipositivos","Jun");
-        datos.setValue(jun,"Visitantes","Jun");
-        datos.setValue(jul,"Dipositivos","Jul");
-        datos.setValue(jul,"Visitantes","Jul");
-        datos.setValue(agos,"Dipositivos","Ago");
-        datos.setValue(agos,"Visitantes","Ago");
-        datos.setValue(sep,"Dipositivos","Sep");
-        datos.setValue(sep,"Visitantes","Sep");
-        datos.setValue(oct,"Dipositivos","Oct");
-        datos.setValue(oct,"Visitantes","Oct");
-        datos.setValue(nov,"Dipositivos","Nov");
-        datos.setValue(nov,"Visitantes","Nov");
-        datos.setValue(dic,"Dipositivos","Dic");
-        datos.setValue(dic,"Visitantes","Dic");
+            lblTortaDis.setText("");
+            JFreeChart barra;
+            DefaultCategoryDataset datos;
+            int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
+            int eneD=0,febD=0,marD=0,abrD=0,maD=0,junD=0,julD=0,agosD=0,sepD=0,octD=0,novD=0,dicD=0,totalD=0;
+            ene=(Integer.valueOf(visitantesEneroComp()));
+            eneD=(Integer.valueOf(visitantesEneDisComp()));
+            feb=(Integer.valueOf(visitantesFebrComp()));
+            febD=(Integer.valueOf(visitantesFebDisComp()));
+            mar=(Integer.valueOf(visitantesMarComp()));
+            marD=(Integer.valueOf(visitantesMarDisComp()));
+            abr=(Integer.valueOf(visitantesAbrComp()));
+            abrD=(Integer.valueOf(visitantesAbrDisComp()));
+            ma=(Integer.valueOf(visitantesMayoComp()));
+            maD=(Integer.valueOf(visitantesMayoDisComp()));
+            jun=(Integer.valueOf(visitantesJunComp()));
+            junD=(Integer.valueOf(visitantesJunDisComp()));
+            jul=(Integer.valueOf(visitantesJulComp()));
+            julD=(Integer.valueOf(visitantesJulDisComp()));
+            agos=(Integer.valueOf(visitantesAgosComp()));
+            agosD=(Integer.valueOf(visitantesAgosDisComp()));
+            sep=(Integer.valueOf(visitantesSepComp()));
+            sepD=(Integer.valueOf(visitantesSepDisComp()));
+            oct=(Integer.valueOf(visitantesOctComp()));
+            octD=(Integer.valueOf(visitantesOcDisComp()));
+            nov=(Integer.valueOf(visitantesNovComp()));
+            novD=(Integer.valueOf(visitantesNovDisComp()));
+            dic=(Integer.valueOf(visitantesDicComp()));
+            dicD=(Integer.valueOf(visitantesDicDisComp()));
+            total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
+            totalD=eneD+febD+marD+abrD+maD+junD+julD+sepD+agosD+octD+novD+dicD;
+            //datos = new DefaultPieDataset(); 
+            datos = new DefaultCategoryDataset(); 
+            //datos.setValue(marD,"Dipositivos","Mar:"+mar+"-"+marD);
+            //datos.setValue(mar,"Visitantes","Mar:"+mar+"-"+marD);
+            datos.setValue(eneD,"Dipositivos","Ene");
+            datos.setValue(ene,"Visitantes","Ene");
+            datos.setValue(febD,"Dipositivos","Feb");
+            datos.setValue(feb,"Visitantes","Feb");
+            datos.setValue(marD,"Dipositivos","Mar");
+            datos.setValue(mar,"Visitantes","Mar");
+            datos.setValue(abrD,"Dipositivos","Ab");
+            datos.setValue(abr,"Visitantes","Ab");
+            datos.setValue(ma,"Dipositivos","May");
+            datos.setValue(ma,"Visitantes","May");
+            datos.setValue(junD,"Dipositivos","Jun");
+            datos.setValue(jun,"Visitantes","Jun");
+            datos.setValue(jul,"Dipositivos","Jul");
+            datos.setValue(jul,"Visitantes","Jul");
+            datos.setValue(agos,"Dipositivos","Ago");
+            datos.setValue(agos,"Visitantes","Ago");
+            datos.setValue(sep,"Dipositivos","Sep");
+            datos.setValue(sep,"Visitantes","Sep");
+            datos.setValue(oct,"Dipositivos","Oct");
+            datos.setValue(oct,"Visitantes","Oct");
+            datos.setValue(nov,"Dipositivos","Nov");
+            datos.setValue(nov,"Visitantes","Nov");
+            datos.setValue(dic,"Dipositivos","Dic");
+            datos.setValue(dic,"Visitantes","Dic");
 
-        barra = ChartFactory.createBarChart("Visitantes vs Dispositivos del año "+jcbAñoGraficoEstadisticoComparativo.getSelectedItem(), "Tipo de Visitante","Visitantes",datos,PlotOrientation.VERTICAL,true,true,false);
-        barra.setBackgroundPaint(Color.cyan);
-        barra.getTitle().setPaint(Color.black); 
-        BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTortaDis.getWidth(), panelGraficoTortaDis.getHeight());
-        CategoryPlot p = barra.getCategoryPlot(); 
-        p.setRangeGridlinePaint(Color.red); 
-        //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
-        //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
-        lblTortaDis.setSize(panelGraficoTortaDis.getSize());
-        //lblTorta.setIcon(new ImageIcon(graficoTorta));
-        lblTortaDis.setIcon(new ImageIcon(graficoBarra));
-        txtTotalVisitasVisitantesPorAñoComparativo.setText(String.valueOf(total));
-        txtTotalVisitasDispositivosPorAñoCompartivo.setText(String.valueOf(totalD));
-        panelGraficoTortaDis.updateUI();
-        //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
-                
+            barra = ChartFactory.createBarChart("Visitantes vs Dispositivos del año "+jcbAñoGraficoEstadisticoComparativo.getSelectedItem(), "Tipo de Visitante","Visitantes",datos,PlotOrientation.VERTICAL,true,true,false);
+            barra.setBackgroundPaint(Color.cyan);
+            barra.getTitle().setPaint(Color.black); 
+            BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTortaDis.getWidth(), panelGraficoTortaDis.getHeight());
+            CategoryPlot p = barra.getCategoryPlot(); 
+            p.setRangeGridlinePaint(Color.red); 
+            //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
+            //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+            lblTortaDis.setSize(panelGraficoTortaDis.getSize());
+            //lblTorta.setIcon(new ImageIcon(graficoTorta));
+            lblTortaDis.setIcon(new ImageIcon(graficoBarra));
+            txtTotalVisitasVisitantesPorAñoComparativo.setText(String.valueOf(total));
+            txtTotalVisitasDispositivosPorAñoCompartivo.setText(String.valueOf(totalD));
+            panelGraficoTortaDis.updateUI();
+            //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
+            try {
+                ChartUtilities.saveChartAsJPEG(new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoEC.jpg"), barra, 1280, 720);
+                //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
+            } catch (IOException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
     }
     
     void EstadisticaVisitantes(){
@@ -2381,51 +2390,55 @@ try{
             return;
         }
         else{
-        lblTorta.setText("");
-        JFreeChart barra;
-        DefaultCategoryDataset datos;
-        int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
-        ene=(Integer.valueOf(visitantesE()));
-        feb=(Integer.valueOf(visitantesF()));
-        mar=(Integer.valueOf(visitantesM()));
-        abr=(Integer.valueOf(visitantesA()));
-        ma=(Integer.valueOf(visitantesMayo()));
-        jun=(Integer.valueOf(visitantesJ()));
-        jul=(Integer.valueOf(visitantesJul()));
-        agos=(Integer.valueOf(visitantesAg()));
-        sep=(Integer.valueOf(visitantesSep()));
-        oct=(Integer.valueOf(visitantesOc()));
-        nov=(Integer.valueOf(visitantesNov()));
-        dic=(Integer.valueOf(visitantesDic()));
-        total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
-        //datos = new DefaultPieDataset(); 
-        datos = new DefaultCategoryDataset(); 
-        datos.setValue(ene,"Enero: "+ene+" ","");
-        datos.setValue(feb,"Febrero : "+feb+" ","");
-        datos.setValue(mar,"Marzo : "+mar+" ","");
-        datos.setValue(abr,"Abril : "+abr+" ","");
-        datos.setValue(ma,"Mayo : "+ma+" ","");
-        datos.setValue(jun,"Junio : "+jun+" ","");
-        datos.setValue(jul,"Julio : "+ jul+" ","");
-        datos.setValue(agos,"Agosto : "+agos+" ","");
-        datos.setValue(sep,"Septiembre : "+ sep+" ","");
-        datos.setValue(oct,"Octubre : "+oct+" ","");
-        datos.setValue(nov,"Noviembre : "+nov+" ","");
-        datos.setValue(dic,"Diciembre : "+dic+" ","");
+            lblTorta.setText("");
+            JFreeChart barra;
+            DefaultCategoryDataset datos;
+            int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
+            ene=(Integer.valueOf(visitantesE()));
+            feb=(Integer.valueOf(visitantesF()));
+            mar=(Integer.valueOf(visitantesM()));
+            abr=(Integer.valueOf(visitantesA()));
+            ma=(Integer.valueOf(visitantesMayo()));
+            jun=(Integer.valueOf(visitantesJ()));
+            jul=(Integer.valueOf(visitantesJul()));
+            agos=(Integer.valueOf(visitantesAg()));
+            sep=(Integer.valueOf(visitantesSep()));
+            oct=(Integer.valueOf(visitantesOc()));
+            nov=(Integer.valueOf(visitantesNov()));
+            dic=(Integer.valueOf(visitantesDic()));
+            total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
+            //datos = new DefaultPieDataset(); 
+            datos = new DefaultCategoryDataset(); 
+            datos.setValue(ene,"Enero: "+ene+" ","");
+            datos.setValue(feb,"Febrero : "+feb+" ","");
+            datos.setValue(mar,"Marzo : "+mar+" ","");
+            datos.setValue(abr,"Abril : "+abr+" ","");
+            datos.setValue(ma,"Mayo : "+ma+" ","");
+            datos.setValue(jun,"Junio : "+jun+" ","");
+            datos.setValue(jul,"Julio : "+ jul+" ","");
+            datos.setValue(agos,"Agosto : "+agos+" ","");
+            datos.setValue(sep,"Septiembre : "+ sep+" ","");
+            datos.setValue(oct,"Octubre : "+oct+" ","");
+            datos.setValue(nov,"Noviembre : "+nov+" ","");
+            datos.setValue(dic,"Diciembre : "+dic+" ","");
 
-        barra = ChartFactory.createBarChart3D("Visitantes del año "+jcbAñoGraficoEstadistico.getSelectedItem(), "Meses","Visitantes",datos,PlotOrientation.VERTICAL,true,true,true);
-        BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
-        
-        //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
-        //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
-        lblTorta.setSize(panelGraficoTorta.getSize());
-        //lblTorta.setIcon(new ImageIcon(graficoTorta));
-        lblTorta.setIcon(new ImageIcon(graficoBarra));
-        txtTotalVisitasPorAño.setText(String.valueOf(total));
-        panelGraficoTorta.updateUI();
-        //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
-                
+            barra = ChartFactory.createBarChart3D("Visitantes del año "+jcbAñoGraficoEstadistico.getSelectedItem(), "Meses","Visitantes",datos,PlotOrientation.VERTICAL,true,true,true);
+            BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+
+            //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
+            //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+            lblTorta.setSize(panelGraficoTorta.getSize());
+            //lblTorta.setIcon(new ImageIcon(graficoTorta));
+            lblTorta.setIcon(new ImageIcon(graficoBarra));
+            txtTotalVisitasPorAño.setText(String.valueOf(total));
+            panelGraficoTorta.updateUI();
+            try {
+                ChartUtilities.saveChartAsJPEG(new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoE.jpg"), barra, 1280, 720);
+                //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
+            } catch (IOException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
     }
     
     
@@ -2435,51 +2448,55 @@ try{
             return;
         }
         else{
-        lblTorta.setText("");
-        JFreeChart barra;
-        DefaultCategoryDataset datos;
-        int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
-        ene=(Integer.valueOf(visitantesED()));
-        feb=(Integer.valueOf(visitantesFD()));
-        mar=(Integer.valueOf(visitantesMD()));
-        abr=(Integer.valueOf(visitantesAD()));
-        ma=(Integer.valueOf(visitantesMayoD()));
-        jun=(Integer.valueOf(visitantesJD()));
-        jul=(Integer.valueOf(visitantesJulD()));
-        agos=(Integer.valueOf(visitantesAgD()));
-        sep=(Integer.valueOf(visitantesSepD()));
-        oct=(Integer.valueOf(visitantesOcD()));
-        nov=(Integer.valueOf(visitantesNovD()));
-        dic=(Integer.valueOf(visitantesDicD()));
-        total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
-        datos = new DefaultCategoryDataset(); 
-        datos.setValue(ene,"Enero : "+ene+" ","");
-        datos.setValue(feb,"Febrero : "+feb+" ","");
-        datos.setValue(mar,"Marzo : "+mar+" ","");
-        datos.setValue(abr,"Abril : "+abr+" ","");
-        datos.setValue(ma,"Mayo : "+ma+" ","");
-        datos.setValue(jun,"Junio : "+jun+" ","");
-        datos.setValue(jul,"Julio : "+ jul+" ","");
-        datos.setValue(agos,"Agosto : "+agos+" ","");
-        datos.setValue(sep,"Septiembre : "+ sep+" ","");
-        datos.setValue(oct,"Octubre : "+oct+" ","");
-        datos.setValue(nov,"Noviembre : "+nov+" ","");
-        datos.setValue(dic,"Diciembre : "+dic+" ","");
+            lblTorta.setText("");
+            JFreeChart barra;
+            DefaultCategoryDataset datos;
+            int ene=0,feb=0,mar=0,abr=0,ma=0,jun=0,jul=0,agos=0,sep=0,oct=0,nov=0,dic=0,total=0;
+            ene=(Integer.valueOf(visitantesED()));
+            feb=(Integer.valueOf(visitantesFD()));
+            mar=(Integer.valueOf(visitantesMD()));
+            abr=(Integer.valueOf(visitantesAD()));
+            ma=(Integer.valueOf(visitantesMayoD()));
+            jun=(Integer.valueOf(visitantesJD()));
+            jul=(Integer.valueOf(visitantesJulD()));
+            agos=(Integer.valueOf(visitantesAgD()));
+            sep=(Integer.valueOf(visitantesSepD()));
+            oct=(Integer.valueOf(visitantesOcD()));
+            nov=(Integer.valueOf(visitantesNovD()));
+            dic=(Integer.valueOf(visitantesDicD()));
+            total=ene+feb+mar+abr+ma+jun+jul+sep+agos+oct+nov+dic;
+            datos = new DefaultCategoryDataset(); 
+            datos.setValue(ene,"Enero : "+ene+" ","");
+            datos.setValue(feb,"Febrero : "+feb+" ","");
+            datos.setValue(mar,"Marzo : "+mar+" ","");
+            datos.setValue(abr,"Abril : "+abr+" ","");
+            datos.setValue(ma,"Mayo : "+ma+" ","");
+            datos.setValue(jun,"Junio : "+jun+" ","");
+            datos.setValue(jul,"Julio : "+ jul+" ","");
+            datos.setValue(agos,"Agosto : "+agos+" ","");
+            datos.setValue(sep,"Septiembre : "+ sep+" ","");
+            datos.setValue(oct,"Octubre : "+oct+" ","");
+            datos.setValue(nov,"Noviembre : "+nov+" ","");
+            datos.setValue(dic,"Diciembre : "+dic+" ","");
 
-        barra = ChartFactory.createBarChart3D("Dispositivos conectados al año "+jcbAñoGraficoEstadistico.getSelectedItem(), "Meses","Visitantes",datos,PlotOrientation.VERTICAL,true,true,true);
-        BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
-        
-        //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
-        //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
-        lblTorta.setSize(panelGraficoTorta.getSize());
-        //lblTorta.setIcon(new ImageIcon(graficoTorta));
-        lblTorta.setIcon(new ImageIcon(graficoBarra));
-        txtTotalVisitasPorAño.setText(String.valueOf(total));
-        panelGraficoTorta.updateUI();
-        //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
-                
+            barra = ChartFactory.createBarChart3D("Dispositivos conectados al año "+jcbAñoGraficoEstadistico.getSelectedItem(), "Meses","Visitantes",datos,PlotOrientation.VERTICAL,true,true,true);
+            BufferedImage graficoBarra=barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+
+            //barra=ChartFactory.createPieChart("Visitantes del Año : ",datos,true,true,true);
+            //BufferedImage graficoTorta = barra.createBufferedImage(panelGraficoTorta.getWidth(), panelGraficoTorta.getHeight());
+            lblTorta.setSize(panelGraficoTorta.getSize());
+            //lblTorta.setIcon(new ImageIcon(graficoTorta));
+            lblTorta.setIcon(new ImageIcon(graficoBarra));
+            txtTotalVisitasPorAño.setText(String.valueOf(total));
+            panelGraficoTorta.updateUI();
+            //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
+            try {
+                ChartUtilities.saveChartAsJPEG(new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoE.jpg"), barra, 1280, 720);
+                //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
+            } catch (IOException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             } 
-        
+        }
     }
     
     
@@ -4804,9 +4821,32 @@ try{
     }//GEN-LAST:event_btnNuevoVisitanteMouseClicked
 
     private void btnImprimirVisitantesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirVisitantesMouseClicked
-       
+        if(jdtHistDesde.getDate() != null){
+            a = jdtHistDesde.getDate().getYear() + 1900;
+            m = jdtHistDesde.getDate().getMonth() + 1;
+            d = jdtHistDesde.getDate().getDate();
+            String mm,dm,fq;
+            if(m<10) mm = "0" + m;
+            else mm = String.valueOf(m);
+            if(d<10) dm = "0" + d;
+            else dm = String.valueOf(d);
+            fq = a + "-" + mm + "-" + dm;
+            cal=fq;
+        }
+        if (jdtHistHasta.getDate() != null){
+            a1 = jdtHistHasta.getDate().getYear() + 1900;
+            m1 = jdtHistHasta.getDate().getMonth() + 1;
+            d1 = jdtHistHasta.getDate().getDate();
+            String mmh,dmh;
+            if(m1<10) mmh = "0" + m1;
+            else mmh = String.valueOf(m1);
+            if(d1<10) dmh = "0" + d1;
+            else dmh = String.valueOf(d1);
+            ff = a1 + "-" + mmh + "-" + dmh;
+            cal1=ff;
+        }
         Object [] opciones={"Aceptar","Cancelar"};
-        int eleccion=JOptionPane.showOptionDialog(null,"Imprimir","Mensaje de Confirmación",
+        int eleccion=JOptionPane.showOptionDialog(null,"¿Desea imprimir la selección que escojio?","Mensaje de Confirmación",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE,null,opciones,"Aceptar");
         if(eleccion==JOptionPane.YES_OPTION){
@@ -4820,26 +4860,14 @@ try{
                 iV.setVisible(true);
             }
             //Cuando se selecciona la opcion todo y no hay fecha final
-            else if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() == null) {
-                
-                a = jdtHistDesde.getDate().getYear() + 1900;
-                m = jdtHistDesde.getDate().getMonth() + 1;
-                d = jdtHistDesde.getDate().getDate();
-                String mm,dm,fq,cal;
-                if(m<10) mm = "0" + m;
-                else mm = String.valueOf(m);
-                if(d<10) dm = "0" + d;
-                else dm = String.valueOf(d);
-                fq = dm + "-" + mm + "-" + a;
-                cal=fq.toString();
+            else if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() == null && jdtHistDesde.getDate() != null) {
                 imprimirOpcion=2;
                 ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
-                isV.setFechaInicio(cal);
+                ItemSeleccionado.setFechaInicio(cal);
                 ImprimirVisitantes iV = new ImprimirVisitantes();
                 iV.setVisible(true);
                 //jtHistorialVisita.setModel(LlenarTablaHistorialBusquedaUnidoDesde());
                 //txtTotalVisitas.setText(contarTotalUnidoporFechaDesde()); 
-                
             } 
             //Cuando se selecciona la opcion todo y no hay fecha inicial
             else if(jrbFiltroTodo.isSelected() && jdtHistDesde.getDate() == null){
@@ -4848,29 +4876,10 @@ try{
             }  
             //Cuando selecciona la opcion todo y fecha de inicion y final
             else if(jrbFiltroTodo.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null){
-                a = jdtHistDesde.getDate().getYear() + 1900;
-                m = jdtHistDesde.getDate().getMonth() + 1;
-                d = jdtHistDesde.getDate().getDate();
-                String mm,dm,fq,cal,mmh,dmh;
-                if(m<10) mm = "0" + m;
-                else mm = String.valueOf(m);
-                if(d<10) dm = "0" + d;
-                else dm = String.valueOf(d);
-                fq = dm + "-" + mm + "-" + a;
-                cal=fq.toString();
-                a1 = jdtHistHasta.getDate().getYear() + 1900;
-                m1 = jdtHistHasta.getDate().getMonth() + 1;
-                d1 = jdtHistHasta.getDate().getDate();
-                if(m1<10) mmh = "0" + m1;
-                else mmh = String.valueOf(m1);
-                if(d1<10) dmh = "0" + d1;
-                else dmh = String.valueOf(d1);
-                ff = dmh + "-" + mmh + "-" + a1;
-                cal1=ff.toString();
                 imprimirOpcion=3;
                 ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
-                isV.setFechaInicio(cal);
-                isV.setFechaFinal(cal1);
+                ItemSeleccionado.setFechaInicio(cal);
+                ItemSeleccionado.setFechaFinal(cal1);
                 ImprimirVisitantes iV = new ImprimirVisitantes();
                 iV.setVisible(true);
                 //jtHistorialVisita.setModel(LlenarTablaHistorialBusquedaUnido());
@@ -4884,33 +4893,54 @@ try{
                 iV.setVisible(true);
             }
             //Cuando se selecciona la opcion de visitante y no hay fecha final
-            if(jrbFiltroVisitante.isSelected() && jdtHistHasta.getDate() == null) {
-                imprimirOpcion=4;
+            else if(jrbFiltroVisitante.isSelected() && jdtHistHasta.getDate() == null && jdtHistDesde.getDate() != null) {
+                imprimirOpcion=5;
                 ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                ItemSeleccionado.setFechaInicio(cal);
                 ImprimirVisitantes iV = new ImprimirVisitantes();
                 iV.setVisible(true);
                 //BuscarPorFechaVisita();
                 //txtTotalVisitas.setText(contarTotalVisitasporFecha());
             } 
             //Cuando se selecciona la opcion visitante y no hay fecha inicial
-            else if(jrbFiltroVisitante.isSelected() && jdtHistDesde.getDate() == null) JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");  
+            else if(jrbFiltroVisitante.isSelected() && jdtHistDesde.getDate() == null) 
+                JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");  
             //Cuando selecciona la opcion visitante y fecha de inicion y final
             else if(jrbFiltroVisitante.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null){
-                BuscarPorFechaVisitaDesdeHasta();
-                txtTotalVisitas.setText(contarTotalVisitasporFechaHasta());
+                imprimirOpcion=6;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                isV.setFechaInicio(cal);
+                isV.setFechaFinal(cal1);
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
             }
-
+            
+            if(jrbFiltroDispositivo.isSelected() && jdtHistHasta.getDate() == null && jdtHistDesde.getDate() == null)
+            {
+                imprimirOpcion=7;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
+            }
             //Cuando selecciona la opcion dispositivo y no hay fecha final
-            if(jrbFiltroDispositivo.isSelected() && jdtHistHasta.getDate() == null){
-                BuscarPorFechaVisitaDispositivo();
-                txtTotalVisitas.setText(contarTotalVisitasporFechadeDispositivo());
+            else if(jrbFiltroDispositivo.isSelected() && jdtHistHasta.getDate() == null && jdtHistDesde.getDate() != null){
+                imprimirOpcion=8;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                ItemSeleccionado.setFechaInicio(cal);
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
             }
             //Cuando se selecciona la opcion dispositivo y no hay fecha inicial
-            else if(jrbFiltroDispositivo.isSelected() && jdtHistDesde.getDate() == null) JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");  
+            else if(jrbFiltroDispositivo.isSelected() && jdtHistDesde.getDate() == null)
+                JOptionPane.showMessageDialog(null,"Escoja una fecha inicial");  
             //Cuando selecciona la opcion dipositivo y fecha de inicion y final
             else if(jrbFiltroDispositivo.isSelected() && jdtHistHasta.getDate() != null && jdtHistDesde.getDate() != null) {
-                BuscarPorFechaVisitaDispositivoDesdeHasta();
-                txtTotalVisitas.setText(contarTotalVisitasDispositivosporFechaHasta());
+                imprimirOpcion=9;
+                ItemSeleccionado.accionBoton =(String.valueOf(imprimirOpcion));
+                ItemSeleccionado.setFechaInicio(cal);
+                ItemSeleccionado.setFechaFinal(cal1);
+                ImprimirVisitantes iV = new ImprimirVisitantes();
+                iV.setVisible(true);
             }
         }
 
@@ -4956,7 +4986,7 @@ try{
     }//GEN-LAST:event_btnVerEstadisticaAnualMouseClicked
 
     private void btnImprimirEstadisticaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirEstadisticaMouseClicked
-        opimG=0;
+        /*opimG=0;
         //btnImprimirEstadistica.setVisible(false);
         //Crea y devuelve un printerjob que se asocia con la impresora predeterminada
             //del sistema, si no hay, retorna NULL
@@ -4972,12 +5002,16 @@ try{
                 } catch (PrinterException ex) {
                 System.out.println("Error:" + ex);
                 }
-            }       
-        
+            }*/    
+        ItemSeleccionado.accionBoton = "E";
+        if(jrbEstadisticasVisitantes.isSelected()) ItemSeleccionado.rol = "Vis";
+        else ItemSeleccionado.rol = "Dis";
+        ImprimirGraficosEstadisticos iGE = new ImprimirGraficosEstadisticos();
+        iGE.setVisible(true);
     }//GEN-LAST:event_btnImprimirEstadisticaMouseClicked
 
     private void btnImprimirEstadisticaDispositivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirEstadisticaDispositivosMouseClicked
-        opimG=1;
+        /*opimG=1;
         //btnImprimirEstadisticaDispositivos.setVisible(false);
         //Crea y devuelve un printerjob que se asocia con la impresora predeterminada
             //del sistema, si no hay, retorna NULL
@@ -4993,9 +5027,10 @@ try{
                 } catch (PrinterException ex) {
                 System.out.println("Error:" + ex);
                 }
-            } 
-
-                
+            }*/
+        ItemSeleccionado.accionBoton = "EC";
+        ImprimirGraficosEstadisticos iGE = new ImprimirGraficosEstadisticos();
+        iGE.setVisible(true);
     }//GEN-LAST:event_btnImprimirEstadisticaDispositivosMouseClicked
 
     private void btnVideoMuseoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVideoMuseoMouseClicked

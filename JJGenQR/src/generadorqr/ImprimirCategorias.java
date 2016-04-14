@@ -3,8 +3,13 @@ package generadorqr;
 
 import Modelos.InformacionImprimirCategorias;
 import Modelos.ValoresConstantes;
+import db.mysql;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -27,6 +32,9 @@ import org.icepdf.ri.common.SwingViewBuilder;
 public class ImprimirCategorias extends javax.swing.JFrame {
     private static final String RUTA_TEMPORAL = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\temporalCategoria.pdf";
     SwingController controlador;
+    static Connection con;
+    static Statement st;
+    int contador = 0;
     InformacionImprimirCategorias iiC = new InformacionImprimirCategorias();
     
     public ImprimirCategorias() {
@@ -41,6 +49,18 @@ public class ImprimirCategorias extends javax.swing.JFrame {
             reporteC = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirCategoria/imprimirCategorias.jasper").getPath()));
             Map parametros = new HashMap();
             parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
+            try {
+                if(con == null) con = mysql.getConnect();
+                st = con.createStatement();
+                ResultSet rs = null;
+                rs = st.executeQuery("SELECT COUNT(*) AS CONTADOR FROM usuarios");
+                rs.next();
+                contador = rs.getInt("CONTADOR");
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ImprimirCategorias.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            parametros.put("contador", String.valueOf(contador));
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporteC, parametros, new JRBeanCollectionDataSource(info));
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);

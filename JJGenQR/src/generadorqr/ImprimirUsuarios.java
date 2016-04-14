@@ -5,8 +5,13 @@ import Modelos.InformacionImprimirQR;
 import Modelos.InformacionImprimirUsuario;
 import Modelos.ItemSeleccionado;
 import Modelos.ValoresConstantes;
+import db.mysql;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -31,6 +36,9 @@ import org.icepdf.ri.common.SwingViewBuilder;
 public class ImprimirUsuarios extends javax.swing.JFrame {
     private static final String RUTA_TEMPORAL = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\temporalUsuario.pdf";
     SwingController controlador;
+    static Connection con;
+    static Statement st;
+    int contador = 0;
     InformacionImprimirUsuario iiU=new InformacionImprimirUsuario();
     
     public ImprimirUsuarios() {
@@ -44,6 +52,18 @@ public class ImprimirUsuarios extends javax.swing.JFrame {
             reporteU=(JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirUsuario/imprimirUsuarios.jasper").getPath()));
             Map parametros=new HashMap();
             parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
+            try {
+                if(con == null) con = mysql.getConnect();
+                st = con.createStatement();
+                ResultSet rs = null;
+                rs = st.executeQuery("SELECT COUNT(*) AS CONTADOR FROM usuarios");
+                rs.next();
+                contador = rs.getInt("CONTADOR");
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ImprimirUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            parametros.put("contador", String.valueOf(contador));
             JasperPrint jasperPrint=JasperFillManager.fillReport(reporteU, parametros,new JRBeanCollectionDataSource(info));
             JRPdfExporter exporter=new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT,jasperPrint);

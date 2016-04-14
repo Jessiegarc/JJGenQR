@@ -2,9 +2,15 @@
 package generadorqr;
 
 import Modelos.InformacionImprimirVisitante;
+import Modelos.ItemSeleccionado;
 import Modelos.ValoresConstantes;
+import db.mysql;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -27,12 +33,18 @@ import org.icepdf.ri.common.SwingViewBuilder;
 public class ImprimirVisitantes extends javax.swing.JFrame {
     private static final String RUTA_TEMPORAL = ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\temporalVisitante.pdf";
     SwingController controlador;
+    static Connection con;
+    static Statement st;
+    String accion;
+    int contador = 0;
     InformacionImprimirVisitante iiV = new InformacionImprimirVisitante();
     
     public ImprimirVisitantes() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
+        String fechaIni = ItemSeleccionado.fechaInicio;
+        String fechaFin = ItemSeleccionado.fechaFinal;
         LinkedList info;
         info = iiV.getInformacion();
         try 
@@ -41,6 +53,27 @@ public class ImprimirVisitantes extends javax.swing.JFrame {
             reporteC = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirVisitantes/imprimirVisitantes.jasper").getPath()));
             Map parametros = new HashMap();
             parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
+            try { 
+                if(con == null) con = mysql.getConnect();
+                st = con.createStatement();
+                ResultSet rs = null;
+                accion = ItemSeleccionado.accionBoton;
+                if (accion.contains("1")) rs = st.executeQuery("SELECT SUM(total) AS total FROM (SELECT COUNT(*) AS total FROM historialvisitas UNION SELECT COUNT(*) AS total FROM historialdispositivos) AS total");
+                else if(accion.contains("2")) rs = st.executeQuery("SELECT SUM(total) AS total FROM (SELECT COUNT(*) AS total FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + fechaIni + "' AND '" + fechaIni + "' UNION SELECT COUNT(*) AS total FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + fechaIni + "' AND '" + fechaIni + "') AS total");
+                else if(accion.contains("3")) rs = st.executeQuery("SELECT SUM(total) AS total FROM (SELECT COUNT(*) AS total FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + fechaIni + "' AND '" + fechaFin + "' UNION SELECT COUNT(*) AS total FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + fechaIni + "' AND '" + fechaFin + "') AS total");
+                else if(accion.contains("4")) rs = st.executeQuery("SELECT COUNT(*) AS total FROM historialvisitas ORDER BY FECHAHORAVISITA ASC");
+                else if(accion.contains("5")) rs = st.executeQuery("SELECT COUNT(*) AS total FROM historialvisitas WHERE DATE(FECHAHORAVISITA) BETWEEN '" + fechaIni + "' AND '" + fechaIni + "' ORDER BY FECHAHORAVISITA ASC");
+                else if(accion.contains("6")) rs = st.executeQuery("SELECT COUNT(*) AS total FROM historialvisitas where DATE(FECHAHORAVISITA) BETWEEN '" + fechaIni + "' AND '" + fechaFin + "' ORDER BY FECHAHORAVISITA ASC");
+                else if(accion.contains("7")) rs = st.executeQuery("SELECT COUNT(*) AS total FROM historialdispositivos ORDER BY FECHAVISITADISPOSITIVO ASC");
+                else if(accion.contains("8")) rs = st.executeQuery("SELECT COUNT(*) AS total FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + fechaIni + "' AND '" + fechaIni + "' ORDER BY FECHAVISITADISPOSITIVO ASC");
+                else if(accion.contains("9")) rs = st.executeQuery("SELECT COUNT(*) AS total FROM historialdispositivos WHERE DATE(FECHAVISITADISPOSITIVO) BETWEEN '" + fechaIni + "' AND '" + fechaFin + "' ORDER BY FECHAVISITADISPOSITIVO ASC");
+                rs.next();
+                contador = rs.getInt("total");
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ImprimirVisitantes.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            parametros.put("contador", String.valueOf(contador));
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporteC, parametros, new JRBeanCollectionDataSource(info));
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);

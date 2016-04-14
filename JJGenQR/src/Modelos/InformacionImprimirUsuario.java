@@ -32,11 +32,12 @@ public class InformacionImprimirUsuario {
             st = con.createStatement();
             ResultSet rs = null;
             accion = ItemSeleccionado.accionBoton;
-            rs = st.executeQuery("SELECT substring(TIPOUSUARIO, 1, 1) AS TIPOUSUARIO,NOMBRESUSUARIO,APELLIDOSUSUARIO,CONTRASENAUSUARIO,CEDULAUSUARIO,CORREOUSUARIO,ESTADOUSUARIO  FROM usuarios");
+            rs = st.executeQuery("SELECT IDUSUARIO, substring(TIPOUSUARIO, 1, 1) AS TIPOUSUARIO,NOMBRESUSUARIO,APELLIDOSUSUARIO,CONTRASENAUSUARIO,CEDULAUSUARIO,CORREOUSUARIO,ESTADOUSUARIO  FROM usuarios");
             while (rs.next())
             {
                 consulta = new ModeloImprimirUsuario();
                 //agregamos la informacion a el objeto consulta
+                consulta.setIDUsuario(rs.getObject("IDUSUARIO").toString());
                 consulta.setTipoUsuario(rs.getObject("TIPOUSUARIO").toString());
                 consulta.setNombreUsuario(rs.getObject("NOMBRESUSUARIO").toString());
                 consulta.setApellidoUsuario(rs.getObject("APELLIDOSUSUARIO").toString());

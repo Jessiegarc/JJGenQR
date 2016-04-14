@@ -4,6 +4,7 @@ package Modelos;
 import java.awt.Image;
 
 public class ModeloImprimirUsuario {
+    private String IDUsuario;
     private String tipoUsuario;
     private String nombreUsuario;
     private String apellidoUsuario;
@@ -11,6 +12,14 @@ public class ModeloImprimirUsuario {
     private String cedulaUsuario;
     private String correoUsuario;
     private Boolean estadoUsuario;
+
+    public String getIDUsuario() {
+        return IDUsuario;
+    }
+
+    public void setIDUsuario(String IDUsuario) {
+        this.IDUsuario = IDUsuario;
+    }
 
     public String getTipoUsuario() {
         return tipoUsuario;

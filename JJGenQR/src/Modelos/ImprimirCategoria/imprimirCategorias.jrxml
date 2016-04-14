@@ -8,16 +8,18 @@
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="Arial" fontSize="12"/>
 	<parameter name="imagen" class="java.lang.String"/>
+	<parameter name="contador" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
+	<field name="IDCategoria" class="java.lang.String"/>
 	<field name="nombreCategoria" class="java.lang.String"/>
 	<field name="descripcionCategoria" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="70" splitType="Stretch">
+		<band height="72" splitType="Stretch">
 			<image>
 				<reportElement x="405" y="0" width="108" height="68" uuid="10ca68e5-b019-4568-a6d8-ac98fa3cd892"/>
 				<imageExpression><![CDATA[$P{imagen}]]></imageExpression>
@@ -31,9 +33,6 @@
 				<reportElement style="SubTitle" x="54" y="46" width="253" height="22" uuid="f2b41c3e-1494-47a1-a74a-34847cf8f728"/>
 				<text><![CDATA[Museo de Arte y Conservación]]></text>
 			</staticText>
-			<line>
-				<reportElement x="1" y="70" width="552" height="1" uuid="a3650ea9-e89c-4762-89b6-757d157a2e80"/>
-			</line>
 		</band>
 	</title>
 	<pageHeader>
@@ -48,20 +47,25 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement style="Column header" x="0" y="19" width="111" height="15" uuid="66b90b72-63cd-4b4a-8ea4-45faf9daf37d"/>
+				<reportElement style="Column header" x="36" y="19" width="111" height="15" uuid="66b90b72-63cd-4b4a-8ea4-45faf9daf37d"/>
 				<text><![CDATA[NOMBRE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="111" y="19" width="111" height="15" uuid="f8bf0941-8e40-4bb2-b883-f090e299c561"/>
+				<reportElement style="Column header" x="149" y="19" width="111" height="15" uuid="f8bf0941-8e40-4bb2-b883-f090e299c561"/>
 				<text><![CDATA[DESCRIPCION]]></text>
 			</staticText>
-			<line>
-				<reportElement x="553" y="1" width="1" height="35" uuid="69009cad-8ca7-450d-9066-a2dd32f6f5ea"/>
-			</line>
+			<staticText>
+				<reportElement style="Column header" x="0" y="19" width="36" height="15" uuid="df902b4e-317b-4683-ae17-79fb768cfd3a"/>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="Detail" x="416" y="4" width="139" height="15" uuid="3761f90b-3c67-4ece-8bc9-8c13beb370c6"/>
+				<textFieldExpression><![CDATA["N° Categorias: " + $P{contador}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="149" splitType="Stretch">
+		<band height="152" splitType="Stretch">
 			<line>
 				<reportElement positionType="FixRelativeToBottom" x="0" y="149" width="555" height="1" uuid="eab6316c-7bac-4823-bbe6-d29e41bfda99"/>
 				<graphicElement>
@@ -69,19 +73,20 @@
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement style="Detail" x="0" y="0" width="111" height="15" uuid="c48dd043-d689-442d-a20b-a881f5007b2a"/>
+				<reportElement style="Detail" x="36" y="0" width="111" height="15" uuid="c48dd043-d689-442d-a20b-a881f5007b2a"/>
 				<textFieldExpression><![CDATA[$F{nombreCategoria}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="111" y="0" width="442" height="150" uuid="15902b31-045e-40ba-a0cf-19475d53e90b"/>
+				<reportElement style="Detail" x="149" y="-1" width="405" height="150" uuid="15902b31-045e-40ba-a0cf-19475d53e90b"/>
 				<textElement>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descripcionCategoria}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="1" y="-35" width="1" height="184" uuid="eec8ac4d-1fe2-4242-ac68-c6dc6e37fe46"/>
-			</line>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="36" height="15" uuid="eb412d83-0f9a-4227-b98d-0d42086b82e9"/>
+				<textFieldExpression><![CDATA[$F{IDCategoria}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>

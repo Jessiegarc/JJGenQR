@@ -30,11 +30,12 @@ public class InformacionImprimirCategorias {
             if(con == null) con = mysql.getConnect();
             st = con.createStatement();
             ResultSet rs = null;
-            rs = st.executeQuery("SELECT NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias");
+            rs = st.executeQuery("SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias");
             while (rs.next())
             {
                 consulta = new ModeloImprimirCategoria();
                 //agregamos la informacion a el objeto consulta
+                consulta.setIDCategoria(rs.getObject("IDCATEGORIA").toString());
                 consulta.setNombreCategoria(rs.getObject("NOMBRECATEGORIA").toString());
                 consulta.setDescripcionCategoria(rs.getObject("DESCRIPCIONCATEGORIA").toString());
                 info.add(consulta);
