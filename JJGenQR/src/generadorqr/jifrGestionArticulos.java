@@ -9,6 +9,8 @@ import Modelos.ItemSeleccionado;
 import Modelos.UsuarioIngresado;
 import Modelos.ValoresConstantes;
 import com.mysql.jdbc.StringUtils;
+import db.Categorias;
+import db.ConexionBase;
 import db.mysql;
 import java.awt.Color;
 import java.sql.Connection;
@@ -18,7 +20,9 @@ import java.awt.Image;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -38,6 +42,9 @@ ItemSeleccionado isA=new ItemSeleccionado();
 String idA = "";
 Integer buscar = 0;
 jifrNuevoQr internalNuevoQr;
+int idCategoria = 0;
+Vector<Categorias> categorias;
+DefaultComboBoxModel mdlC;
 
 
     public jifrGestionArticulos() {
@@ -60,6 +67,7 @@ jifrNuevoQr internalNuevoQr;
         sumarTotalA();
         lblEtiquetaPreviewImagenes.setVisible(false);
         lblEtiquetaPreviewQr.setVisible(false);
+        jcbBuscarQrCategoría.setVisible(false);
         if(UsuarioIngresado.parametroR.contains("Consultor/a")) {
             btnNuevosArticulos.setVisible(false);
             lblNuevoArticulo.setVisible(false);
@@ -69,6 +77,11 @@ jifrNuevoQr internalNuevoQr;
             lblEliminarArticulo.setVisible(false);
             lblBuscarArticulo.setVisible(false);
         }
+        
+        String SQLC="SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias";
+        mdlC= new DefaultComboBoxModel(ConexionBase.leerDatosVector1(SQLC));
+        categorias = ConexionBase.leerDatosVector1(SQLC);
+        this.jcbBuscarQrCategoría.setModel(mdlC);
     }
     
     void contarTotalE(){
@@ -102,6 +115,35 @@ jifrNuevoQr internalNuevoQr;
             String titulos[] = {"ID","CATEGORIA","NOMBRE","CANTIDAD","DESCRIPCION","IMAGEN UNO","IMAGEN DOS",
                 "IMAGEN TRES","SONIDO","VIDEO","IMAGEN QR"};
             String SQLTA ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO,a.CANTIDADARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) ORDER BY a.IDARTICULO ASC"; 
+            DefaultTableModel model = new DefaultTableModel(null, titulos);
+            Statement sent = conn.createStatement();
+            ResultSet rs = sent.executeQuery(SQLTA);
+            String[]fila=new String[11];
+            while(rs.next()){
+                fila[0] = rs.getString("IDARTICULO");
+                fila[1] = rs.getString("NOMBRECATEGORIA");
+                fila[2] = rs.getString("NOMBREARTICULO");
+                fila[3] = rs.getString("CANTIDADARTICULO");
+                fila[4] = rs.getString("DESCRIPCIONARTICULO");
+                fila[5] = rs.getString("IMAGENUNOARTICULO");
+                fila[6] = rs.getString("IMAGENDOSARTICULO");
+                fila[7] = rs.getString("IMAGENTRESARTICULO");
+                fila[8] = rs.getString("SONIDOARTICULO");
+                fila[9] = rs.getString("VIDEOARTICULO");
+                fila[10] = rs.getString("IMAGENQRARTICULO");
+                model.addRow(fila);
+            }
+            return model;
+        }catch(Exception e){
+            return null;
+        }
+    }
+    
+    public static DefaultTableModel LlenarTablaArticulosporCategoría(){
+        try{
+            String titulos[] = {"ID","CATEGORIA","NOMBRE","CANTIDAD","DESCRIPCION","IMAGEN UNO","IMAGEN DOS",
+                "IMAGEN TRES","SONIDO","VIDEO","IMAGEN QR"};
+            String SQLTA ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO,a.CANTIDADARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) WHERE c.NOMBRECATEGORIA= '"+ItemSeleccionado.idCategoria+"' ORDER BY a.IDARTICULO ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQLTA);
@@ -298,6 +340,7 @@ jifrNuevoQr internalNuevoQr;
         lblActualizarA = new javax.swing.JLabel();
         lblEliminarArticulo = new javax.swing.JLabel();
         lblBuscarArticulo = new javax.swing.JLabel();
+        jcbBuscarQrCategoría = new javax.swing.JComboBox<>();
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -453,6 +496,14 @@ jifrNuevoQr internalNuevoQr;
         lblBuscarArticulo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblBuscarArticulo.setText("Buscar");
 
+        jcbBuscarQrCategoría.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcbBuscarQrCategoría.setEnabled(false);
+        jcbBuscarQrCategoría.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jcbBuscarQrCategoríaItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -497,8 +548,10 @@ jifrNuevoQr internalNuevoQr;
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(rbtnBuscarPorNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(rbtnBuscarPorCategoria))
-                                .addGap(32, 32, 32)
-                                .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(31, 31, 31)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                                    .addComponent(jcbBuscarQrCategoría, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -541,11 +594,12 @@ jifrNuevoQr internalNuevoQr;
                             .addComponent(btnNuevosArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(rbtnBuscarPorCategoria)
-                                .addGap(18, 18, 18)
-                                .addComponent(rbtnBuscarPorNombre))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rbtnBuscarPorCategoria)
+                            .addComponent(jcbBuscarQrCategoría, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rbtnBuscarPorNombre)
                             .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -555,7 +609,7 @@ jifrNuevoQr internalNuevoQr;
                             .addComponent(lblTotalArticulos))))
                 .addGap(21, 21, 21)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -628,6 +682,8 @@ jifrNuevoQr internalNuevoQr;
         rbtnBuscarPorNombre.setEnabled(true);
         txtBuscarArticulo.setEnabled(true);
         txtBuscarArticulo.requestFocus();
+        jcbBuscarQrCategoría.setVisible(true);
+        jcbBuscarQrCategoría.setEnabled(true);
     }//GEN-LAST:event_btnBuscarArticulosMouseClicked
 
     private void btnEliminarArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarArticulosMouseClicked
@@ -667,6 +723,16 @@ jifrNuevoQr internalNuevoQr;
         btnNuevosArticulos.setBackground(Color.red);
     }//GEN-LAST:event_btnNuevosArticulosMouseDragged
 
+    private void jcbBuscarQrCategoríaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbBuscarQrCategoríaItemStateChanged
+    idCategoria = categorias.get(jcbBuscarQrCategoría.getSelectedIndex()).getIdCategoria();
+    if(idCategoria == 0){
+                        JOptionPane.showMessageDialog(this, "Debe de seleccionar una categoría");
+                        return;
+                    }
+    else
+        jtContenidosArticulos.setModel(LlenarTablaArticulosporCategoría());
+    }//GEN-LAST:event_jcbBuscarQrCategoríaItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btgSeleccion;
@@ -679,6 +745,7 @@ jifrNuevoQr internalNuevoQr;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JComboBox<String> jcbBuscarQrCategoría;
     private javax.swing.JLabel jlCategorias;
     public static javax.swing.JTable jtContenidosArticulos;
     private javax.swing.JLabel lblActualizarA;

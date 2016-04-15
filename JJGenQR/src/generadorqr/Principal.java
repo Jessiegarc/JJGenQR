@@ -4,6 +4,7 @@ import Modelos.ItemSeleccionado;
 import Modelos.UsuarioIngresado;
 import Modelos.ValoresConstantes;
 import com.mysql.jdbc.StringUtils;
+import com.toedter.calendar.JDateChooser;
 import db.Anios;
 import db.AniosDispositivo;
 import db.ConexionBase;
@@ -77,7 +78,7 @@ public final class Principal extends javax.swing.JFrame implements Printable{
     String[] imagen = {"", "", "", "", ""}, tempImagen = {"", "", "", "", "", "", ""}, tempNombreArchivo = {"", "", "", "", "", "", ""}, tempRutaActual = {"", "", "", "", "", "", ""};
     private Timer t;
     private ActionListener al;
-    Integer a=0,m=0,d=0,idAnio = 0,idAnioDis = 0,a1=0,m1=0,d1=0,imprimirOpcion=0;
+    Integer a=0,m=0,d=0,idAnio = 0,idAnioDis = 0,a1=0,m1=0,d1=0,imprimirOpcion=0,idCatQr=0;
     DefaultComboBoxModel mdlAGE,mdlAGEDis;
     Vector<Anios> anios;
     Vector<AniosDispositivo> aniosd;
@@ -5046,13 +5047,17 @@ try{
     private void jrbFiltroVisitanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbFiltroVisitanteActionPerformed
         jrbFiltroDispositivo.setSelected(false);
         jtHistorialVisita.setModel(LlenarTablaHistorialVisita());  
-        txtTotalVisitas.setText(contarTotalVisitas());      
+        txtTotalVisitas.setText(contarTotalVisitas());     
+        jdtHistDesde.setCalendar(null);
+        jdtHistHasta.setCalendar(null);
     }//GEN-LAST:event_jrbFiltroVisitanteActionPerformed
 
     private void jrbFiltroDispositivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbFiltroDispositivoActionPerformed
         jrbFiltroVisitante.setSelected(false);
         jtHistorialVisita.setModel(LlenarTablaHistorialVisitaconDispositivo());
         txtTotalVisitas.setText(contarTotalVisitasDispositivos());
+        jdtHistDesde.setCalendar(null);
+        jdtHistHasta.setCalendar(null);
     }//GEN-LAST:event_jrbFiltroDispositivoActionPerformed
 
     private void btnVerEstadisticaAnualDispositivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVerEstadisticaAnualDispositivosMouseClicked
@@ -5068,6 +5073,8 @@ try{
         jrbFiltroVisitante.setSelected(false);
         jtHistorialVisita.setModel(LlenarTablaHistorialUnido());  
         txtTotalVisitas.setText(String.valueOf((Integer.parseInt(contarTotalVisitas())+(Integer.parseInt(contarTotalVisitasDispositivos())))));
+        jdtHistDesde.setCalendar(null);
+        jdtHistHasta.setCalendar(null);
     }//GEN-LAST:event_jrbFiltroTodoActionPerformed
 
     /**
