@@ -32,6 +32,7 @@ public class InformacionImprimirQR {
             accion = ItemSeleccionado.accionBoton;
             if (accion.contains("ImprimirTotal")) rs = st.executeQuery("SELECT NOMBREARTICULO, IMAGENQRARTICULO FROM articulos");
             else if(accion.contains("ImprimirParcial")) rs = st.executeQuery("SELECT NOMBREARTICULO, IMAGENQRARTICULO FROM articulos WHERE IDARTICULO = " + idA);
+            else if(accion.contains("ImprimirXCategoria")) rs = st.executeQuery("SELECT a.NOMBREARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) WHERE c.IDCATEGORIA= '"+ItemSeleccionado.idCategoria+"' ORDER BY a.IDARTICULO ASC");
             while (rs.next())
             {
                 try {

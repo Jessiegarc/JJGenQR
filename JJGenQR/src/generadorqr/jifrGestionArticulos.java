@@ -143,7 +143,7 @@ DefaultComboBoxModel mdlC;
         try{
             String titulos[] = {"ID","CATEGORIA","NOMBRE","CANTIDAD","DESCRIPCION","IMAGEN UNO","IMAGEN DOS",
                 "IMAGEN TRES","SONIDO","VIDEO","IMAGEN QR"};
-            String SQLTA ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO,a.CANTIDADARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) WHERE c.NOMBRECATEGORIA= '"+ItemSeleccionado.idCategoria+"' ORDER BY a.IDARTICULO ASC"; 
+            String SQLTA ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO,a.CANTIDADARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) WHERE c.IDCATEGORIA= '"+ItemSeleccionado.idCategoria+"' ORDER BY a.IDARTICULO ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQLTA);
@@ -642,21 +642,33 @@ DefaultComboBoxModel mdlC;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnImprimirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirMouseClicked
-        Object [] opciones={"TODOS LOS QR", "QR UNICO", "CANCELAR"};
-        int eleccion = JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
-            JOptionPane.YES_NO_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
-        if(eleccion==JOptionPane.YES_OPTION){
-            ItemSeleccionado.accionBoton = "ImprimirTotal";
-            ImprimirQRs iqr = new ImprimirQRs();
-            iqr.setVisible(true);
-        } else if(eleccion == JOptionPane.NO_OPTION) {
-            if(!idA.isEmpty()){
-                ItemSeleccionado.accionBoton = "ImprimirParcial";
-                isA.setIdArticulo(idA);
+        if(jcbBuscarQrCategoría.getSelectedIndex() != 0){
+            Object [] opciones={"ACEPTAR", "CANCELAR"};
+            int eleccion = JOptionPane.showOptionDialog(this, "¿Esta seguro de imprimir los QR por categoria", "Imprimir",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
+            if(eleccion==JOptionPane.YES_OPTION){
+                ItemSeleccionado.accionBoton = "ImprimirXCategoria";
                 ImprimirQRs iqr = new ImprimirQRs();
                 iqr.setVisible(true);
-            }else JOptionPane.showMessageDialog(this, "Busque y Seleccione un registro para imprimir");
+            }
+        } else {
+            Object [] opciones={"TODOS LOS QR", "QR UNICO", "CANCELAR"};
+            int eleccion = JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
+            if(eleccion==JOptionPane.YES_OPTION){
+                ItemSeleccionado.accionBoton = "ImprimirTotal";
+                ImprimirQRs iqr = new ImprimirQRs();
+                iqr.setVisible(true);
+            } else if(eleccion == JOptionPane.NO_OPTION) {
+                if(!idA.isEmpty()){
+                    ItemSeleccionado.accionBoton = "ImprimirParcial";
+                    isA.setIdArticulo(idA);
+                    ImprimirQRs iqr = new ImprimirQRs();
+                    iqr.setVisible(true);
+                }else JOptionPane.showMessageDialog(this, "Busque y Seleccione un registro para imprimir");
+            }
         }
         LimpiarTablaEImagenes();
     }//GEN-LAST:event_btnImprimirMouseClicked
@@ -670,6 +682,7 @@ DefaultComboBoxModel mdlC;
 
     private void rbtnBuscarPorNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorNombreActionPerformed
         txtBuscarArticulo.setText("");
+        jcbBuscarQrCategoría.setSelectedIndex(0);
     }//GEN-LAST:event_rbtnBuscarPorNombreActionPerformed
 
     private void rbtnBuscarPorCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorCategoriaActionPerformed
@@ -725,10 +738,11 @@ DefaultComboBoxModel mdlC;
 
     private void jcbBuscarQrCategoríaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbBuscarQrCategoríaItemStateChanged
     idCategoria = categorias.get(jcbBuscarQrCategoría.getSelectedIndex()).getIdCategoria();
+    ItemSeleccionado.idCategoria = String.valueOf(idCategoria);
     if(idCategoria == 0){
-                        JOptionPane.showMessageDialog(this, "Debe de seleccionar una categoría");
-                        return;
-                    }
+        JOptionPane.showMessageDialog(this, "Debe de seleccionar una categoría");
+        return;
+    }
     else
         jtContenidosArticulos.setModel(LlenarTablaArticulosporCategoría());
     }//GEN-LAST:event_jcbBuscarQrCategoríaItemStateChanged
