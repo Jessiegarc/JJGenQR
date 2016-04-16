@@ -68,7 +68,7 @@ public class jifrContactanos extends javax.swing.JInternalFrame {
         jLabel8.setForeground(new java.awt.Color(51, 51, 51));
         jLabel8.setText("Josselyn Karina Carrillo Betancourt");
 
-        jPanel2.setBackground(new java.awt.Color(255, 204, 255));
+        jPanel2.setBackground(new java.awt.Color(204, 204, 255));
 
         jLabel25.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel25.setText("Blog :");
@@ -144,7 +144,7 @@ public class jifrContactanos extends javax.swing.JInternalFrame {
                 .addGap(52, 52, 52))
         );
 
-        jPanel3.setBackground(new java.awt.Color(255, 204, 255));
+        jPanel3.setBackground(new java.awt.Color(204, 204, 255));
 
         jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel15.setText("Blog:");

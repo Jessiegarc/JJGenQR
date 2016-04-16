@@ -46,7 +46,7 @@ public class jifrPoliticasdePrivacidad extends javax.swing.JInternalFrame {
         txtPoliticasdePrivacidad.setColumns(20);
         txtPoliticasdePrivacidad.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtPoliticasdePrivacidad.setRows(5);
-        txtPoliticasdePrivacidad.setText("SEGURIDAD Y PRIVACIDAD\nLa información que se envíe a la Base de datos de JJQR  a través de formularios para completar datos en la \naplicación se regirá de conformidad con el siguiente texto. En ese sentido, como usuario de esta aplicacion, \nle  informamos  sobre  el uso que le damos a los datos que registre en el mismo, a fin que pueda decidir si \nquiere ingresar sus datos o no.\nLos datos recogidos a través de esta aplicación serán objeto de tratamiento automatizado e incorporados a\nlas correspondientes bases de datos o ficheros de los que el Museo es titular y responsable.\nNombre,  dirección,  teléfono,  correo  electrónico,  entre  otros,  son  datos que nos permiten contactar a los\nusuarios  para resolver dudas, responder  a comentarios, almacenar  información,  que puedan interesar al\nadministrador.\nAl  facilitar sus  datos en la aplicación, nos está comunicando que Usted consciente, libre y voluntariamente\nnos  está  suministrando dicha  información  y  que además se encuentra de acuerdo con que dichos datos\npuedan ser trasmitidos y almacenados en la aplicación.\nEl Museo se compromete no divulgar sus datos. Únicamente podrá utilizarlos para los fines aquí descritos.\n\nUSTED RECONOCE Y ACEPTA QUE:\n\n•  Ha leído y acepta los términos y condiciones de uso descritos anteriormente.\n•  El uso  de  la  aplicación  JJQR  y  acceso a los contenidos en la misma corren por la cuenta y riesgo del\nadministrador o usuario que esté encargado de su manipulación.\n• En ningún caso las desarrolladoras de JJQR serán responsables de daño alguno derivado del uso de la\naplicación o de  la información  entregada hacia el público que acceda al Museo de la Escuela Isidro Ayora.\n");
+        txtPoliticasdePrivacidad.setText("SEGURIDAD Y PRIVACIDAD\n\nLa información que se envíe a la Base de datos de JJGenQR  a través de formularios para completar datos\nen  la  aplicación  se  regirá  de  conformidad  con  el siguiente texto. En ese sentido, como usuario de esta \naplicación, le informamos sobre el uso que le damos a los datos que registre en el mismo, a fin que pueda\ndecidir si quiere ingresar sus datos o no.\n\nLos datos recogidos a través de esta aplicación serán objeto de tratamiento automatizado e incorporados\na  las correspondientes  bases de datos o ficheros de los que el Museo es titular y responsable, Nombre,\ndirección,  teléfono,  correo  electrónico,  entre otros, son datos que nos permiten contactar a los usuarios\npara resolver dudas, responder  a comentarios con el fin de almacenar  información que puedan interesar\nal administrador; asi como también los datos de los artículos conservados en el Museo de la Escuela con\ninformación, imágenes, video y sonido.\n\nAl  facilitar sus  datos en la aplicación, nos está comunicando que Usted consciente, libre y voluntariamente\nnos  está  suministrando dicha  información  y  que además se encuentra de acuerdo con que dichos datos\npuedan ser trasmitidos y almacenados en la aplicación.\nEl Museo se compromete no divulgar sus datos.\nÚnicamente podrá utilizarlos para los fines aquí descritos.\n\nUSTED RECONOCE Y ACEPTA QUE:\n\n•  Ha leído y acepta los términos y condiciones de uso descritos anteriormente.\n•  El uso  de  la  aplicación  JJGenQR  y  acceso a los contenidos en la misma corren por la cuenta y riesgo\n   del administrador o usuario que esté encargado de su manipulación.\n• En ningún caso las desarrolladoras de JJGenQR serán responsables de daño alguno derivado del uso \n  de la aplicación o de  la información  entregada hacia el público que acceda al Museo de la Escuela \n   Isidro Ayora.\n");
         txtPoliticasdePrivacidad.setBorder(null);
         txtPoliticasdePrivacidad.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(txtPoliticasdePrivacidad);
@@ -56,7 +56,7 @@ public class jifrPoliticasdePrivacidad extends javax.swing.JInternalFrame {
 
         jlRayas.setText("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 
-        btnAceptarTC.setBackground(new java.awt.Color(51, 51, 51));
+        btnAceptarTC.setBackground(new java.awt.Color(0, 0, 0));
         btnAceptarTC.setForeground(new java.awt.Color(255, 255, 255));
         btnAceptarTC.setText("Aceptar");
         btnAceptarTC.addActionListener(new java.awt.event.ActionListener() {
@@ -76,7 +76,7 @@ public class jifrPoliticasdePrivacidad extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jlRayas)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -93,10 +93,10 @@ public class jifrPoliticasdePrivacidad extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jlRayas)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAceptarTC, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

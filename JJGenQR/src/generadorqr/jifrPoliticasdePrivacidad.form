@@ -61,7 +61,7 @@
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jlRayas" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jScrollPane1" alignment="0" min="-2" pref="609" max="-2" attributes="0"/>
@@ -84,10 +84,10 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jlRayas" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" min="-2" pref="374" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="362" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="btnAceptarTC" min="-2" pref="23" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace pref="18" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -113,7 +113,7 @@
                   <Font name="Arial" size="12" style="0"/>
                 </Property>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="SEGURIDAD Y PRIVACIDAD&#xa;La informaci&#xf3;n que se env&#xed;e a la Base de datos de JJQR  a trav&#xe9;s de formularios para completar datos en la &#xa;aplicaci&#xf3;n se regir&#xe1; de conformidad con el siguiente texto. En ese sentido, como usuario de esta aplicacion, &#xa;le  informamos  sobre  el uso que le damos a los datos que registre en el mismo, a fin que pueda decidir si &#xa;quiere ingresar sus datos o no.&#xa;Los datos recogidos a trav&#xe9;s de esta aplicaci&#xf3;n ser&#xe1;n objeto de tratamiento automatizado e incorporados a&#xa;las correspondientes bases de datos o ficheros de los que el Museo es titular y responsable.&#xa;Nombre,  direcci&#xf3;n,  tel&#xe9;fono,  correo  electr&#xf3;nico,  entre  otros,  son  datos que nos permiten contactar a los&#xa;usuarios  para resolver dudas, responder  a comentarios, almacenar  informaci&#xf3;n,  que puedan interesar al&#xa;administrador.&#xa;Al  facilitar sus  datos en la aplicaci&#xf3;n, nos est&#xe1; comunicando que Usted consciente, libre y voluntariamente&#xa;nos  est&#xe1;  suministrando dicha  informaci&#xf3;n  y  que adem&#xe1;s se encuentra de acuerdo con que dichos datos&#xa;puedan ser trasmitidos y almacenados en la aplicaci&#xf3;n.&#xa;El Museo se compromete no divulgar sus datos. &#xda;nicamente podr&#xe1; utilizarlos para los fines aqu&#xed; descritos.&#xa;&#xa;USTED RECONOCE Y ACEPTA QUE:&#xa;&#xa;&#x2022;  Ha le&#xed;do y acepta los t&#xe9;rminos y condiciones de uso descritos anteriormente.&#xa;&#x2022;  El uso  de  la  aplicaci&#xf3;n  JJQR  y  acceso a los contenidos en la misma corren por la cuenta y riesgo del&#xa;administrador o usuario que est&#xe9; encargado de su manipulaci&#xf3;n.&#xa;&#x2022; En ning&#xfa;n caso las desarrolladoras de JJQR ser&#xe1;n responsables de da&#xf1;o alguno derivado del uso de la&#xa;aplicaci&#xf3;n o de  la informaci&#xf3;n  entregada hacia el p&#xfa;blico que acceda al Museo de la Escuela Isidro Ayora.&#xa;"/>
+                <Property name="text" type="java.lang.String" value="SEGURIDAD Y PRIVACIDAD&#xa;&#xa;La informaci&#xf3;n que se env&#xed;e a la Base de datos de JJGenQR  a trav&#xe9;s de formularios para completar datos&#xa;en  la  aplicaci&#xf3;n  se  regir&#xe1;  de  conformidad  con  el siguiente texto. En ese sentido, como usuario de esta &#xa;aplicaci&#xf3;n, le informamos sobre el uso que le damos a los datos que registre en el mismo, a fin que pueda&#xa;decidir si quiere ingresar sus datos o no.&#xa;&#xa;Los datos recogidos a trav&#xe9;s de esta aplicaci&#xf3;n ser&#xe1;n objeto de tratamiento automatizado e incorporados&#xa;a  las correspondientes  bases de datos o ficheros de los que el Museo es titular y responsable, Nombre,&#xa;direcci&#xf3;n,  tel&#xe9;fono,  correo  electr&#xf3;nico,  entre otros, son datos que nos permiten contactar a los usuarios&#xa;para resolver dudas, responder  a comentarios con el fin de almacenar  informaci&#xf3;n que puedan interesar&#xa;al administrador; asi como tambi&#xe9;n los datos de los art&#xed;culos conservados en el Museo de la Escuela con&#xa;informaci&#xf3;n, im&#xe1;genes, video y sonido.&#xa;&#xa;Al  facilitar sus  datos en la aplicaci&#xf3;n, nos est&#xe1; comunicando que Usted consciente, libre y voluntariamente&#xa;nos  est&#xe1;  suministrando dicha  informaci&#xf3;n  y  que adem&#xe1;s se encuentra de acuerdo con que dichos datos&#xa;puedan ser trasmitidos y almacenados en la aplicaci&#xf3;n.&#xa;El Museo se compromete no divulgar sus datos.&#xa;&#xda;nicamente podr&#xe1; utilizarlos para los fines aqu&#xed; descritos.&#xa;&#xa;USTED RECONOCE Y ACEPTA QUE:&#xa;&#xa;&#x2022;  Ha le&#xed;do y acepta los t&#xe9;rminos y condiciones de uso descritos anteriormente.&#xa;&#x2022;  El uso  de  la  aplicaci&#xf3;n  JJGenQR  y  acceso a los contenidos en la misma corren por la cuenta y riesgo&#xa;   del administrador o usuario que est&#xe9; encargado de su manipulaci&#xf3;n.&#xa;&#x2022; En ning&#xfa;n caso las desarrolladoras de JJGenQR ser&#xe1;n responsables de da&#xf1;o alguno derivado del uso &#xa;  de la aplicaci&#xf3;n o de  la informaci&#xf3;n  entregada hacia el p&#xfa;blico que acceda al Museo de la Escuela &#xa;   Isidro Ayora.&#xa;"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -140,7 +140,7 @@
         <Component class="javax.swing.JButton" name="btnAceptarTC">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="33" green="33" red="33" type="rgb"/>
+              <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>

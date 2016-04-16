@@ -41,11 +41,11 @@ public class jifrTerminosyCondiciones extends javax.swing.JInternalFrame {
 
         jScrollPane1.setBorder(null);
 
-        txtTerminosyCondiciones.setColumns(20);
         txtTerminosyCondiciones.setEditable(false);
+        txtTerminosyCondiciones.setColumns(20);
         txtTerminosyCondiciones.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtTerminosyCondiciones.setRows(5);
-        txtTerminosyCondiciones.setText("Lea detenidamente estos Términos y Condiciones de Uso (en adelante \"Términos y Condiciones\")\nantes de utilizar esta aplicación Generadora de Qr JJQR.\n\nAl acceder y utilizar la aplicación usted expresamente reconoce  y acepta los siguientes Términos y Condiciones.\nSi no acepta estos Términos  y Condiciones, por favor no utilice la aplicación JJQRni descargue ni utilice material\no información alguna.\n\nLa información y materiales que constan en este sitio web son de propiedad de la Escuela Isidro Ayora, o cuenta\ncon los derechos de uso,  por lo que salvo  se indique  lo contrario  en estos Términos y Condiciones no se podrá \nmodificar, copiar, distribuir, transmitir, mostrar, ejecutar, reproducir, publicar, conceder licencias, crear trabajos\nderivados,transferir o vender información,software,productos o servicios obtenidos en los materiales existentes\nen la aplicación JJQR.\n\n\nALCANCE DE LOS TÉRMINOS Y CONDICIONES\n\nEstos  Términos  y  Condiciones  se  aplican a todo el ambiente de la aplicacion JJQR,  ya sea que se trate de un \ntrabajo patrocinado,  administrado  por  intermedio  de  un  tercero  o  alojado  por  un  tercero, propiedad de la \nEscuela Isidro Ayora.\n\nAsimismo,  se  aplican a  los recursos  y las herramientas que se proporcionan a través de la Aplicación JJQR del \nMuseo de la Escuela Isidro Ayora, como por ejemplo herramientas de generación de códigos,zonas de descarga,\nzonas de búsqueda, zonas de imágenes e información sobre la galería de piezas del Museo.\n\nCambios y actualizaciones:  La Escuela Isidro Ayora se reserva el derecho de modificar o suspender, temporal o \npermanentemente, en  cualquier  momento  y  sin previo aviso, la aplicación o materiales existentes en la misma \n(todo o parte de ellos) así  como  la información descrita en ella. Sin que ello genere derecho a reclamo o alguna\nindemnización favor de la Escuela Isidro Ayora.\n\nDel mismo  modo, La Escuela Isidro Ayora se reserva el derecho de modificar estos Términos y Condiciones, así\ncomo:\n\nEl diseño,  la  presentación  o configuración,  los requisitos de registro o uso en la aplicación JJQR, en cualquier \nmomento  y  sin  previo  aviso  ni  comunicación  alguna. Sin que ello genere derecho a reclamo o indemnización\nalguna.\n\nExactitud,  precisión  y  actualidad  de  la  información  de esta aplicación: JJQR aclara  que la información aquí\nexpuesta podría no ser exacta, completa ni actualizada y que se entrega sólo como referencia.\nTodo  el  material contenido en este sitio es proporcional a  la información  general y no debe utilizarse como la\núnica  base  para tomar decisiones. Confiar  en  este material  será  bajo responsabilidad y  riesgo  de quien la \nutilice. Nos reservamos el derecho de modificar el contenido en cualquier momento. \nConvenimos que es su responsabilidad vigilar los cambios y actualizaciones.\n\nPropiedad Intelectual: La Escuela Isidro Ayora es el titular de todos los derechos legítimos sobre la aplicación \nJJQR y los materiales que en ellos se encuentren. Asimismo, la Escuela Isidro Ayora es licenciatario de todos\nlos  nombres  las  imágenes  de  las  piezas de arte, logotipos, nombres de piezas, artesanía, culturas etc.  y \notras características distintivas de las contenidas en el museo.\n\nSe prohíbe cualquier copia, reproducción,  modificación, publicación, carga,  envío, transmisión o distribución\nde modo alguno, salvo indicación expresada en el contrario. \n");
+        txtTerminosyCondiciones.setText("Lea detenidamente estos Términos y Condiciones de Uso antes de utilizar esta aplicación Generadora de Qr JJQR.\n\nAl acceder y utilizar la aplicación usted expresamente reconoce  y acepta los siguientes Términos y Condiciones.\nSi no acepta estos Términos  y Condiciones, por favor no utilice la aplicación JJGenQR ni descargue ni utilice\nmaterial o información alguna.\n\nLa información y materiales que constan en esta aplicación son de propiedad de la Escuela Isidro Ayora, o cuenta\ncon los derechos de uso,  por lo que salvo  se indique  lo contrario  en estos Términos y Condiciones no se podrá \nmodificar, copiar, distribuir, transmitir, mostrar, ejecutar, reproducir, publicar, conceder licencias, crear trabajos\nderivados,transferir o vender información,software,productos o servicios obtenidos en los materiales existentes\nen la aplicación JJGenQR.\n\n\nALCANCE DE LOS TÉRMINOS Y CONDICIONES\n\nEstos  Términos  y  Condiciones  se  aplican a todo el ambiente de la aplicacion JJGenQR,  ya sea que se trate de\nun  trabajo  patrocinado,  administrado  por  intermedio  de  un  tercero  o  alojado  por  un  tercero, propiedad de la \nEscuela Isidro Ayora.\n\nAsimismo,  se  aplican a  los recursos  y las herramientas que se proporcionan a través de la Aplicación JJGenQR\ndel Museo de la Escuela Isidro Ayora, como herramientas de generación de códigos,zonas de descarga, zonas de\nbúsqueda, zonas de imágenes e información sobre la galería de artículos del Museo.\n\nCambios y actualizaciones:  La Escuela Isidro Ayora se reserva el derecho de modificar o suspender, temporal o \npermanentemente, en  cualquier  momento  y  sin previo aviso, la aplicación o materiales existentes en la misma \n(todo o parte de ellos) así  como  la información descrita en ella. Sin que ello genere derecho a reclamo o alguna\nindemnización favor de la Escuela Isidro Ayora.\n\nDel mismo  modo, La Escuela Isidro Ayora se reserva el derecho de modificar estos Términos y Condiciones, así\ncomo:\n\nEl diseño,  la  presentación  o configuración,  los requisitos de registro o uso en la aplicación JJQR, en cualquier \nmomento  y  sin  previo  aviso  ni  comunicación  alguna. Sin que ello genere derecho a reclamo o indemnización\nalguna.\n\nExactitud,  precisión  y  actualidad  de  la  información  de esta aplicación: JJQR aclara  que la información aquí\nexpuesta podría no ser exacta, completa ni actualizada y que se entrega sólo como referencia.\nTodo  el  material contenido en este sitio es proporcional a  la información  general y no debe utilizarse como la\núnica  base  para tomar decisiones. Confiar  en  este material  será  bajo responsabilidad y  riesgo  de quien la \nutilice. Nos reservamos el derecho de modificar el contenido en cualquier momento. \nConvenimos que es su responsabilidad vigilar los cambios y actualizaciones.\n\nPropiedad Intelectual: La Escuela Isidro Ayora es el titular de todos los derechos legítimos sobre la aplicación \nJJQR y los materiales que en ellos se encuentren. Asimismo, la Escuela Isidro Ayora es licenciatario de todos\nlos  nombres  las  imágenes  de  las  piezas de arte, logotipos, nombres de piezas, artesanía, culturas etc.  y \notras características distintivas de las contenidas en el museo.\n\nSe prohíbe cualquier copia, reproducción,  modificación, publicación, carga,  envío, transmisión o distribución\nde modo alguno, salvo indicación expresada en el contrario. \n");
         txtTerminosyCondiciones.setBorder(null);
         jScrollPane1.setViewportView(txtTerminosyCondiciones);
 
@@ -54,8 +54,8 @@ public class jifrTerminosyCondiciones extends javax.swing.JInternalFrame {
 
         jlRayas.setText("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 
-        btnAceptarTC.setBackground(new java.awt.Color(51, 51, 51));
-        btnAceptarTC.setForeground(new java.awt.Color(255, 255, 0));
+        btnAceptarTC.setBackground(new java.awt.Color(0, 0, 0));
+        btnAceptarTC.setForeground(new java.awt.Color(255, 255, 255));
         btnAceptarTC.setText("Aceptar");
         btnAceptarTC.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -68,6 +68,10 @@ public class jifrTerminosyCondiciones extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(199, 199, 199)
+                .addComponent(jlTerminosyCondiciones)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
@@ -75,13 +79,9 @@ public class jifrTerminosyCondiciones extends javax.swing.JInternalFrame {
                             .addComponent(jlRayas)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(260, 260, 260)
+                        .addGap(288, 288, 288)
                         .addComponent(btnAceptarTC, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(19, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(199, 199, 199)
-                .addComponent(jlTerminosyCondiciones)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,9 +92,9 @@ public class jifrTerminosyCondiciones extends javax.swing.JInternalFrame {
                 .addComponent(jlRayas)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAceptarTC, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

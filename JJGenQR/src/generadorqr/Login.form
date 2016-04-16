@@ -166,6 +166,8 @@
                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                       <Component id="jlMuseo" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="118" max="-2" attributes="0"/>
+                      <Component id="lblIconoEscuela" min="-2" pref="120" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -175,7 +177,10 @@
                   <Component id="jPanel4" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace pref="49" max="32767" attributes="0"/>
-                      <Component id="jlMuseo" min="-2" pref="90" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="lblIconoEscuela" max="32767" attributes="0"/>
+                          <Component id="jlMuseo" pref="90" max="32767" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -215,6 +220,11 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Museo  &quot;ISIDRO AYORA&quot;"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblIconoEscuela">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

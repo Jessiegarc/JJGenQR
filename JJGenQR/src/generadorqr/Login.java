@@ -42,6 +42,9 @@ Validate val=new Validate();
         txtUsuario.requestFocus();
          String Ruta=getClass().getResource("/images/home1.jpg").getPath();
         Mostrar_Visualizador(lblImgLogin, Ruta);
+        String Ruta3=getClass().getResource("/images/iconoescuela.png").getPath();
+        Mostrar_Visualizador(lblIconoEscuela, Ruta3);
+        
   }
     
     
@@ -104,6 +107,7 @@ int cont=0;
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jlMuseo = new javax.swing.JLabel();
+        lblIconoEscuela = new javax.swing.JLabel();
         lblImgLogin = new javax.swing.JLabel();
         jlUsuarios = new javax.swing.JLabel();
         jlContraseña = new javax.swing.JLabel();
@@ -168,6 +172,8 @@ int cont=0;
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
                 .addComponent(jlMuseo)
+                .addGap(118, 118, 118)
+                .addComponent(lblIconoEscuela, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -175,7 +181,9 @@ int cont=0;
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(49, Short.MAX_VALUE)
-                .addComponent(jlMuseo, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lblIconoEscuela, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlMuseo, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
                 .addGap(38, 38, 38))
         );
 
@@ -373,6 +381,7 @@ int cont=0;
     private javax.swing.JLabel jlJJ2016;
     private javax.swing.JLabel jlMuseo;
     private javax.swing.JLabel jlUsuarios;
+    public static javax.swing.JLabel lblIconoEscuela;
     private javax.swing.JLabel lblImgLogin;
     private javax.swing.JLabel lblUserValidacion;
     public static javax.swing.JPasswordField txtPassword;

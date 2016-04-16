@@ -53,6 +53,8 @@ DefaultComboBoxModel mdlC;
         if (LlenarTablaArticulos() != null) jtContenidosArticulos.setModel(LlenarTablaArticulos());
         btgSeleccion.add(rbtnBuscarPorCategoria);
         btgSeleccion.add(rbtnBuscarPorNombre);
+        rbtnBuscarPorCategoria.setVisible(false);
+        rbtnBuscarPorNombre.setVisible(false);
         String rutaArt = getClass().getResource("/images/Mas.png").getPath();
         MostrarVisualizador(btnNuevosArticulos, rutaArt);
         rutaArt = getClass().getResource("/images/actualizar.png").getPath();
@@ -65,6 +67,7 @@ DefaultComboBoxModel mdlC;
         MostrarVisualizador(btnImprimir, rutaArt);
         contarTotalE();
         sumarTotalA();
+        //txtBuscarArticulo.setVisible(false);
         lblEtiquetaPreviewImagenes.setVisible(false);
         lblEtiquetaPreviewQr.setVisible(false);
         jcbBuscarQrCategoría.setVisible(false);
@@ -341,11 +344,13 @@ DefaultComboBoxModel mdlC;
         lblEliminarArticulo = new javax.swing.JLabel();
         lblBuscarArticulo = new javax.swing.JLabel();
         jcbBuscarQrCategoría = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
         jlCategorias.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        jlCategorias.setText("Galeria de Piezas de Arte ");
+        jlCategorias.setText("Galería de Piezas de Arte ");
 
         jtContenidosArticulos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -420,7 +425,15 @@ DefaultComboBoxModel mdlC;
         });
 
         txtBuscarArticulo.setEnabled(false);
+        txtBuscarArticulo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscarArticuloActionPerformed(evt);
+            }
+        });
         txtBuscarArticulo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscarArticuloKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBuscarArticuloKeyReleased(evt);
             }
@@ -504,12 +517,16 @@ DefaultComboBoxModel mdlC;
             }
         });
 
+        jLabel1.setText("Categoría");
+
+        jLabel2.setText("Nombre");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(0, 0, 0)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jlCategorias))
@@ -546,8 +563,13 @@ DefaultComboBoxModel mdlC;
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(rbtnBuscarPorCategoria)
                                     .addComponent(rbtnBuscarPorNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(rbtnBuscarPorCategoria))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel1))
+                                        .addGap(32, 32, 32)))
                                 .addGap(31, 31, 31)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
@@ -571,13 +593,20 @@ DefaultComboBoxModel mdlC;
                         .addComponent(lblVistaPreviaImagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)
                         .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jlCategorias)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jlCategorias))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(rbtnBuscarPorCategoria)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(rbtnBuscarPorNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(5, 5, 5)
@@ -595,12 +624,12 @@ DefaultComboBoxModel mdlC;
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(rbtnBuscarPorCategoria)
-                            .addComponent(jcbBuscarQrCategoría, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                            .addComponent(jcbBuscarQrCategoría, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addGap(20, 20, 20)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(rbtnBuscarPorNombre)
-                            .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtBuscarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
@@ -609,7 +638,7 @@ DefaultComboBoxModel mdlC;
                             .addComponent(lblTotalArticulos))))
                 .addGap(21, 21, 21)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -642,7 +671,7 @@ DefaultComboBoxModel mdlC;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnImprimirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirMouseClicked
-        if(jcbBuscarQrCategoría.getSelectedIndex() != 0){
+        /*if(jcbBuscarQrCategoría.getSelectedIndex() != 0){
             Object [] opciones={"ACEPTAR", "CANCELAR"};
             int eleccion = JOptionPane.showOptionDialog(this, "¿Esta seguro de imprimir los QR por categoria", "Imprimir",
                 JOptionPane.YES_NO_OPTION,
@@ -652,9 +681,11 @@ DefaultComboBoxModel mdlC;
                 ImprimirQRs iqr = new ImprimirQRs();
                 iqr.setVisible(true);
             }
-        } else {
-            Object [] opciones={"TODOS LOS QR", "QR UNICO", "CANCELAR"};
+        }*/
+        
+            Object [] opciones={"TODOS LOS QR", "QR UNICO","POR CATEGORÍA"};
             int eleccion = JOptionPane.showOptionDialog(this, "Escoja el modo de impresión", "Imprimir",
+                //JOptionPane.YES_NO_OK_CANCEL_OPTION,
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, opciones, "Aceptar");
             if(eleccion==JOptionPane.YES_OPTION){
@@ -669,7 +700,16 @@ DefaultComboBoxModel mdlC;
                     iqr.setVisible(true);
                 }else JOptionPane.showMessageDialog(this, "Busque y Seleccione un registro para imprimir");
             }
-        }
+            else {
+                 if(jcbBuscarQrCategoría.getSelectedIndex() != 0){
+                ItemSeleccionado.accionBoton = "ImprimirXCategoria";
+                ImprimirQRs iqr = new ImprimirQRs();
+                iqr.setVisible(true);
+                 }
+                 else JOptionPane.showMessageDialog(this, "eleccione una categoría");
+            }
+            //else this.hide();
+        
         LimpiarTablaEImagenes();
     }//GEN-LAST:event_btnImprimirMouseClicked
 
@@ -682,19 +722,40 @@ DefaultComboBoxModel mdlC;
 
     private void rbtnBuscarPorNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorNombreActionPerformed
         txtBuscarArticulo.setText("");
-        jcbBuscarQrCategoría.setSelectedIndex(0);
+        txtBuscarArticulo.setEnabled(true);
+        txtBuscarArticulo.requestFocus();
+        txtBuscarArticulo.setVisible(true);
+        //jcbBuscarQrCategoría.setSelectedIndex(0);
+        String SQLC="SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias";
+        mdlC= new DefaultComboBoxModel(ConexionBase.leerDatosVector1(SQLC));
+        categorias = ConexionBase.leerDatosVector1(SQLC);
+        this.jcbBuscarQrCategoría.setModel(mdlC);
     }//GEN-LAST:event_rbtnBuscarPorNombreActionPerformed
 
     private void rbtnBuscarPorCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBuscarPorCategoriaActionPerformed
         txtBuscarArticulo.setText("");
+        jcbBuscarQrCategoría.setVisible(true);
+        jcbBuscarQrCategoría.setEnabled(true);
     }//GEN-LAST:event_rbtnBuscarPorCategoriaActionPerformed
 
     private void btnBuscarArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarArticulosMouseClicked
         // TODO add your handling code here:
         rbtnBuscarPorCategoria.setEnabled(true);
         rbtnBuscarPorNombre.setEnabled(true);
+        //txtBuscarArticulo.setEnabled(true);
+        //txtBuscarArticulo.requestFocus();
+        //jcbBuscarQrCategoría.setVisible(true);
+        //jcbBuscarQrCategoría.setEnabled(true);
+        txtBuscarArticulo.setText("");
         txtBuscarArticulo.setEnabled(true);
         txtBuscarArticulo.requestFocus();
+        txtBuscarArticulo.setVisible(true);
+        //jcbBuscarQrCategoría.setSelectedIndex(0);
+        String SQLC="SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias";
+        mdlC= new DefaultComboBoxModel(ConexionBase.leerDatosVector1(SQLC));
+        categorias = ConexionBase.leerDatosVector1(SQLC);
+        this.jcbBuscarQrCategoría.setModel(mdlC);
+        txtBuscarArticulo.setText("");
         jcbBuscarQrCategoría.setVisible(true);
         jcbBuscarQrCategoría.setEnabled(true);
     }//GEN-LAST:event_btnBuscarArticulosMouseClicked
@@ -728,8 +789,13 @@ DefaultComboBoxModel mdlC;
     }//GEN-LAST:event_jtContenidosArticulosMouseClicked
 
     private void txtBuscarArticuloKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarArticuloKeyReleased
-        if(rbtnBuscarPorNombre.isSelected()) BuscarPorNombreArticulo();
-        else BuscarPorCategoriaArticulo();
+        BuscarPorNombreArticulo();
+        String SQLC="SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias";
+        mdlC= new DefaultComboBoxModel(ConexionBase.leerDatosVector1(SQLC));
+        categorias = ConexionBase.leerDatosVector1(SQLC);
+        this.jcbBuscarQrCategoría.setModel(mdlC);
+        /*if(rbtnBuscarPorNombre.isSelected()) BuscarPorNombreArticulo();
+        else BuscarPorCategoriaArticulo();*/
     }//GEN-LAST:event_txtBuscarArticuloKeyReleased
 
     private void btnNuevosArticulosMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevosArticulosMouseDragged
@@ -747,6 +813,21 @@ DefaultComboBoxModel mdlC;
         jtContenidosArticulos.setModel(LlenarTablaArticulosporCategoría());
     }//GEN-LAST:event_jcbBuscarQrCategoríaItemStateChanged
 
+    private void txtBuscarArticuloKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarArticuloKeyPressed
+        //jcbBuscarQrCategoría.setSelectedIndex(0);
+        String SQLC="SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias";
+        mdlC= new DefaultComboBoxModel(ConexionBase.leerDatosVector1(SQLC));
+        categorias = ConexionBase.leerDatosVector1(SQLC);
+        this.jcbBuscarQrCategoría.setModel(mdlC);
+    }//GEN-LAST:event_txtBuscarArticuloKeyPressed
+
+    private void txtBuscarArticuloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarArticuloActionPerformed
+         String SQLC="SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias";
+        mdlC= new DefaultComboBoxModel(ConexionBase.leerDatosVector1(SQLC));
+        categorias = ConexionBase.leerDatosVector1(SQLC);
+        this.jcbBuscarQrCategoría.setModel(mdlC);
+    }//GEN-LAST:event_txtBuscarArticuloActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btgSeleccion;
@@ -755,6 +836,8 @@ DefaultComboBoxModel mdlC;
     public static javax.swing.JLabel btnEliminarArticulos;
     private javax.swing.JLabel btnImprimir;
     public static javax.swing.JLabel btnNuevosArticulos;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel5;

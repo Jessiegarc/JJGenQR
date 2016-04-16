@@ -44,7 +44,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="jScrollPane1" alignment="1" min="-2" pref="782" max="-2" attributes="0"/>
                       <Component id="jlCategorias" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -87,8 +87,15 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="rbtnBuscarPorNombre" min="-2" pref="79" max="-2" attributes="0"/>
                                       <Component id="rbtnBuscarPorCategoria" min="-2" max="-2" attributes="0"/>
+                                      <Component id="rbtnBuscarPorNombre" alignment="1" min="-2" pref="79" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                                   <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -120,15 +127,25 @@
                           <Component id="btnImprimir" min="-2" pref="94" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="58" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                  <Component id="jlCategorias" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                          <Component id="jlCategorias" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="rbtnBuscarPorCategoria" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="rbtnBuscarPorNombre" min="-2" pref="8" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -149,13 +166,13 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="rbtnBuscarPorCategoria" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jcbBuscarQrCategoría" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="rbtnBuscarPorNombre" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtBuscarArticulo" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace pref="18" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -168,7 +185,7 @@
                   </Group>
                   <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="168" max="-2" attributes="0"/>
-                  <EmptySpace pref="40" max="32767" attributes="0"/>
+                  <EmptySpace pref="48" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="btnImprimir" min="-2" pref="66" max="-2" attributes="0"/>
@@ -199,7 +216,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Nirmala UI" size="18" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Galeria de Piezas de Arte "/>
+            <Property name="text" type="java.lang.String" value="Galer&#xed;a de Piezas de Arte "/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -334,6 +351,8 @@
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtBuscarArticuloActionPerformed"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBuscarArticuloKeyPressed"/>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBuscarArticuloKeyReleased"/>
           </Events>
         </Component>
@@ -528,6 +547,16 @@
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Categor&#xed;a"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Nombre"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
