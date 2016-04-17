@@ -204,13 +204,13 @@ public final class Principal extends javax.swing.JFrame implements Printable{
         String SQLAGE="SELECT IDHISTORIALVISITA, YEAR(FECHAHORAVISITA) AS FECHAHORAVISITA FROM historialvisitas GROUP BY YEAR(FECHAHORAVISITA)";
         mdlAGE= new DefaultComboBoxModel(ConexionBase.leerDatosVector2(SQLAGE));
         anios = ConexionBase.leerDatosVector2(SQLAGE);
-        this.jcbAñoGraficoEstadistico.setModel(mdlAGE);
+        jcbAñoGraficoEstadistico.setModel(mdlAGE);
         variable=(jcbAñoGraficoEstadistico.getSelectedItem()).toString();
         
-        String SQLAGEDis="SELECT IDHISTORIALDISPOSITIVOS, YEAR(FECHAVISITADISPOSITIVO) AS FECHAVISITADISPOSITIVO FROM historialdispositivos GROUP BY YEAR(FECHAVISITADISPOSITIVO)";
-        mdlAGEDis= new DefaultComboBoxModel(ConexionBase.leerDatosVector3(SQLAGEDis));
-        aniosd = ConexionBase.leerDatosVector3(SQLAGEDis);
-        this.jcbAñoGraficoEstadisticoComparativo.setModel(mdlAGEDis);
+        //String SQLAGEDis="SELECT IDHISTORIALDISPOSITIVOS, YEAR(FECHAVISITADISPOSITIVO) AS FECHAVISITADISPOSITIVO FROM historialdispositivos GROUP BY YEAR(FECHAVISITADISPOSITIVO)";
+        mdlAGEDis= new DefaultComboBoxModel(ConexionBase.leerDatosVector3(SQLAGE));
+        aniosd = ConexionBase.leerDatosVector3(SQLAGE);
+        jcbAñoGraficoEstadisticoComparativo.setModel(mdlAGEDis);
         variabled=(jcbAñoGraficoEstadisticoComparativo.getSelectedItem()).toString();
         
          /*TableColumnModel columnModelH = jtHistorialVisita.getColumnModel();
@@ -5072,6 +5072,7 @@ try{
                 }
             }*/
         ItemSeleccionado.accionBoton = "EC";
+        ItemSeleccionado.rol = "Vis";
         ImprimirGraficosEstadisticos iGE = new ImprimirGraficosEstadisticos();
         iGE.setVisible(true);
     }//GEN-LAST:event_btnImprimirEstadisticaDispositivosMouseClicked

@@ -45,12 +45,12 @@ public class ImprimirGraficosEstadisticos extends javax.swing.JFrame {
             reporteC = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirGraficosEstadisticos/imprimirGraficosEstadisticos.jasper").getPath()));
             Map parametros = new HashMap();
             parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
-            if(ItemSeleccionado.accionBoton.contains("E")){
+            if(ItemSeleccionado.accionBoton.equals("E")){
                 parametros.put("grafico", ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoE.jpg");
                 parametros.put("titulo", "GRÁFICO ESTADISTICO");
                 if(ItemSeleccionado.rol.contains("Vis")) parametros.put("descripcion", "Gráfico Estadistico relacionado con los Visitantes");
                 else parametros.put("descripcion", "Gráfico Estadistico relacionado con los dispositivos");
-            } else if(ItemSeleccionado.accionBoton.contains("EC")) {
+            } else if(ItemSeleccionado.accionBoton.equals("EC")) {
                 parametros.put("grafico", ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoEC.jpg");
                 parametros.put("titulo", "GRÁFICO ESTADISTICO COMPARATIVO");
                 parametros.put("descripcion", "Gráfico Estadistico Comparativos entre Visitantes y Dispositivos");
@@ -100,6 +100,7 @@ public class ImprimirGraficosEstadisticos extends javax.swing.JFrame {
 
         jpVisualizadorVisDis = new javax.swing.JPanel();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
