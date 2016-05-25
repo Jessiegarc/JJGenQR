@@ -38,9 +38,18 @@ public class ImprimirQRs extends javax.swing.JFrame {
         try 
         { 
             JasperReport reporte;
-            reporte = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirQR/imprimirImagenQR.jasper").getPath()));
+            String template = ImprimirCategorias.class.getProtectionDomain().getCodeSource().getLocation().getPath(), imagen = "";
+            File aux =new File(template);
+            if (aux.isDirectory()) {
+                template = template + "Modelos\\ImprimirQR\\ImprimirImagenQR.jasper";
+                imagen = getClass().getResource("/images/SELLO.png").getPath();
+            } else {
+                template = aux.getParent() + "\\src\\Modelos\\ImprimirQR\\ImprimirImagenQR.jasper";
+                imagen = aux.getParent() + "\\imagenFondo.jpg";
+            }
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(template);
             Map parametros = new HashMap();
-            parametros.put("imagen", getClass().getResource("/images/imagenFondo.jpg").getPath());
+            parametros.put("imagen", imagen);
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, new JRBeanCollectionDataSource(info));
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);

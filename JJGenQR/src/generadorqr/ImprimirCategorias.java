@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -48,16 +49,18 @@ public class ImprimirCategorias extends javax.swing.JFrame {
         try 
         { 
             JasperReport reporteC;
-            String template = ImprimirCategorias.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            String template = ImprimirCategorias.class.getProtectionDomain().getCodeSource().getLocation().getPath(), imagen = "";
             File aux =new File(template);
-            if (aux.isDirectory())
+            if (aux.isDirectory()) {
                 template = template + "Modelos\\ImprimirCategoria\\ImprimirCategorias.jasper";
-            else
+                imagen = getClass().getResource("/images/SELLO.png").getPath();
+            } else {
                 template = aux.getParent() + "\\src\\Modelos\\ImprimirCategoria\\ImprimirCategorias.jasper";
-            File url = new File(template);
-            reporteC = (JasperReport) JRLoader.loadObject(url);
+                imagen = aux.getParent() + "\\SELLO.png";
+            }
+            reporteC = (JasperReport) JRLoader.loadObjectFromFile(template);
             Map parametros = new HashMap();
-            parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
+            parametros.put("imagen", imagen);
             try {
                 if(con == null) con = mysql.getConnect();
                 st = con.createStatement();

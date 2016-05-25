@@ -50,9 +50,18 @@ public class ImprimirVisitantes extends javax.swing.JFrame {
         try 
         { 
             JasperReport reporteC;
-            reporteC = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirVisitantes/imprimirVisitantes.jasper").getPath()));
+            String template = ImprimirCategorias.class.getProtectionDomain().getCodeSource().getLocation().getPath(), imagen = "";
+            File aux =new File(template);
+            if (aux.isDirectory()) {
+                template = template + "Modelos\\ImprimirVisitantes\\ImprimirVisitantes.jasper";
+                imagen = getClass().getResource("/images/SELLO.png").getPath();
+            } else {
+                template = aux.getParent() + "\\src\\Modelos\\ImprimirVisitantes\\ImprimirVisitantes.jasper";
+                imagen = aux.getParent() + "\\SELLO.png";
+            }
+            reporteC = (JasperReport) JRLoader.loadObjectFromFile(template);
             Map parametros = new HashMap();
-            parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
+            parametros.put("imagen", imagen);
             try { 
                 if(con == null) con = mysql.getConnect();
                 st = con.createStatement();

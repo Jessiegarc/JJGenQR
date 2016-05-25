@@ -51,9 +51,18 @@ public class ImprimirUsuarios extends javax.swing.JFrame {
         info=iiU.getInformacion();
         try {
             JasperReport reporteU;
-            reporteU=(JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirUsuario/imprimirUsuarios.jasper").getPath()));
-            Map parametros=new HashMap();
-            parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
+            String template = ImprimirCategorias.class.getProtectionDomain().getCodeSource().getLocation().getPath(), imagen = "";
+            File aux =new File(template);
+            if (aux.isDirectory()) {
+                template = template + "Modelos\\ImprimirUsuario\\ImprimirUsuarios.jasper";
+                imagen = getClass().getResource("/images/SELLO.png").getPath();
+            } else {
+                template = aux.getParent() + "\\src\\Modelos\\ImprimirUsuario\\ImprimirUsuarios.jasper";
+                imagen = aux.getParent() + "\\SELLO.png";
+            }
+            reporteU = (JasperReport) JRLoader.loadObjectFromFile(template);
+            Map parametros = new HashMap();
+            parametros.put("imagen", imagen);
             try {
                 if(con == null) con = mysql.getConnect();
                 st = con.createStatement();

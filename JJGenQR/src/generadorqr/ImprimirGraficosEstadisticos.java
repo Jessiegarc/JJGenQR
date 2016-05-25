@@ -42,9 +42,18 @@ public class ImprimirGraficosEstadisticos extends javax.swing.JFrame {
         try 
         { 
             JasperReport reporteC;
-            reporteC = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirGraficosEstadisticos/imprimirGraficosEstadisticos.jasper").getPath()));
+            String template = ImprimirCategorias.class.getProtectionDomain().getCodeSource().getLocation().getPath(), imagen = "";
+            File aux =new File(template);
+            if (aux.isDirectory()) {
+                template = template + "Modelos\\ImprimirGraficosEstadisticos\\ImprimirGraficosEstadisticos.jasper";
+                imagen = getClass().getResource("/images/SELLO.png").getPath();
+            } else {
+                template = aux.getParent() + "\\src\\Modelos\\ImprimirGraficosEstadisticos\\ImprimirGraficosEstadisticos.jasper";
+                imagen = aux.getParent() + "\\SELLO.png";
+            }
+            reporteC = (JasperReport) JRLoader.loadObjectFromFile(template);
             Map parametros = new HashMap();
-            parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
+            parametros.put("imagen", imagen);
             if(ItemSeleccionado.accionBoton.equals("E")){
                 parametros.put("grafico", ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoE.jpg");
                 parametros.put("titulo", "GRÁFICO ESTADISTICO");
