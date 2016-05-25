@@ -1,9 +1,9 @@
 
 package generadorqr;
 
-import Modelos.InformacionImprimirQR;
 import Modelos.InformacionImprimirUsuario;
 import Modelos.ItemSeleccionado;
+import Modelos.Redimencion;
 import Modelos.ValoresConstantes;
 import db.mysql;
 import java.awt.BorderLayout;
@@ -40,6 +40,8 @@ public class ImprimirUsuarios extends javax.swing.JFrame {
     static Statement st;
     int contador = 0;
     InformacionImprimirUsuario iiU=new InformacionImprimirUsuario();
+    
+    
     
     public ImprimirUsuarios() {
         initComponents();

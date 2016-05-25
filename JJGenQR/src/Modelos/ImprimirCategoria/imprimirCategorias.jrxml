@@ -59,7 +59,7 @@
 				<text><![CDATA[ID]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="Detail" x="416" y="4" width="139" height="15" uuid="3761f90b-3c67-4ece-8bc9-8c13beb370c6"/>
+				<reportElement style="Detail" x="375" y="4" width="180" height="15" uuid="3761f90b-3c67-4ece-8bc9-8c13beb370c6"/>
 				<textFieldExpression><![CDATA["N° Categorias: " + $P{contador}]]></textFieldExpression>
 			</textField>
 		</band>

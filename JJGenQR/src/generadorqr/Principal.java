@@ -1,6 +1,7 @@
 package generadorqr;
 
 import Modelos.ItemSeleccionado;
+import Modelos.Redimencion;
 import Modelos.UsuarioIngresado;
 import Modelos.ValoresConstantes;
 import com.mysql.jdbc.StringUtils;
@@ -41,7 +42,6 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -57,6 +57,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+
 
 
 public final class Principal extends javax.swing.JFrame implements Printable{
@@ -131,48 +132,35 @@ public final class Principal extends javax.swing.JFrame implements Printable{
             }
         } catch (Exception e){}
         
-        String Ruta=getClass().getResource("/images/Mas.png").getPath();
-        Mostrar_Visualizador(btnNuevoUsuario, Ruta);
-        String Ruta1=getClass().getResource("/images/actualizar.png").getPath();
-        Mostrar_Visualizador(btnActualizarUsuario, Ruta1);
-        String Ruta2=getClass().getResource("/images/Eliminar1.png").getPath();
-        Mostrar_Visualizador(btnEliminarUsuario, Ruta2);
-        String Ruta3=getClass().getResource("/images/search.png").getPath();
-        Mostrar_Visualizador(btnBuscarUsuarios, Ruta3);
-        String Ruta4=getClass().getResource("/images/iconoescuela.png").getPath();
-        Mostrar_Visualizador(lblIconoEscuela, Ruta4);
-        String Ruta5=getClass().getResource("/images/iconoescuela.png").getPath();
-        Mostrar_Visualizador(lblIconoEscuela1, Ruta5);
-        String Ruta6=getClass().getResource("/images/iconoescuela.png").getPath();
-        Mostrar_Visualizador(lblIconoEscuela2, Ruta6);
-        String Ruta7=getClass().getResource("/images/iconoescuela.png").getPath();
-        Mostrar_Visualizador(lblIconoEscuela3, Ruta7);
-        String Ruta8=getClass().getResource("/images/iconoescuela.png").getPath();
-        Mostrar_Visualizador(lblIconoEscuela4, Ruta8);
-        
-        //String rutaAA=getClass().getResource("/images/search.png").getPath();
-        //Mostrar_Visualizador(btnBuscarHistorialVisitaDispositivo, rutaAA);
-        String rutaAApp=getClass().getResource("/images/search.png").getPath();
-        Mostrar_Visualizador(btnVerEstadisticaAnualDispositivos, rutaAApp);
-        //String rutaAVN=getClass().getResource("/images/imprimir2.png").getPath();
-        //Mostrar_Visualizador(btnImprimirVisitantesDispositivo, rutaAVN);
-        String rutaAVA=getClass().getResource("/images/imprimir2.png").getPath();
-        Mostrar_Visualizador(btnImprimirEstadisticaDispositivos, rutaAVA);
-        
-        String rutaHistorial=getClass().getResource("/images/search.png").getPath();
-        Mostrar_Visualizador(lblBuscarHistorialVisita, rutaHistorial);
-        String rutaEstadistica=getClass().getResource("/images/search.png").getPath();
-        Mostrar_Visualizador(btnVerEstadisticaAnual, rutaEstadistica);
-        String rutaImprimirUsuarios=getClass().getResource("/images/imprimir2.png").getPath();
-        Mostrar_Visualizador(btnImprimirUsuarios, rutaImprimirUsuarios);
-        
-        String RutaV=getClass().getResource("/images/Mas.png").getPath();
-        Mostrar_Visualizador(btnNuevoVisitante, RutaV);
-        String RutaIv=getClass().getResource("/images/imprimir2.png").getPath();
-        Mostrar_Visualizador(btnImprimirVisitantes, RutaIv);
-        String RutaIE=getClass().getResource("/images/imprimir2.png").getPath();
-        Mostrar_Visualizador(btnImprimirEstadistica, RutaIE);
+         Redimencion cm= new Redimencion();
+         //Redimencion de los iconos de la escuela de cada Tab
+         cm.Mostrar_Visualizador(lblIconoEscuela, "/images/iconoescuela.png");
+         cm.Mostrar_Visualizador(lblIconoEscuela2, "/images/iconoescuela.png");
+         cm.Mostrar_Visualizador(lblIconoEscuela3, "/images/iconoescuela.png");
+         cm.Mostrar_Visualizador(lblIconoEscuela4, "/images/iconoescuela.png");
+         cm.Mostrar_Visualizador(lblIconoEscuela1, "/images/iconoescuela.png");
 
+         //Redimencion de los botones de Usuario
+        cm.Mostrar_Visualizador(btnNuevoUsuario,"/images/Mas.png");
+        cm.Mostrar_Visualizador(btnActualizarUsuario,"/images/actualizar.png");
+        cm.Mostrar_Visualizador(btnEliminarUsuario,"/images/Eliminar1.png");
+        cm.Mostrar_Visualizador(btnBuscarUsuarios,"/images/search.png");
+        cm.Mostrar_Visualizador(btnImprimirUsuarios,"/images/imprimir2.png");
+        
+        //Redimencion de los Botones de Estadisticas
+        cm.Mostrar_Visualizador(btnVerEstadisticaAnualDispositivos,"/images/search.png");
+        cm.Mostrar_Visualizador(btnVerEstadisticaAnual,"/images/search.png");
+        cm.Mostrar_Visualizador(btnImprimirEstadisticaDispositivos,"/images/imprimir2.png");
+        cm.Mostrar_Visualizador(btnImprimirEstadisticaDispositivos,"/images/imprimir2.png");
+        cm.Mostrar_Visualizador(btnImprimirEstadistica,"/images/imprimir2.png");
+        
+         
+        //Redimencion de los Botones de Historial
+        cm.Mostrar_Visualizador(lblBuscarHistorialVisita,"/images/search.png");
+        cm.Mostrar_Visualizador(btnImprimirVisitantes,"/images/imprimir2.png");
+        cm.Mostrar_Visualizador(btnNuevoVisitante,"/images/Mas.png");
+
+        
         jtHistorialVisita.setModel(LlenarTablaHistorialUnido()); 
         //jtHistorialVisita.setModel(LlenarTablaHistorialBusquedaUnido()); 
         //jtHistorialVisita.setModel(LlenarTablaHistorialVisita()); 
@@ -195,7 +183,6 @@ public final class Principal extends javax.swing.JFrame implements Printable{
         columnModel.getColumn(7).setPreferredWidth(100);
         }
         else         jtUsuarios.setModel(LlenarTablaUsuarios());
-        //jtHistorialVisita.setModel(LlenarTablaHistorialVisita());
         txtTotalVisitas.setText(String.valueOf((Integer.parseInt(contarTotalVisitas())+(Integer.parseInt(contarTotalVisitasDispositivos())))));
         lblTotalUsuarios.setText(contarTotalU());
         Limpiar();
@@ -207,16 +194,13 @@ public final class Principal extends javax.swing.JFrame implements Printable{
         jcbAñoGraficoEstadistico.setModel(mdlAGE);
         variable=(jcbAñoGraficoEstadistico.getSelectedItem()).toString();
         
-        //String SQLAGEDis="SELECT IDHISTORIALDISPOSITIVOS, YEAR(FECHAVISITADISPOSITIVO) AS FECHAVISITADISPOSITIVO FROM historialdispositivos GROUP BY YEAR(FECHAVISITADISPOSITIVO)";
         mdlAGEDis= new DefaultComboBoxModel(ConexionBase.leerDatosVector3(SQLAGE));
         aniosd = ConexionBase.leerDatosVector3(SQLAGE);
         jcbAñoGraficoEstadisticoComparativo.setModel(mdlAGEDis);
         variabled=(jcbAñoGraficoEstadisticoComparativo.getSelectedItem()).toString();
         
-         /*TableColumnModel columnModelH = jtHistorialVisita.getColumnModel();
-        columnModelH.getColumn(0).setPreferredWidth(5);
-        columnModelH.getColumn(1).setPreferredWidth(50);
-        columnModelH.getColumn(2).setPreferredWidth(50);*/
+           
+         
     }
     
             
@@ -488,18 +472,18 @@ public final class Principal extends javax.swing.JFrame implements Printable{
         //JOptionPane.showMessageDialog(null, "La actualizacion no se efectuó");
         }
         String img=getClass().getResource("/images/imagen.jpg").getPath();
-        Mostrar_Visualizador(imgMuseo1, img);
-        Mostrar_Visualizador(imgMuseo2, img);
-        Mostrar_Visualizador(imgMuseo3, img);
-        Mostrar_Visualizador(imgMuseo4,img);
-        Mostrar_Visualizador(imgMuseo5, img);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[0])) Mostrar_Visualizador(imgMuseo1, tempRutaActual[0]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[1])) Mostrar_Visualizador(imgMuseo2, tempRutaActual[1]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[2])) Mostrar_Visualizador(imgMuseo3, tempRutaActual[2]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[3])) Mostrar_Visualizador(imgMuseo4, tempRutaActual[3]);
-        if(!StringUtils.isNullOrEmpty(tempRutaActual[4])) Mostrar_Visualizador(imgMuseo5, tempRutaActual[4]);
+        Mostrar_Visualizador1(imgMuseo1, img);
+        Mostrar_Visualizador1(imgMuseo2, img);
+        Mostrar_Visualizador1(imgMuseo3, img);
+        Mostrar_Visualizador1(imgMuseo4,img);
+        Mostrar_Visualizador1(imgMuseo5, img);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[0])) Mostrar_Visualizador1(imgMuseo1, tempRutaActual[0]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[1])) Mostrar_Visualizador1(imgMuseo2, tempRutaActual[1]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[2])) Mostrar_Visualizador1(imgMuseo3, tempRutaActual[2]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[3])) Mostrar_Visualizador1(imgMuseo4, tempRutaActual[3]);
+        if(!StringUtils.isNullOrEmpty(tempRutaActual[4])) Mostrar_Visualizador1(imgMuseo5, tempRutaActual[4]);
         String imgqr=getClass().getResource("/images/QR.png").getPath();
-        Mostrar_Visualizador(imgQrMuseo, imgqr);
+        Mostrar_Visualizador1(imgQrMuseo, imgqr);
         
     }
     
@@ -2201,10 +2185,11 @@ try{
         lblNuevo.setText(id);
     }
     
-    public static void Mostrar_Visualizador(JLabel Pantalla, String RutaDestino){
-        try
+    public  void Mostrar_Visualizador1(JLabel Pantalla, String ruta){
+       try
         {
-            Image capturarImgSoloLectura = ImageIO.read(new File(RutaDestino));
+           
+            Image capturarImgSoloLectura = ImageIO.read(new File(ruta));
             Image obtenerImagen = capturarImgSoloLectura.getScaledInstance(Pantalla.getWidth(),Pantalla.getHeight(), Image.SCALE_SMOOTH);
             Icon iconoEscalado = new ImageIcon(obtenerImagen);
             Pantalla.setIcon(iconoEscalado);
@@ -2212,7 +2197,14 @@ try{
         catch (java.io.IOException e) {
             e.printStackTrace();
         }
-    }
+       /* 
+        //ImageIcon fot = new ImageIcon(ruta);
+        ImageIcon fot = new ImageIcon(getClass().getResource(ruta));
+        Icon icono = new ImageIcon(fot.getImage().getScaledInstance(Pantalla.getWidth(), Pantalla.getHeight(), Image.SCALE_DEFAULT));
+        Pantalla.setIcon(icono);
+        Pantalla.repaint();*/
+    
+        }
     
     void cerrarSesion(){
         Object [] opciones={"Aceptar","Cancelar"};
@@ -2383,6 +2375,8 @@ try{
             lblTortaDis.setIcon(new ImageIcon(graficoBarra));
             txtTotalVisitasVisitantesPorAñoComparativo.setText(String.valueOf(total));
             txtTotalVisitasDispositivosPorAñoCompartivo.setText(String.valueOf(totalD));
+            ItemSeleccionado.rol = "V=" + total + "-D=" + totalD;
+            btnImprimirEstadisticaDispositivos.setEnabled(true);
             panelGraficoTortaDis.updateUI();
             //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
             try {
@@ -2441,6 +2435,8 @@ try{
             //lblTorta.setIcon(new ImageIcon(graficoTorta));
             lblTorta.setIcon(new ImageIcon(graficoBarra));
             txtTotalVisitasPorAño.setText(String.valueOf(total));
+            ItemSeleccionado.rol = "V=" + total;
+            btnImprimirEstadistica.setEnabled(true);
             panelGraficoTorta.updateUI();
             try {
                 ChartUtilities.saveChartAsJPEG(new File(ValoresConstantes.DIRECTORIO_PRINCIPAL + "\\graficoE.jpg"), barra, 1280, 720);
@@ -2498,6 +2494,8 @@ try{
             //lblTorta.setIcon(new ImageIcon(graficoTorta));
             lblTorta.setIcon(new ImageIcon(graficoBarra));
             txtTotalVisitasPorAño.setText(String.valueOf(total));
+            ItemSeleccionado.rol = "D=" + total;
+            btnImprimirEstadistica.setEnabled(true);
             panelGraficoTorta.updateUI();
             //JOptionPane.showMessageDialog(this,jcbAñoGraficoEstadistico.getSelectedItem());
             try {
@@ -2590,7 +2588,7 @@ try{
         lblTerminosyCondicionesUsuarios = new javax.swing.JLabel();
         lblPoliticasdePrivacidadUsuarios = new javax.swing.JLabel();
         lblUsuarioyRolUsuarios = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
+        jpGaleria = new javax.swing.JPanel();
         jdeskGaleria = new javax.swing.JDesktopPane();
         jPanel10 = new javax.swing.JPanel();
         jlJJ2016Galeria = new javax.swing.JLabel();
@@ -3087,16 +3085,20 @@ try{
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("MUSEO DE LA ESCUELA ISIDRO AYORA");
 
+        lblIconoEscuela.setMaximumSize(new java.awt.Dimension(72, 63));
+        lblIconoEscuela.setMinimumSize(new java.awt.Dimension(72, 63));
+        lblIconoEscuela.setPreferredSize(new java.awt.Dimension(72, 63));
+
         javax.swing.GroupLayout PanelRolLayout = new javax.swing.GroupLayout(PanelRol);
         PanelRol.setLayout(PanelRolLayout);
         PanelRolLayout.setHorizontalGroup(
             PanelRolLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblIconoEscuela, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(200, 200, 200)
+                .addComponent(lblIconoEscuela, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(230, 230, 230)
                 .addComponent(jLabel1)
-                .addGap(207, 207, 207)
+                .addGap(212, 212, 212)
                 .addComponent(lblCerrarSesion5)
                 .addGap(87, 87, 87))
         );
@@ -3107,7 +3109,7 @@ try{
                 .addGroup(PanelRolLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblCerrarSesion5))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblIconoEscuela, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -3291,12 +3293,12 @@ try{
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jdeskusuariosLayout.createSequentialGroup()
                         .addGap(25, 25, 25)
-                        .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskusuariosLayout.createSequentialGroup()
+                        .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jdeskusuariosLayout.createSequentialGroup()
                                 .addComponent(jLabel39)
                                 .addGap(127, 127, 127)
                                 .addComponent(lblTotalUsuarios))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 987, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(jdeskusuariosLayout.createSequentialGroup()
                                     .addGap(9, 9, 9)
@@ -3318,8 +3320,9 @@ try{
                                                     .addGap(18, 18, 18)
                                                     .addComponent(rbtnActivo)
                                                     .addGap(18, 18, 18)
-                                                    .addComponent(rbtnInactivo)))))))
-                            .addComponent(btnImprimirUsuarios, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                    .addComponent(rbtnInactivo)))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnImprimirUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                     .addGroup(jdeskusuariosLayout.createSequentialGroup()
                         .addGap(63, 63, 63)
                         .addComponent(lblNuevoUsuario)
@@ -3334,7 +3337,7 @@ try{
         jdeskusuariosLayout.setVerticalGroup(
             jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdeskusuariosLayout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblNuevo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -3350,8 +3353,9 @@ try{
                                 .addComponent(rbtnActivo)
                                 .addComponent(rbtnInactivo)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtBuscarPor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnImprimirUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jdeskusuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNuevoUsuario)
                     .addComponent(lblActualizarUsuario)
@@ -3362,10 +3366,8 @@ try{
                     .addComponent(jLabel39)
                     .addComponent(lblTotalUsuarios))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnImprimirUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
         );
 
         PanelRolUsuarios.setBackground(new java.awt.Color(0, 0, 0));
@@ -3384,13 +3386,15 @@ try{
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("USUARIOS");
 
+        lblIconoEscuela1.setPreferredSize(new java.awt.Dimension(72, 63));
+
         javax.swing.GroupLayout PanelRolUsuariosLayout = new javax.swing.GroupLayout(PanelRolUsuarios);
         PanelRolUsuarios.setLayout(PanelRolUsuariosLayout);
         PanelRolUsuariosLayout.setHorizontalGroup(
             PanelRolUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuariosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblIconoEscuela1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblIconoEscuela1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(377, 377, 377)
@@ -3404,7 +3408,7 @@ try{
                 .addGroup(PanelRolUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblCerrarSesion6))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuariosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblIconoEscuela1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -3493,7 +3497,7 @@ try{
 
         tabMenu.addTab("         Usuarios      ", new javax.swing.ImageIcon(getClass().getResource("/images/usuarios.png")), jpUsuarios); // NOI18N
 
-        jPanel3.setBackground(new java.awt.Color(34, 81, 122));
+        jpGaleria.setBackground(new java.awt.Color(34, 81, 122));
 
         jdeskGaleria.setBackground(new java.awt.Color(204, 204, 255));
 
@@ -3505,7 +3509,7 @@ try{
         );
         jdeskGaleriaLayout.setVerticalGroup(
             jdeskGaleriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 536, Short.MAX_VALUE)
+            .addGap(0, 539, Short.MAX_VALUE)
         );
 
         jPanel10.setBackground(new java.awt.Color(0, 0, 0));
@@ -3559,14 +3563,14 @@ try{
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblUsuarioyRolGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jlJJ2016Galeria)
                         .addComponent(lblTerminosyCondicionesGaleria)
                         .addComponent(lblPoliticasdePrivacidadGaleria)))
-                .addGap(25, 25, 25))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         PanelRolUsuarios1.setBackground(new java.awt.Color(0, 0, 0));
@@ -3585,30 +3589,33 @@ try{
         lblTituloGaleria.setForeground(new java.awt.Color(255, 255, 255));
         lblTituloGaleria.setText("GALERÍA");
 
+        lblIconoEscuela2.setPreferredSize(new java.awt.Dimension(72, 63));
+
         javax.swing.GroupLayout PanelRolUsuarios1Layout = new javax.swing.GroupLayout(PanelRolUsuarios1);
         PanelRolUsuarios1.setLayout(PanelRolUsuarios1Layout);
         PanelRolUsuarios1Layout.setHorizontalGroup(
             PanelRolUsuarios1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuarios1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblIconoEscuela2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblIconoEscuela2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblTituloGaleria)
-                .addGap(377, 377, 377)
+                .addGap(379, 379, 379)
                 .addComponent(lblCerrarSesion7)
                 .addGap(87, 87, 87))
         );
         PanelRolUsuarios1Layout.setVerticalGroup(
             PanelRolUsuarios1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelRolUsuarios1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
                 .addGroup(PanelRolUsuarios1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTituloGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblCerrarSesion7))
-                .addContainerGap(38, Short.MAX_VALUE))
-            .addGroup(PanelRolUsuarios1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblIconoEscuela2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(PanelRolUsuarios1Layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(PanelRolUsuarios1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTituloGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblCerrarSesion7)))
+                    .addGroup(PanelRolUsuarios1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblIconoEscuela2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(6, 6, 6))
         );
 
@@ -3630,14 +3637,14 @@ try{
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jpGaleriaLayout = new javax.swing.GroupLayout(jpGaleria);
+        jpGaleria.setLayout(jpGaleriaLayout);
+        jpGaleriaLayout.setHorizontalGroup(
+            jpGaleriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpGaleriaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jpGaleriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnGestionArticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGestionCategoria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -3645,24 +3652,23 @@ try{
                 .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(PanelRolUsuarios1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        jpGaleriaLayout.setVerticalGroup(
+            jpGaleriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpGaleriaLayout.createSequentialGroup()
                 .addComponent(PanelRolUsuarios1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15)
+                .addGroup(jpGaleriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jpGaleriaLayout.createSequentialGroup()
                         .addComponent(btnGestionCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(5, 5, 5)
-                        .addComponent(btnGestionArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jdeskGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 7, Short.MAX_VALUE)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnGestionArticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jdeskGaleria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
-        tabMenu.addTab("       Galería", new javax.swing.ImageIcon(getClass().getResource("/images/galeria.png")), jPanel3); // NOI18N
+        tabMenu.addTab("       Galería", new javax.swing.ImageIcon(getClass().getResource("/images/galeria.png")), jpGaleria); // NOI18N
 
         jPanel4.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -3753,7 +3759,7 @@ try{
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnNuevoVisitante, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -3882,16 +3888,17 @@ try{
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jdeskContactanosLayout.createSequentialGroup()
-                        .addGap(488, 488, 488)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTotalVisitas, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(57, 57, 57)
-                        .addComponent(btnImprimirVisitantes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jdeskContactanosLayout.createSequentialGroup()
-                        .addGap(100, 100, 100)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jdeskContactanosLayout.createSequentialGroup()
+                            .addGap(488, 488, 488)
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtTotalVisitas, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnImprimirVisitantes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jdeskContactanosLayout.createSequentialGroup()
+                            .addGap(100, 100, 100)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(334, Short.MAX_VALUE))
         );
         jdeskContactanosLayout.setVerticalGroup(
@@ -3902,14 +3909,14 @@ try{
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnImprimirVisitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jdeskContactanosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtTotalVisitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3)))
-                .addGap(33, 33, 33))
+                        .addComponent(jLabel3))
+                    .addComponent(btnImprimirVisitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40))
         );
 
         jPanel7.setBackground(new java.awt.Color(0, 0, 0));
@@ -3989,16 +3996,18 @@ try{
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("HISTORIAL DE VISITAS");
 
+        lblIconoEscuela3.setPreferredSize(new java.awt.Dimension(72, 63));
+
         javax.swing.GroupLayout PanelRolUsuarios3Layout = new javax.swing.GroupLayout(PanelRolUsuarios3);
         PanelRolUsuarios3.setLayout(PanelRolUsuarios3Layout);
         PanelRolUsuarios3Layout.setHorizontalGroup(
             PanelRolUsuarios3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuarios3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblIconoEscuela3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(300, 300, 300)
+                .addComponent(lblIconoEscuela3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(280, 280, 280)
                 .addComponent(jLabel5)
-                .addGap(321, 321, 321)
+                .addGap(346, 346, 346)
                 .addComponent(lblCerrarSesion9)
                 .addGap(87, 87, 87))
         );
@@ -4009,7 +4018,7 @@ try{
                 .addGroup(PanelRolUsuarios3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblCerrarSesion9))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuarios3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblIconoEscuela3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -4029,10 +4038,11 @@ try{
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(PanelRolUsuarios3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(4, 4, 4)
+                .addGap(6, 6, 6)
                 .addComponent(jdeskContactanos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         tabMenu.addTab("        Historial de Visita", new javax.swing.ImageIcon(getClass().getResource("/images/visitas.png")), jPanel4); // NOI18N
@@ -4092,6 +4102,7 @@ try{
 
         btnImprimirEstadistica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
         btnImprimirEstadistica.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimirEstadistica.setEnabled(false);
         btnImprimirEstadistica.setMaximumSize(new java.awt.Dimension(84, 81));
         btnImprimirEstadistica.setMinimumSize(new java.awt.Dimension(84, 81));
         btnImprimirEstadistica.setPreferredSize(new java.awt.Dimension(84, 81));
@@ -4166,6 +4177,7 @@ try{
 
         btnImprimirEstadisticaDispositivos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
         btnImprimirEstadisticaDispositivos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimirEstadisticaDispositivos.setEnabled(false);
         btnImprimirEstadisticaDispositivos.setMaximumSize(new java.awt.Dimension(84, 81));
         btnImprimirEstadisticaDispositivos.setMinimumSize(new java.awt.Dimension(84, 81));
         btnImprimirEstadisticaDispositivos.setPreferredSize(new java.awt.Dimension(84, 81));
@@ -4311,7 +4323,7 @@ try{
                 .addGroup(jdeskAcercadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanelEstadisticaVisitaImprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanelEstadisticaDispositivoImprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         PanelRolUsuarios8.setBackground(new java.awt.Color(0, 0, 0));
@@ -4330,13 +4342,17 @@ try{
         jLabel48.setForeground(new java.awt.Color(255, 255, 255));
         jLabel48.setText("ESTADÍSTICAS");
 
+        lblIconoEscuela4.setMaximumSize(new java.awt.Dimension(72, 63));
+        lblIconoEscuela4.setMinimumSize(new java.awt.Dimension(72, 63));
+        lblIconoEscuela4.setPreferredSize(new java.awt.Dimension(72, 63));
+
         javax.swing.GroupLayout PanelRolUsuarios8Layout = new javax.swing.GroupLayout(PanelRolUsuarios8);
         PanelRolUsuarios8.setLayout(PanelRolUsuarios8Layout);
         PanelRolUsuarios8Layout.setHorizontalGroup(
             PanelRolUsuarios8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuarios8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblIconoEscuela4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblIconoEscuela4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel48)
                 .addGap(349, 349, 349)
@@ -4350,10 +4366,10 @@ try{
                 .addGroup(PanelRolUsuarios8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel48, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblCerrarSesionAcerca))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRolUsuarios8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblIconoEscuela4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE)
+                .addComponent(lblIconoEscuela4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel8.setBackground(new java.awt.Color(0, 0, 0));
@@ -4431,10 +4447,11 @@ try{
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addComponent(PanelRolUsuarios8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addGap(6, 6, 6)
                 .addComponent(jdeskAcercade)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         tabMenu.addTab("        Estadísticas", new javax.swing.ImageIcon(getClass().getResource("/images/estadisticas.png")), jPanel5); // NOI18N
@@ -4449,7 +4466,7 @@ try{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(tabMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 719, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
 
         tabMenu.getAccessibleContext().setAccessibleName("Historial de Visita");
@@ -4827,7 +4844,7 @@ try{
     }//GEN-LAST:event_lblBuscarHistorialVisitaMouseClicked
 
     private void btnImprimirUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimirUsuariosMouseClicked
-      if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
+     if(UsuarioIngresado.parametroR.contains("Administrador/a")) {
             String a;
             try{
             a=JOptionPane.showInputDialog("Ingrese la contraseña");
@@ -4851,7 +4868,6 @@ try{
             ImprimirUsuarios impU=new ImprimirUsuarios();
             impU.setVisible(true);
         }
-            
         
         
     }//GEN-LAST:event_btnImprimirUsuariosMouseClicked
@@ -5047,8 +5063,6 @@ try{
                 }
             }*/    
         ItemSeleccionado.accionBoton = "E";
-        if(jrbEstadisticasVisitantes.isSelected()) ItemSeleccionado.rol = "Vis";
-        else ItemSeleccionado.rol = "Dis";
         ImprimirGraficosEstadisticos iGE = new ImprimirGraficosEstadisticos();
         iGE.setVisible(true);
     }//GEN-LAST:event_btnImprimirEstadisticaMouseClicked
@@ -5072,7 +5086,6 @@ try{
                 }
             }*/
         ItemSeleccionado.accionBoton = "EC";
-        ItemSeleccionado.rol = "Vis";
         ImprimirGraficosEstadisticos iGE = new ImprimirGraficosEstadisticos();
         iGE.setVisible(true);
     }//GEN-LAST:event_btnImprimirEstadisticaDispositivosMouseClicked
@@ -5186,7 +5199,6 @@ try{
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -5216,6 +5228,7 @@ try{
     private javax.swing.JLabel jlJJ2016Principal;
     private javax.swing.JLabel jlJJ2016Usuarios;
     public static javax.swing.JLabel jlVideoMuseo;
+    private javax.swing.JPanel jpGaleria;
     private javax.swing.JPanel jpPrincipal;
     private javax.swing.JPanel jpUsuarios;
     private javax.swing.JRadioButton jrbEstadisticasDispositivos;

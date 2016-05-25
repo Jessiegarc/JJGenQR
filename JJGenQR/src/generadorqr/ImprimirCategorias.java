@@ -6,6 +6,8 @@ import Modelos.ValoresConstantes;
 import db.mysql;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,14 +48,21 @@ public class ImprimirCategorias extends javax.swing.JFrame {
         try 
         { 
             JasperReport reporteC;
-            reporteC = (JasperReport) JRLoader.loadObject(new File(getClass().getResource("/Modelos/ImprimirCategoria/imprimirCategorias.jasper").getPath()));
+            String template = ImprimirCategorias.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            File aux =new File(template);
+            if (aux.isDirectory())
+                template = template + "Modelos\\ImprimirCategoria\\ImprimirCategorias.jasper";
+            else
+                template = aux.getParent() + "\\src\\Modelos\\ImprimirCategoria\\ImprimirCategorias.jasper";
+            File url = new File(template);
+            reporteC = (JasperReport) JRLoader.loadObject(url);
             Map parametros = new HashMap();
             parametros.put("imagen", getClass().getResource("/images/SELLO.png").getPath());
             try {
                 if(con == null) con = mysql.getConnect();
                 st = con.createStatement();
                 ResultSet rs = null;
-                rs = st.executeQuery("SELECT COUNT(*) AS CONTADOR FROM usuarios");
+                rs = st.executeQuery("SELECT COUNT(*) AS CONTADOR FROM categorias");
                 rs.next();
                 contador = rs.getInt("CONTADOR");
                 rs.close();

@@ -501,7 +501,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         jScrollPane1.setViewportView(txtAreaDescripcionNuevoQr);
 
         btnImagen1.setForeground(new java.awt.Color(255, 255, 51));
-        btnImagen1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imagen.jpg"))); // NOI18N
+        btnImagen1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/selectimg.png"))); // NOI18N
         btnImagen1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImagen1.setMaximumSize(new java.awt.Dimension(72, 52));
         btnImagen1.setMinimumSize(new java.awt.Dimension(72, 52));
@@ -513,7 +513,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         });
 
         btnImagen3.setForeground(new java.awt.Color(255, 255, 51));
-        btnImagen3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imagen.jpg"))); // NOI18N
+        btnImagen3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/selectimg.png"))); // NOI18N
         btnImagen3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImagen3.setMaximumSize(new java.awt.Dimension(72, 52));
         btnImagen3.setMinimumSize(new java.awt.Dimension(72, 52));
@@ -525,7 +525,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         });
 
         btnImagen2.setForeground(new java.awt.Color(255, 255, 51));
-        btnImagen2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imagen.jpg"))); // NOI18N
+        btnImagen2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/selectimg.png"))); // NOI18N
         btnImagen2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImagen2.setMaximumSize(new java.awt.Dimension(72, 52));
         btnImagen2.setMinimumSize(new java.awt.Dimension(72, 52));
@@ -639,14 +639,14 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                         .addComponent(btnAudioQr)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jlAudioQr)))
-                .addGap(263, 263, 263))
+                .addGap(260, 260, 260))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap(239, Short.MAX_VALUE)
+                    .addContainerGap(236, Short.MAX_VALUE)
                     .addComponent(jlNombreQr6)
                     .addGap(11, 11, 11)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(51, 51, 51)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(30, 30, 30)))
         );
 
         lblImagenQR.setBackground(new java.awt.Color(255, 255, 255));
@@ -696,19 +696,18 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                         .addGap(40, 40, 40)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(41, 41, 41)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblImagenQR, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGap(76, 76, 76)
-                                .addComponent(jlGenerarQr)
-                                .addGap(112, 112, 112)))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnGenerarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCancelarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblImagenQR, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                    .addGap(76, 76, 76)
+                                    .addComponent(jlGenerarQr)
+                                    .addGap(112, 112, 112))))))
                 .addContainerGap(40, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(230, 230, 230)
-                .addComponent(btnGenerarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(250, 250, 250)
-                .addComponent(btnCancelarNuevoQr, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -717,18 +716,20 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblIdQR, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1))
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jlGenerarQr)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblImagenQR, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCancelarNuevoQr)
-                    .addComponent(btnGenerarNuevoQr))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(448, 448, 448)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnCancelarNuevoQr)
+                            .addComponent(btnGenerarNuevoQr)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jlGenerarQr)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(lblImagenQR, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -739,7 +740,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -802,7 +803,7 @@ String[] imagen = {"", "", ""}, tempImagen = {"", "", ""}, tempNombreArchivo = {
 
     private void txtCantidadArticuloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadArticuloKeyTyped
         char car=evt.getKeyChar();
-        if((car<'1' || car>'9')) evt.consume();
+        if((car<'0' || car>'9')) evt.consume();
         int limite  = 3;
         if (txtCantidadArticulo.getText().length()==limite) evt.consume();
     }//GEN-LAST:event_txtCantidadArticuloKeyTyped

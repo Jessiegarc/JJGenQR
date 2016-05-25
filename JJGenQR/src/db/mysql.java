@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 public class mysql{
     private static String db="qr";
     private static String user="root";
-    private static String pass="";
+    private static String pass="MIAjjqr2016";
     private static String url="jdbc:mysql://localhost/"+db;
     private static Connection Conn;
     

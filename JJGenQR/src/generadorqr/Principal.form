@@ -39,7 +39,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="tabMenu" min="-2" pref="719" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -733,10 +733,10 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lblIconoEscuela" min="-2" pref="75" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="200" max="-2" attributes="0"/>
+                          <Component id="lblIconoEscuela" min="-2" pref="72" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="230" max="-2" attributes="0"/>
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="207" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="212" max="-2" attributes="0"/>
                           <Component id="lblCerrarSesion5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
                       </Group>
@@ -750,7 +750,7 @@
                               <Component id="jLabel1" min="-2" pref="30" max="-2" attributes="0"/>
                               <Component id="lblCerrarSesion5" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="25" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
@@ -789,6 +789,17 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblIconoEscuela">
+                  <Properties>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                  </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>
@@ -855,13 +866,13 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
                                       <Group type="102" alignment="1" attributes="0">
                                           <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace min="-2" pref="127" max="-2" attributes="0"/>
                                           <Component id="lblTotalUsuarios" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="jScrollPane1" alignment="0" min="-2" pref="987" max="-2" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
@@ -886,11 +897,12 @@
                                                               <Component id="rbtnInactivo" min="-2" max="-2" attributes="0"/>
                                                           </Group>
                                                       </Group>
+                                                      <EmptySpace max="32767" attributes="0"/>
+                                                      <Component id="btnImprimirUsuarios" min="-2" max="-2" attributes="0"/>
                                                   </Group>
                                               </Group>
                                           </Group>
                                       </Group>
-                                      <Component id="btnImprimirUsuarios" alignment="1" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
@@ -911,7 +923,7 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace pref="16" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="lblNuevo" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -932,8 +944,9 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="txtBuscarPor" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <Component id="btnImprimirUsuarios" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblNuevoUsuario" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblActualizarUsuario" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -946,10 +959,8 @@
                               <Component id="lblTotalUsuarios" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" min="-2" pref="270" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="btnImprimirUsuarios" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" min="-2" pref="371" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1188,7 +1199,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lblIconoEscuela1" min="-2" pref="75" max="-2" attributes="0"/>
+                          <Component id="lblIconoEscuela1" min="-2" pref="72" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="377" max="-2" attributes="0"/>
@@ -1205,7 +1216,7 @@
                               <Component id="jLabel2" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                               <Component id="lblCerrarSesion6" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="25" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
@@ -1244,6 +1255,11 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblIconoEscuela1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                  </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>
@@ -1349,7 +1365,7 @@
             </Container>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="jPanel3">
+        <Container class="javax.swing.JPanel" name="jpGaleria">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="7a" green="51" red="22" type="rgb"/>
@@ -1387,20 +1403,18 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="PanelRolUsuarios1" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="btnGestionCategoria" min="-2" pref="266" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="btnGestionArticulos" min="-2" pref="264" max="-2" attributes="0"/>
+                              <Component id="btnGestionArticulos" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="jdeskGaleria" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jdeskGaleria" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="7" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                       <Component id="jPanel10" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1424,7 +1438,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="536" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="539" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -1455,7 +1469,7 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace pref="30" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="lblUsuarioyRolGaleria" alignment="1" min="-2" pref="24" max="-2" attributes="0"/>
                               <Group type="103" alignment="1" groupAlignment="3" attributes="0">
@@ -1464,7 +1478,7 @@
                                   <Component id="lblPoliticasdePrivacidadGaleria" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                          <EmptySpace pref="36" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1538,10 +1552,10 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lblIconoEscuela2" min="-2" pref="75" max="-2" attributes="0"/>
+                          <Component id="lblIconoEscuela2" min="-2" pref="72" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="lblTituloGaleria" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="377" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="379" max="-2" attributes="0"/>
                           <Component id="lblCerrarSesion7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
                       </Group>
@@ -1549,17 +1563,20 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lblTituloGaleria" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="lblCerrarSesion7" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="lblTituloGaleria" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="lblCerrarSesion7" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="lblIconoEscuela2" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                          <EmptySpace pref="38" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lblIconoEscuela2" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -1595,6 +1612,11 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblIconoEscuela2">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                  </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>
@@ -1663,10 +1685,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="PanelRolUsuarios3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Component id="jdeskContactanos" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1696,17 +1719,19 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="488" max="-2" attributes="0"/>
-                                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtTotalVisitas" min="-2" pref="155" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-                                  <Component id="btnImprimirVisitantes" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
-                                  <Component id="jScrollPane3" min="-2" pref="822" max="-2" attributes="0"/>
+                              <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="488" max="-2" attributes="0"/>
+                                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="txtTotalVisitas" min="-2" pref="155" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="btnImprimirVisitantes" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
+                                      <Component id="jScrollPane3" min="-2" pref="822" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <EmptySpace pref="334" max="32767" attributes="0"/>
@@ -1722,16 +1747,16 @@
                               <Component id="jPanel2" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jScrollPane3" pref="294" max="32767" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="jScrollPane3" pref="291" max="32767" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="btnImprimirVisitantes" min="-2" pref="58" max="-2" attributes="0"/>
-                              <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="txtTotalVisitas" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <Component id="btnImprimirVisitantes" alignment="0" min="-2" pref="58" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1838,7 +1863,7 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="10" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="btnNuevoVisitante" min="-2" pref="62" max="-2" attributes="0"/>
                                   <Group type="102" attributes="0">
@@ -2165,10 +2190,10 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lblIconoEscuela3" min="-2" pref="75" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="300" max="-2" attributes="0"/>
+                          <Component id="lblIconoEscuela3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="280" max="-2" attributes="0"/>
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="321" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="346" max="-2" attributes="0"/>
                           <Component id="lblCerrarSesion9" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
                       </Group>
@@ -2182,7 +2207,7 @@
                               <Component id="jLabel5" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                               <Component id="lblCerrarSesion9" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="25" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
@@ -2221,6 +2246,11 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblIconoEscuela3">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                  </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>
@@ -2261,10 +2291,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="PanelRolUsuarios8" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Component id="jdeskAcercade" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -2300,7 +2331,7 @@
                               <Component id="jPanelEstadisticaVisitaImprimir" max="32767" attributes="0"/>
                               <Component id="jPanelEstadisticaDispositivoImprimir" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="30" max="32767" attributes="0"/>
+                          <EmptySpace pref="29" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -2488,6 +2519,7 @@
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                           <Color id="Cursor de Mano"/>
                         </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[84, 81]"/>
                         </Property>
@@ -2610,6 +2642,7 @@
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                           <Color id="Cursor de Mano"/>
                         </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[84, 81]"/>
                         </Property>
@@ -2746,7 +2779,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lblIconoEscuela4" min="-2" pref="75" max="-2" attributes="0"/>
+                          <Component id="lblIconoEscuela4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="jLabel48" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="349" max="-2" attributes="0"/>
@@ -2763,11 +2796,11 @@
                               <Component id="jLabel48" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                               <Component id="lblCerrarSesionAcerca" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="25" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lblIconoEscuela4" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="6" max="32767" attributes="0"/>
+                          <Component id="lblIconoEscuela4" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -2802,6 +2835,17 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblIconoEscuela4">
+                  <Properties>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[72, 63]"/>
+                    </Property>
+                  </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>

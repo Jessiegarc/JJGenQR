@@ -6,6 +6,7 @@
 package generadorqr;
 
 import Modelos.ItemSeleccionado;
+import Modelos.Redimencion;
 import Modelos.UsuarioIngresado;
 import db.mysql;
 import static generadorqr.Principal.sent;
@@ -42,16 +43,49 @@ jifrNuevaCategoria internalNuevaCategoria;
         columnModelC.getColumn(0).setPreferredWidth(1);
         columnModelC.getColumn(1).setPreferredWidth(200);
         columnModelC.getColumn(2).setPreferredWidth(400);
-        String rutaCat = getClass().getResource("/images/Mas.png").getPath();
+        
+        //Mostrar_Visualizador(btnNuevaCategoria,"/images/Mas.png");
+        /*ImageIcon fot = new ImageIcon(getClass().getResource("/images/Mas.png"));
+        Icon icono = new ImageIcon(fot.getImage().getScaledInstance(btnNuevaCategoria.getWidth(), btnNuevaCategoria.getHeight(), Image.SCALE_DEFAULT));
+        btnNuevaCategoria.setIcon(icono);
+        btnNuevaCategoria.repaint();
+        
+        ImageIcon fot1 = new ImageIcon(getClass().getResource("/images/actualizar.png"));
+        Icon icono1 = new ImageIcon(fot1.getImage().getScaledInstance(btnActualizarCategoria.getWidth(), btnActualizarCategoria.getHeight(), Image.SCALE_DEFAULT));
+        btnActualizarCategoria.setIcon(icono1);
+        btnActualizarCategoria.repaint();
+        
+        ImageIcon fot2 = new ImageIcon(getClass().getResource("/images/Eliminar1.png"));
+        Icon icono2 = new ImageIcon(fot2.getImage().getScaledInstance(btnEliminarCategoria.getWidth(), btnEliminarCategoria.getHeight(), Image.SCALE_DEFAULT));
+        btnEliminarCategoria.setIcon(icono2);
+        btnEliminarCategoria.repaint();
+        
+        ImageIcon fot3 = new ImageIcon(getClass().getResource("/images/search.png"));
+        Icon icono3 = new ImageIcon(fot3.getImage().getScaledInstance(btnBuscarCategoria.getWidth(), btnBuscarCategoria.getHeight(), Image.SCALE_DEFAULT));
+        btnBuscarCategoria.setIcon(icono3);
+        btnBuscarCategoria.repaint();
+        
+        ImageIcon fot4 = new ImageIcon(getClass().getResource("/images/imprimir2.png"));
+        Icon icono4 = new ImageIcon(fot4.getImage().getScaledInstance(btnImprimirCategorias.getWidth(), btnImprimirCategorias.getHeight(), Image.SCALE_DEFAULT));
+        btnImprimirCategorias.setIcon(icono4);
+        btnImprimirCategorias.repaint();
+        
+        Mostrar_Visualizador(btnActualizarCategoria, "/images/actualizar.png");
+        Mostrar_Visualizador(btnEliminarCategoria, "/images/Eliminar1.png");
+        Mostrar_Visualizador(btnBuscarCategoria, "/images/search.png");
+        Mostrar_Visualizador(btnImprimirCategorias, "/images/imprimir2.png");
+        
+       String rutaCat = getClass().getResource("/images/Mas.png").getPath();
         MostrarVisualizador(btnNuevaCategoria, rutaCat);
-        rutaCat = getClass().getResource("/images/actualizar.png").getPath();
-        MostrarVisualizador(btnActualizarCategoria, rutaCat);
+        rutaCat1 = getClass().getResource("/images/actualizar.png").getPath();
+        MostrarVisualizador(btnActualizarCategoria, rutaCat1);
         rutaCat = getClass().getResource("/images/Eliminar1.png").getPath();
         MostrarVisualizador(btnEliminarCategoria, rutaCat);
         rutaCat = getClass().getResource("/images/search.png").getPath();
         MostrarVisualizador(btnBuscarCategoria, rutaCat);
         rutaCat = getClass().getResource("/images/imprimir2.png").getPath();
-        MostrarVisualizador(btnImprimirCategorias, rutaCat);
+        MostrarVisualizador(btnImprimirCategorias, rutaCat);*/
+        
        
         contarTotalC();
         if(UsuarioIngresado.parametroR.contains("Consultor/a")) {
@@ -66,6 +100,13 @@ jifrNuevaCategoria internalNuevaCategoria;
         
     }
     
+    /*public void Mostrar_Visualizador(JLabel Pantalla, String ruta){
+        ImageIcon fot = new ImageIcon(getClass().getResource(ruta));
+        Icon icono = new ImageIcon(fot.getImage().getScaledInstance(Pantalla.getWidth(), Pantalla.getHeight(), Image.SCALE_DEFAULT));
+        Pantalla.setIcon(icono);
+        Pantalla.repaint();
+    }*/
+    
     void contarTotalC(){
         try {
             String SQL ="SELECT COUNT(*) AS Total FROM categorias";
@@ -79,17 +120,7 @@ jifrNuevaCategoria internalNuevaCategoria;
          }
         }   
     
-    public static void MostrarVisualizador(JLabel Pantalla, String RutaDestino){
-        try{
-            Image capturarImgSoloLectura = ImageIO.read(new File(RutaDestino));
-            Image obtenerImagen = capturarImgSoloLectura.getScaledInstance(Pantalla.getPreferredSize().width, Pantalla.getPreferredSize().height - 10, Image.SCALE_SMOOTH);
-            Icon iconoEscalado = new ImageIcon(obtenerImagen);
-            Pantalla.setIcon(iconoEscalado);
-        }
-        catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
-    }
+  
  
     public static DefaultTableModel LlenarTablaCategorias(){
         try{
@@ -221,7 +252,7 @@ jifrNuevaCategoria internalNuevaCategoria;
         });
         jScrollPane1.setViewportView(jtCategorias);
 
-        btnActualizarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizar.png"))); // NOI18N
+        btnActualizarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizarjif.png"))); // NOI18N
         btnActualizarCategoria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizarCategoria.setMaximumSize(new java.awt.Dimension(84, 81));
         btnActualizarCategoria.setMinimumSize(new java.awt.Dimension(84, 81));
@@ -232,7 +263,7 @@ jifrNuevaCategoria internalNuevaCategoria;
             }
         });
 
-        btnEliminarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Eliminar1.png"))); // NOI18N
+        btnEliminarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/eliminarjif.png"))); // NOI18N
         btnEliminarCategoria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEliminarCategoria.setMaximumSize(new java.awt.Dimension(84, 81));
         btnEliminarCategoria.setMinimumSize(new java.awt.Dimension(84, 81));
@@ -243,7 +274,7 @@ jifrNuevaCategoria internalNuevaCategoria;
             }
         });
 
-        btnBuscarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
+        btnBuscarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/searchjif.png"))); // NOI18N
         btnBuscarCategoria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscarCategoria.setMaximumSize(new java.awt.Dimension(84, 81));
         btnBuscarCategoria.setMinimumSize(new java.awt.Dimension(84, 81));
@@ -286,7 +317,7 @@ jifrNuevaCategoria internalNuevaCategoria;
         lblBuscarCat.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblBuscarCat.setText("Buscar");
 
-        btnImprimirCategorias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimir.png"))); // NOI18N
+        btnImprimirCategorias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/imprimirjif.png"))); // NOI18N
         btnImprimirCategorias.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImprimirCategorias.setMaximumSize(new java.awt.Dimension(84, 81));
         btnImprimirCategorias.setMinimumSize(new java.awt.Dimension(84, 81));
@@ -369,7 +400,7 @@ jifrNuevaCategoria internalNuevaCategoria;
                     .addComponent(lblTotalCategorias))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
                 .addComponent(btnImprimirCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(44, 44, 44))
         );

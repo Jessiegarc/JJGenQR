@@ -54,7 +54,8 @@
 				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="513" y="0" width="40" height="20" uuid="7e9a3236-f5e9-46ef-aea9-07c814863e66"/>
+				<reportElement x="477" y="0" width="76" height="20" uuid="7e9a3236-f5e9-46ef-aea9-07c814863e66"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{contador}]]></textFieldExpression>
 			</textField>
 		</band>

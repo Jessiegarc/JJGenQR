@@ -1,7 +1,7 @@
 <?php
 $servidor = "localhost";
 $user = "root";
-$pass = "";
+$pass = "MIAjjqr2016";
 $bd = "qr";
 //PHP 5.5
 $conexion = mysqli_connect($servidor, $user, $pass, $bd);

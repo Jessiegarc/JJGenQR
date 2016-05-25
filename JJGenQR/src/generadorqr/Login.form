@@ -230,9 +230,6 @@
         </Container>
         <Component class="javax.swing.JLabel" name="lblImgLogin">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/home1.jpg"/>
-            </Property>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[800, 600]"/>
             </Property>

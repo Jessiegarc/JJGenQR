@@ -8,14 +8,17 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import java.awt.event.KeyEvent;
 import db.mysql;
-import static generadorqr.Principal.Mostrar_Visualizador;
+import Modelos.Redimencion;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import org.apache.commons.io.FileUtils;
+import java.awt.Image;
 
 
 public class Login extends javax.swing.JFrame {
@@ -40,12 +43,22 @@ Validate val=new Validate();
         }
         conn = mysql.getConnect();
         txtUsuario.requestFocus();
-         String Ruta=getClass().getResource("/images/home1.jpg").getPath();
-        Mostrar_Visualizador(lblImgLogin, Ruta);
-        String Ruta3=getClass().getResource("/images/iconoescuela.png").getPath();
-        Mostrar_Visualizador(lblIconoEscuela, Ruta3);
+     //   String Ruta=("/images/home1.jpg").getPath();
+     Redimencion cm= new Redimencion();
+     cm.Mostrar_Visualizador(lblImgLogin, "/images/home1.jpg");
+     Redimencion cmL= new Redimencion();
+     cmL.Mostrar_Visualizador(lblIconoEscuela, "/images/iconoescuela.png");
+     //Mostrar_Visualizador(lblImgLogin, "/images/home1.jpg");
+        //ImageIcon icon= new ImageIcon(getClass().getResource("Imagenes/taza.jpg"));
         
+        /*ImageIcon fot = new ImageIcon(getClass().getResource("/images/home1.jpg"));
+       // ImageIcon fot = new ImageIcon("C:\\Users\\Jess\\Pictures\\Imagen3.jpg");
+        Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lblImgLogin.getWidth(), lblImgLogin.getHeight(), Image.SCALE_DEFAULT));
+        lblImgLogin.setIcon(icono);
+        this.repaint();*/
   }
+   
+    
     
     
     //MEtodo para realizar la consulta de contraseña y pasword para poder tener acceso 
@@ -53,7 +66,6 @@ Validate val=new Validate();
 
 int cont=0;
     void Acceder(){
-        
         if(txtUsuario.getText().trim().isEmpty() )
         {
             JOptionPane.showMessageDialog(null, "Ingrese Usuario");
@@ -187,7 +199,6 @@ int cont=0;
                 .addGap(38, 38, 38))
         );
 
-        lblImgLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/home1.jpg"))); // NOI18N
         lblImgLogin.setMaximumSize(new java.awt.Dimension(800, 600));
         lblImgLogin.setMinimumSize(new java.awt.Dimension(800, 600));
         lblImgLogin.setPreferredSize(new java.awt.Dimension(800, 600));
