@@ -92,57 +92,64 @@ DefaultComboBoxModel mdlC;
     
     void sumarTotalA(){
         try {
-            String SQL ="SELECT SUM(CANTIDADARTICULO) AS Suma FROM articulos";
+            String SQL ="SELECT SUM(CANTIDADARTICULO) AS Suma FROM articulos where IDCATEGORIA="+ItemSeleccionado.idCategoria;
             sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
+            lblTotalArticulos.setText("");
+            lblTotaEspecies.setText("");
             while(rs.next()){
-            lblTotalArticulos.setText(rs.getString("Suma"));
-        }
-           } catch (SQLException e) {
+                lblTotalArticulos.setText(rs.getString("Suma"));
+                lblTotaEspecies.setText("1");
+            }
+        } catch (SQLException e) {
             lblTotalArticulos.setText("null");
-         }
-        } 
+        }
+    } 
     
     void sumarTotalABuscados(){
         try {
             String SQL ="SELECT SUM(CANTIDADARTICULO) AS Suma FROM articulos where NOMBREARTICULO Like '%"+txtBuscarArticulo.getText().toString().trim()+"%'";
             sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
+            lblTotalArticulos.setText("");
             while(rs.next()){
-            lblTotalArticulos.setText(rs.getString("Suma"));
-            lblTotaEspecies.setText("1");
-        }
-           } catch (SQLException e) {
+                lblTotalArticulos.setText(rs.getString("Suma"));
+            }
+        } catch (SQLException e) {
             lblTotalArticulos.setText("null");
-         }
         }
+    }
     
-       void sumarTotalABuscadosE(){
+    void sumarTotalABuscadosE(){
         try {
-            String SQL ="SELECT COUNT(NOMBREARTICULO) AS Suma FROM articulos where NOMBREARTICULO Like '%"+txtBuscarArticulo.getText().toString().trim()+"%'GROUP BY IDCATEGORIA ORDER BY NOMBREARTICULO ASC";
+            String SQL ="SELECT COUNT(*) AS Suma FROM articulos where NOMBREARTICULO Like '%"+txtBuscarArticulo.getText().toString().trim()+"%'GROUP BY IDCATEGORIA ORDER BY NOMBREARTICULO ASC";
             sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
-            while(rs.next()){
-            //lblTotalArticulos.setText(rs.getString("Suma"));
-            lblTotaEspecies.setText("Suma");
-        }
-           } catch (SQLException e) {
+            lblTotaEspecies.setText("");
+            while(rs.next()) {
+                //lblTotalArticulos.setText(rs.getString("Suma"));
+                lblTotaEspecies.setText(String.valueOf(rs.getInt("Suma")));
+            }
+        } catch (SQLException e) {
             lblTotalArticulos.setText("null");
-         }
         }
+    }
        
-     void contarTotalESeleccionada(){
+    void contarTotalESeleccionada(){
         try {
-            String SQL ="SELECT SUM(*) as SUM from articulos where DCATEGORIA="+ItemSeleccionado.idCategoria+"";
+            String SQL ="SELECT SUM(*) as SUM from articulos where IDCATEGORIA="+ItemSeleccionado.idCategoria;
             sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQL);
+            lblTotalArticulos.setText("");
+            lblTotaEspecies.setText("");
             while(rs.next()){
-            lblTotalArticulos.setText(String.valueOf(rs.getInt("SUM")));
-        }
-           } catch (SQLException e) {
+                lblTotalArticulos.setText(String.valueOf(rs.getInt("SUM")));
+                lblTotaEspecies.setText("1");
+            }
+        } catch (SQLException e) {
             lblTotalArticulos.setText("null");
-         }
-        }  
+        }
+    }  
     
     public static DefaultTableModel LlenarTablaArticulos(){
         try{
@@ -177,7 +184,7 @@ DefaultComboBoxModel mdlC;
         try{
             String titulos[] = {"ID","CATEGORIA","NOMBRE","CANTIDAD","DESCRIPCION","IMG 1","IMG 2",
                 "IMG 3","SONIDO","VIDEO","IMAGEN QR"};
-            String SQLTA ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO,a.CANTIDADARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) WHERE c.IDCATEGORIA= '"+ItemSeleccionado.idCategoria+"' ORDER BY a.IDARTICULO ASC"; 
+            String SQLTA ="SELECT a.IDARTICULO, c.NOMBRECATEGORIA, a.NOMBREARTICULO,a.CANTIDADARTICULO, a.DESCRIPCIONARTICULO, a.IMAGENUNOARTICULO, a.IMAGENDOSARTICULO, a.IMAGENTRESARTICULO, a.SONIDOARTICULO, a.VIDEOARTICULO, a.IMAGENQRARTICULO FROM articulos AS a INNER JOIN categorias AS c USING(IDCATEGORIA) WHERE c.IDCATEGORIA = "+ItemSeleccionado.idCategoria+" ORDER BY a.IDARTICULO ASC"; 
             DefaultTableModel model = new DefaultTableModel(null, titulos);
             Statement sent = conn.createStatement();
             ResultSet rs = sent.executeQuery(SQLTA);
@@ -195,7 +202,6 @@ DefaultComboBoxModel mdlC;
                 fila[9] = rs.getString("VIDEOARTICULO");
                 fila[10] = rs.getString("IMAGENQRARTICULO");
                 model.addRow(fila);
-                
             }
             return model;
         }catch(Exception e){
@@ -837,7 +843,8 @@ DefaultComboBoxModel mdlC;
     }//GEN-LAST:event_jtContenidosArticulosMouseClicked
 
     private void txtBuscarArticuloKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarArticuloKeyReleased
-        BuscarPorNombreArticulo();     
+        BuscarPorNombreArticulo();
+        sumarTotalABuscadosE();
         sumarTotalABuscados();
         String SQLC="SELECT IDCATEGORIA,NOMBRECATEGORIA,DESCRIPCIONCATEGORIA FROM categorias";
         mdlC= new DefaultComboBoxModel(ConexionBase.leerDatosVector1(SQLC));
@@ -852,15 +859,15 @@ DefaultComboBoxModel mdlC;
     }//GEN-LAST:event_btnNuevosArticulosMouseDragged
 
     private void jcbBuscarQrCategoríaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbBuscarQrCategoríaItemStateChanged
-    idCategoria = categorias.get(jcbBuscarQrCategoría.getSelectedIndex()).getIdCategoria();
-    ItemSeleccionado.idCategoria = String.valueOf(idCategoria);
-    if(idCategoria == 0){
-        JOptionPane.showMessageDialog(this, "Debe de seleccionar una categoría");
-        return;
-    }
-    else
-        jtContenidosArticulos.setModel(LlenarTablaArticulosporCategoría());
-        contarTotalESeleccionada();
+        idCategoria = categorias.get(jcbBuscarQrCategoría.getSelectedIndex()).getIdCategoria();
+        ItemSeleccionado.idCategoria = String.valueOf(idCategoria);
+        if(idCategoria == 0){
+            JOptionPane.showMessageDialog(this, "Debe de seleccionar una categoría");
+            return;
+        } else {
+            jtContenidosArticulos.setModel(LlenarTablaArticulosporCategoría());
+            contarTotalESeleccionada();
+        }
     }//GEN-LAST:event_jcbBuscarQrCategoríaItemStateChanged
 
     private void txtBuscarArticuloKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarArticuloKeyPressed
